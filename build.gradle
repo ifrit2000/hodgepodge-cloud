@@ -1,0 +1,73 @@
+group 'io.github.cd871127'
+version '0.0.1'
+
+buildscript {
+    repositories {
+        maven {
+            url aliyunMevenRepo
+        }
+
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+allprojects {
+    configurations {
+        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: "io.spring.dependency-management"
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        maven {
+            url aliyunMevenRepo
+        }
+        maven {
+            url 'https://repo.spring.io/libs-milestone/'
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+
+
+    dependencies {
+
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
+
+
+        compile('org.springframework.cloud:spring-cloud-starter-consul-discovery')
+        compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+
+        compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '1.3.2'
+        compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
+
+
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+}
+
+////以biz开头的项目
+//configure(allprojects.findAll { it.name.startsWith('biz') }) {
+//    dependencies {
+//        compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+//        compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+//    }
+//}
