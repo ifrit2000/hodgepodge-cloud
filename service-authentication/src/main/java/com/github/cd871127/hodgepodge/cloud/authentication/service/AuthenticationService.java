@@ -16,9 +16,10 @@ public class AuthenticationService {
     private AuthenticationMapper authenticationMapper;
 
     @Resource
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     public int register(UserInfo userInfo) {
+        //TODO verify if username exist and password valid
         return authenticationMapper.register(userInfo);
     }
 }

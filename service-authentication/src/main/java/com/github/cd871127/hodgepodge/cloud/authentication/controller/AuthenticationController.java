@@ -21,7 +21,7 @@ public class AuthenticationController extends AbstractController {
      * add new user
      *
      * @param userInfo include username & password
-     * @return userInfo include valid token and info from form
+     * @return userInfo include valid token and info from parameter
      */
     @RequestMapping("register")
     public ServerResponse<UserInfo> register(UserInfo userInfo) {
