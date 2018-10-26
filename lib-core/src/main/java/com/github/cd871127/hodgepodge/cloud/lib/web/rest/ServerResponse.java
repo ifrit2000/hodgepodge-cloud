@@ -8,6 +8,9 @@ public class ServerResponse<T> {
     private String code;
     private String message;
 
+    public ServerResponse() {
+    }
+
     public ServerResponse(ResponseInfo responseInfo) {
         setResponseInfo(responseInfo);
     }
