@@ -13,11 +13,11 @@ buildscript {
     }
 }
 
-allprojects {
-    configurations {
-        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
-}
+//allprojects {
+//    configurations {
+//        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+//    }
+//}
 
 
 String[] redisProjects = []
@@ -50,7 +50,9 @@ subprojects {
     }
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
-
+    configurations {
+        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
 
     dependencies {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
@@ -65,11 +67,12 @@ subprojects {
 }
 //
 ////以biz开头的项目
-configure(allprojects.findAll { it.name!='lib-core' }) {
-    dependencies {
-        compile project(":lib-core")
-    }
-}
+//configure(allprojects.findAll { it.name!='lib-core' }) {
+//    dependencies {
+//        compile project(":lib-core")
+//    }
+//}
+
 
 configure(allprojects.findAll { redisProjects.contains(it.name) }) {
     dependencies {
