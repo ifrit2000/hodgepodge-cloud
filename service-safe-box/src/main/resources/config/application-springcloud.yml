@@ -8,3 +8,4 @@ spring:
         healthCheckPath: /actuator/health
         healthCheckInterval: 15s
         instanceId: ${spring.application.name}:${random.value}
+

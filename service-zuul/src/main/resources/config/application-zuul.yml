@@ -1,5 +1,5 @@
 zuul:
   routes:
-    zuul:
-      path: /zuul/**
-      url: zuul
+    safe-box:
+      path: /safebox/**
+      url: service-safe-box

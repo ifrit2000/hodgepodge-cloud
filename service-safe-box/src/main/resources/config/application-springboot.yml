@@ -27,6 +27,8 @@ logging:
   level:
     com.github.cd871127.hodgepodge.cloud: debug
 
-mybatis:
-  configuration:
-    cache-enabled: true
+#mybatis:
+#  configuration:
+#    cache-enabled: true
+
+
