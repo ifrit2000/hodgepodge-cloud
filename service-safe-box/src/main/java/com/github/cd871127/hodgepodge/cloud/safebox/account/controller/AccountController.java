@@ -1,15 +1,18 @@
 package com.github.cd871127.hodgepodge.cloud.safebox.account.controller;
 
+import com.github.cd871127.hodgepodge.cloud.lib.server.ServerResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.github.cd871127.hodgepodge.cloud.lib.server.CommonResponseInfo.SUCCESSFUL;
 
 @RestController
 @RequestMapping("/account")
 public class AccountController {
 
     @RequestMapping("test")
-    public String test() {
-        return "123";
+    public ServerResponse test() {
+        return new ServerResponse(SUCCESSFUL);
     }
 
 }
