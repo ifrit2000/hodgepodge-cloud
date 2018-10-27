@@ -1,5 +1,5 @@
-#zuul:
-#  routes:
-#    api-a:
-#      path:
-#
+zuul:
+  routes:
+    zuul:
+      path: /zuul/**
+      url: zuul

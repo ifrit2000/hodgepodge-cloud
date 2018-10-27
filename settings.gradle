@@ -3,4 +3,5 @@ include 'service-zuul'
 include 'template'
 include 'service-cas'
 include 'lib-core'
+include 'service-safe-box'
 
