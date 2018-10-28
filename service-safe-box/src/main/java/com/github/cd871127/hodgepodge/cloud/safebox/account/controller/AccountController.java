@@ -1,7 +1,7 @@
 package com.github.cd871127.hodgepodge.cloud.safebox.account.controller;
 
 import com.github.cd871127.hodgepodge.cloud.lib.server.response.ServerResponse;
-import com.github.cd871127.hodgepodge.cloud.safebox.account.dto.AccountDTO;
+import com.github.cd871127.hodgepodge.cloud.safebox.account.dto.AccountInfoDTO;
 import com.github.cd871127.hodgepodge.cloud.safebox.account.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,7 @@ public class AccountController {
     private AccountService accountService;
 
     @RequestMapping(value = "{userId}", method = RequestMethod.POST)
-    public ServerResponse addUserAccount(@PathVariable String userId, @RequestBody AccountDTO accountDTO) {
+    public ServerResponse addUserAccount(@PathVariable String userId, @RequestBody AccountInfoDTO accountInfoDTO) {
         return new ServerResponse(SUCCESSFUL);
     }
 
