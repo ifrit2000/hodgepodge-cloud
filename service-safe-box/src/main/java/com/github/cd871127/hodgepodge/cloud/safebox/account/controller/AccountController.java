@@ -1,8 +1,11 @@
 package com.github.cd871127.hodgepodge.cloud.safebox.account.controller;
 
 import com.github.cd871127.hodgepodge.cloud.lib.server.response.ServerResponse;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.github.cd871127.hodgepodge.cloud.safebox.account.dto.AccountDTO;
+import com.github.cd871127.hodgepodge.cloud.safebox.account.service.AccountService;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 import static com.github.cd871127.hodgepodge.cloud.lib.server.response.CommonResponseInfo.SUCCESSFUL;
 
@@ -10,8 +13,16 @@ import static com.github.cd871127.hodgepodge.cloud.lib.server.response.CommonRes
 @RequestMapping("/account")
 public class AccountController {
 
-    @RequestMapping("test")
-    public ServerResponse test() {
+    @Resource
+    private AccountService accountService;
+
+    @RequestMapping(value = "{userId}", method = RequestMethod.POST)
+    public ServerResponse addUserAccount(@PathVariable String userId, @RequestBody AccountDTO accountDTO) {
+        return new ServerResponse(SUCCESSFUL);
+    }
+
+    @RequestMapping(value = "{userId}/{accountId}", method = RequestMethod.GET)
+    public ServerResponse getUserAccount(@PathVariable String userId, @PathVariable(required = false) String accountId) {
         return new ServerResponse(SUCCESSFUL);
     }
 
