@@ -1,4 +1,4 @@
-package com.github.cd871127.hodgepodge.cloud.lib.server.response;
+package com.github.cd871127.hodgepodge.cloud.lib.web.server.response;
 
 public interface ResponseInfo {
 

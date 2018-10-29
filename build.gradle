@@ -14,9 +14,9 @@ buildscript {
 }
 
 //需要redis服务名
-String[] redisProjects = ['service-safe-box']
+String[] redisProjects = ['service-safe-box','service-authentication']
 //需要mysql服务名
-String[] mysqlProjects = ['service-safe-box']
+String[] mysqlProjects = ['service-safe-box','service-authentication']
 
 //所有子项目配置
 subprojects {

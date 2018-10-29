@@ -1,13 +1,13 @@
 package com.github.cd871127.hodgepodge.cloud.safebox.account.controller;
 
-import com.github.cd871127.hodgepodge.cloud.lib.server.response.ServerResponse;
+import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import com.github.cd871127.hodgepodge.cloud.safebox.account.dto.AccountInfoDTO;
 import com.github.cd871127.hodgepodge.cloud.safebox.account.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import static com.github.cd871127.hodgepodge.cloud.lib.server.response.CommonResponseInfo.SUCCESSFUL;
+import static com.github.cd871127.hodgepodge.cloud.lib.web.server.response.CommonResponseInfo.SUCCESSFUL;
 
 @RestController
 @RequestMapping("/account")

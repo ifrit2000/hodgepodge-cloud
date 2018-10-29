@@ -1,6 +1,5 @@
 rootProject.name = 'hodgepodge-cloud'
 include 'service-zuul'
-include 'template'
 include 'service-authentication'
 include 'lib-core'
 include 'service-safe-box'
