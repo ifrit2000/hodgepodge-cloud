@@ -22,4 +22,8 @@ public class AuthenticationService {
         //TODO verify if username exist and password valid
         return authenticationMapper.register(userInfo);
     }
+
+    public UserInfo login(String userId, String password) {
+        return null;
+    }
 }

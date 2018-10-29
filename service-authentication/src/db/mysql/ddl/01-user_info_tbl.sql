@@ -1,9 +1,17 @@
-create table USER_INFO_TBL (
-  id               int primary key auto_increment,
-  user_id          varchar(32),
-  password         varchar(256),
-  phone varchar (20),
-  e_mail varchar (128),
-  created_date     date
+DROP TABLE IF EXISTS USER_INFO_TBL;
+CREATE TABLE USER_INFO_TBL (
+  ID           INT PRIMARY KEY AUTO_INCREMENT
+  COMMENT '主键ID',
+  USER_ID      VARCHAR(32) COMMENT '用户登陆ID',
+  PASSWORD     VARCHAR(256) COMMENT '密码',
+  PHONE        VARCHAR(20) COMMENT '电话',
+  E_MAIL       VARCHAR(128) COMMENT '邮箱',
+  CREATED_DATE TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+  COMMENT '创建日期',
+  UPDATED_DATE TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+  ON UPDATE CURRENT_TIMESTAMP
+  COMMENT '更新日期'
 )
-engine = innodb;
+  ENGINE = INNODB;
+
+
