@@ -13,58 +13,73 @@ buildscript {
     }
 }
 
-allprojects {
-    configurations {
-        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
-}
+//需要redis服务名
+String[] redisProjects = ['service-safe-box']
+//需要mysql服务名
+String[] mysqlProjects = ['service-safe-box']
 
+//所有子项目配置
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: "io.spring.dependency-management"
-
     sourceCompatibility = 1.8
 
     repositories {
         maven {
             url aliyunMevenRepo
         }
-        maven {
-            url 'https://repo.spring.io/libs-milestone/'
-        }
     }
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+
+
+    dependencies {
+
+        compile group: 'com.alibaba', name: 'fastjson', version: '1.2.51'
+        compile group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+}
+
+//所有服务配置
+configure(subprojects.findAll { it.name.startsWith('service-') }) {
+
+
+    apply plugin: 'org.springframework.boot'
+    apply plugin: "io.spring.dependency-management"
 
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
         }
     }
-    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
-    dependencies {
-
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
-
-        compile('org.springframework.cloud:spring-cloud-starter-consul-discovery')
-        compile('org.springframework.cloud:spring-cloud-starter-openfeign')
-
-        compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '1.3.2'
-        compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
-
-        compile group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
-
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+    configurations {
+        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
-}
 
-//以service开头的项目
-configure(allprojects.findAll { it.name.startsWith('service') }) {
     dependencies {
         compile project(":lib-core")
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
+        compile('org.springframework.cloud:spring-cloud-starter-consul-discovery')
+        compile('org.springframework.cloud:spring-cloud-starter-openfeign')
     }
 }
+
+configure(subprojects.findAll { redisProjects.contains(it.name) }) {
+    dependencies {
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
+    }
+}
+
+configure(subprojects.findAll { mysqlProjects.contains(it.name) }) {
+    dependencies {
+        compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '1.3.2'
+        compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
+        compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.9'
+    }
+}
+

@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: service-safe-box
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: ${mysql.password}
+    username: ${mysql.username}
+    url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    database: ${redis.database}
+
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  undertow:
+    worker-threads: 256
+    io-threads: 16
+    buffer-size: 1024
+    direct-buffers: true
+logging:
+  level:
+    com.github.cd871127.hodgepodge.cloud: debug
+
+#mybatis:
+#  configuration:
+#    cache-enabled: true
+
+

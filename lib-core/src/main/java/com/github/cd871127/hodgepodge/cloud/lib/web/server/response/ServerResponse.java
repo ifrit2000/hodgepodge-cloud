@@ -1,4 +1,4 @@
-package com.github.cd871127.hodgepodge.cloud.lib.web.rest;
+package com.github.cd871127.hodgepodge.cloud.lib.server.response;
 
 import lombok.Data;
 
@@ -12,11 +12,9 @@ public class ServerResponse<T> {
     }
 
     public ServerResponse(ResponseInfo responseInfo) {
-        setResponseInfo(responseInfo);
-    }
-
-    public void setResponseInfo(ResponseInfo responseInfo) {
+        this();
         setCode(responseInfo.getCode());
         setMessage(responseInfo.getMessage());
     }
+
 }

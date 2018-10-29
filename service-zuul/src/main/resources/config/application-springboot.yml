@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: service-zuul
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    password: app
+#    username: app
+#    url: jdbc:mysql://127.0.0.1:3306/hodgepodge_user?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    database: 0
+
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  undertow:
+    worker-threads: 256
+    io-threads: 16
+    buffer-size: 1024
+    direct-buffers: true
+logging:
+  level:
+    com.github.cd871127.hodgepodge.cloud: debug
+
+mybatis:
+  configuration:
+    cache-enabled: true
