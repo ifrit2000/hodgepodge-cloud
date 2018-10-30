@@ -6,7 +6,7 @@ import java.security.*;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-
+//https://blog.csdn.net/qq_35605213/article/details/80591869
 public class RsaEncipher implements Encipher {
 
     private static final int KEY_LENGTH = 2048;
