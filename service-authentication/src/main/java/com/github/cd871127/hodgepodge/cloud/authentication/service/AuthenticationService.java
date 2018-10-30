@@ -1,5 +1,6 @@
 package com.github.cd871127.hodgepodge.cloud.authentication.service;
 
+import com.github.cd871127.hodgepodge.cloud.authentication.exception.AuthenticationException;
 import com.github.cd871127.hodgepodge.cloud.authentication.mapper.AuthenticationMapper;
 import com.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,12 +19,16 @@ public class AuthenticationService {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    public int register(UserInfo userInfo) {
+    public UserInfo register(UserInfo userInfo) throws Exception {
+        if (authenticationMapper.isUserExist(userInfo.getUsername())) {
+            throw new AuthenticationException("USER_EXIST");
+        }
         //TODO verify if username exist and password valid
-        return authenticationMapper.register(userInfo);
+        authenticationMapper.register(userInfo);
+        return login(userInfo.getUsername(), userInfo.getPassword());
     }
 
-    public UserInfo login(String userId, String password) {
+    public UserInfo login(String username, String password) {
         return null;
     }
 }

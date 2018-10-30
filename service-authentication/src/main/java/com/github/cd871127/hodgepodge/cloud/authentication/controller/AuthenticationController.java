@@ -5,14 +5,12 @@ import com.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import com.github.cd871127.hodgepodge.cloud.lib.web.AbstractController;
 import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.CommonResponseInfo;
 import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RequestMapping("/authentication")
@@ -29,7 +27,7 @@ public class AuthenticationController extends AbstractController {
      * @return userInfo include valid token and info from parameter
      */
     @RequestMapping(value = "register", method = POST)
-    public ServerResponse<UserInfo> register(UserInfo userInfo) {
+    public ServerResponse<UserInfo> register(@RequestBody UserInfo userInfo) throws Exception {
         ServerResponse<UserInfo> serverResponse = new ServerResponse<>(CommonResponseInfo.SUCCESSFUL);
         authenticationService.register(userInfo);
         return serverResponse;
@@ -38,15 +36,23 @@ public class AuthenticationController extends AbstractController {
     /**
      * user login controller
      *
-     * @param userId
+     * @param username
      * @param password encoded password
      * @return
      */
-    @RequestMapping(value = "user/{userId}", method = GET)
-    public ServerResponse<UserInfo> login(@PathVariable String userId, @RequestParam String password) {
+    @RequestMapping(value = "info/{username}", method = GET)
+    public ServerResponse<UserInfo> login(@PathVariable String username, @RequestParam String password) {
         ServerResponse<UserInfo> serverResponse = new ServerResponse<>(CommonResponseInfo.SUCCESSFUL);
-        serverResponse.setData(authenticationService.login(userId, password));
+        serverResponse.setData(authenticationService.login(username, password));
         return serverResponse;
     }
+
+    @RequestMapping(value = "info/{username}", method = PATCH)
+    public ServerResponse<UserInfo> modify(@PathVariable String username, @RequestParam String password) {
+        ServerResponse<UserInfo> serverResponse = new ServerResponse<>(CommonResponseInfo.SUCCESSFUL);
+        serverResponse.setData(authenticationService.login(username, password));
+        return serverResponse;
+    }
+
 
 }
