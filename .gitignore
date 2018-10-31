@@ -2,5 +2,5 @@
 .idea/
 build/
 */build/
-hodgepodge-cloud.iml
+*.iml
 
