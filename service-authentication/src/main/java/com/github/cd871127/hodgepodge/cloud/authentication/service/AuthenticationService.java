@@ -2,7 +2,9 @@ package com.github.cd871127.hodgepodge.cloud.authentication.service;
 
 import com.github.cd871127.hodgepodge.cloud.authentication.exception.AuthenticationException;
 import com.github.cd871127.hodgepodge.cloud.authentication.mapper.AuthenticationMapper;
+import com.github.cd871127.hodgepodge.cloud.lib.crypto.RsaEncipher;
 import com.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
+import com.github.cd871127.hodgepodge.cloud.lib.util.Constant;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,5 +32,10 @@ public class AuthenticationService {
 
     public UserInfo login(String username, String password) {
         return null;
+    }
+
+    private String decodePassword(String password, String privateKeyStr) {
+        RsaEncipher encipher = new RsaEncipher();
+        return new String(encipher.decode(password.getBytes(Constant.CHAR_SET), encipher.stringToPrivateKey(privateKeyStr)), Constant.CHAR_SET);
     }
 }

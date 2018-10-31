@@ -66,11 +66,11 @@ public class RsaEncipher implements Encipher {
         return key;
     }
 
-    public PublicKey publicKey(String publicKeyStr) {
+    public PublicKey stringToPublicKey(String publicKeyStr) {
         return (PublicKey) stringToKey(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyStr)));
     }
 
-    public PrivateKey privateKey(String privateKeyStr) {
+    public PrivateKey stringToPrivateKey(String privateKeyStr) {
         return (PrivateKey) stringToKey(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyStr)));
     }
 
@@ -102,9 +102,9 @@ public class RsaEncipher implements Encipher {
     public static void main(String[] args) {
         RsaEncipher rsaEncipher = new RsaEncipher();
         Pair<String, String> pair = rsaEncipher.getStringKeyPair();
-        byte[] temp = rsaEncipher.encode("1111".getBytes(Constant.CHAR_SET), rsaEncipher.publicKey(pair.getKey()));
+        byte[] temp = rsaEncipher.encode("1111".getBytes(Constant.CHAR_SET), rsaEncipher.stringToPublicKey(pair.getKey()));
         System.out.println(new String(temp, Constant.CHAR_SET));
-        temp = rsaEncipher.decode(temp, rsaEncipher.privateKey(pair.getValue()));
+        temp = rsaEncipher.decode(temp, rsaEncipher.stringToPrivateKey(pair.getValue()));
         System.out.println(new String(temp, Constant.CHAR_SET));
     }
 }

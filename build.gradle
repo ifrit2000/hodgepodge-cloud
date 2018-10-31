@@ -61,6 +61,8 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 
     dependencies {
         compile project(":lib-core")
+        compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
+
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
