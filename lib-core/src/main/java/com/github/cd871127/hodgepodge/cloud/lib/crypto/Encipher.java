@@ -4,7 +4,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public interface Encipher {
-    byte[] encode(byte[] bytes, PrivateKey privateKey);
+    byte[] encode(byte[] bytes, PublicKey publicKey);
 
-    byte[] decode(byte[] bytes, PublicKey publicKey);
+    byte[] decode(byte[] bytes, PrivateKey privateKey);
 }
