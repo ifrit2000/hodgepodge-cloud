@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    include: springboot,springcloud
+    active: dev

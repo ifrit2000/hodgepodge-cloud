@@ -1,7 +1,8 @@
-package com.github.cd871127.hodgepodge.cloud.lib.crypto;
+package com.github.cd871127.hodgepodge.cloud.cipher.crypto;
 
 import com.github.cd871127.hodgepodge.cloud.lib.util.Constant;
 import com.github.cd871127.hodgepodge.cloud.lib.util.Pair;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -14,6 +15,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+@Component
 public class RsaEncipher implements Encipher {
 
     private static final int KEY_LENGTH = 2048;
@@ -36,9 +38,13 @@ public class RsaEncipher implements Encipher {
 
     public Pair<String, String> getStringKeyPair() {
         KeyPair keyPair = getKeyPair();
-        String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        String privateKey = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+        String publicKey = keyToString(keyPair.getPublic());
+        String privateKey = keyToString(keyPair.getPrivate());
         return new Pair<>(publicKey, privateKey);
+    }
+
+    public String keyToString(Key key) {
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
 

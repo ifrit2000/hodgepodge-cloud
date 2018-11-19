@@ -11,10 +11,14 @@ public class ServerResponse<T> {
     public ServerResponse() {
     }
 
-    public ServerResponse(ResponseInfo responseInfo) {
+    public ServerResponse(HodgepodgeResponse hodgepodgeResponse) {
         this();
-        setCode(responseInfo.getCode());
-        setMessage(responseInfo.getMessage());
+        setHodgepodgeResponse(hodgepodgeResponse);
+    }
+
+    public void setHodgepodgeResponse(HodgepodgeResponse hodgepodgeResponse) {
+        setCode(hodgepodgeResponse.getCode());
+        setMessage(hodgepodgeResponse.getMessage());
     }
 
 }

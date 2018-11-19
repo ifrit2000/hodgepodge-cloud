@@ -2,7 +2,7 @@ package com.github.cd871127.hodgepodge.cloud.authentication.service;
 
 import com.github.cd871127.hodgepodge.cloud.authentication.exception.AuthenticationException;
 import com.github.cd871127.hodgepodge.cloud.authentication.mapper.AuthenticationMapper;
-import com.github.cd871127.hodgepodge.cloud.lib.crypto.RsaEncipher;
+import com.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaEncipher;
 import com.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import com.github.cd871127.hodgepodge.cloud.lib.util.Constant;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,4 +1,4 @@
-package com.github.cd871127.hodgepodge.cloud.lib.crypto;
+package com.github.cd871127.hodgepodge.cloud.cipher.crypto;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
