@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: service-cipher
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    database: ${redis.database}
+management:
+  endpoint:
+    health:
+      show-details: always
+server:
+  undertow:
+    worker-threads: 256
+    io-threads: 16
+    buffer-size: 1024
+    direct-buffers: true
+  port: 8888
+logging:
+  level:
+    com.github.cd871127.hodgepodge.cloud: debug
+

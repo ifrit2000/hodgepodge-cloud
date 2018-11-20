@@ -1,6 +1,6 @@
 package com.github.cd871127.hodgepodge.cloud.lib.web.server.response;
 
-public enum CommonResponseInfo implements ResponseInfo {
+public enum GeneralHodgepodgeResponse implements HodgepodgeResponse {
     SUCCESSFUL("000000", "成功"),
 
     FAILED("999999", "失败");
@@ -8,7 +8,7 @@ public enum CommonResponseInfo implements ResponseInfo {
     private String code;
     private String message;
 
-    CommonResponseInfo(String code, String message) {
+    GeneralHodgepodgeResponse(String code, String message) {
         this.code = code;
         this.message = message;
     }
