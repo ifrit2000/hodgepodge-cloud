@@ -1,3 +1,3 @@
-import os
+from main import test
 
-print(os.getpid())
+print(test())
