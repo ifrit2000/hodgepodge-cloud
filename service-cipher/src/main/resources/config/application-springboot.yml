@@ -1,14 +1,3 @@
-spring:
-  application:
-    name: service-cipher
-  redis:
-    host: ${redis.host}
-    port: ${redis.port}
-    database: ${redis.database}
-management:
-  endpoint:
-    health:
-      show-details: always
 server:
   undertow:
     worker-threads: 256

@@ -15,6 +15,7 @@ buildscript {
 
 //需要redis服务名
 String[] redisProjects = ['service-safe-box','service-authentication','service-cipher']
+String[] consulProjects = ['service-safe-box','service-authentication','service-cipher']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box','service-authentication']
 
@@ -66,7 +67,6 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
-        compile('org.springframework.cloud:spring-cloud-starter-consul-discovery')
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
     }
 }
@@ -82,6 +82,13 @@ configure(subprojects.findAll { mysqlProjects.contains(it.name) }) {
         compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '1.3.2'
         compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
         compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.9'
+    }
+}
+
+configure(subprojects.findAll { consulProjects.contains(it.name) }) {
+    dependencies {
+        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-discovery'
+        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
     }
 }
 

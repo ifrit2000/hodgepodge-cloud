@@ -16,5 +16,5 @@ docker network create --subnet=${ipAddress}/16 ${network_name}
 route -p add ${ipAddress} MASK 255.255.255.0 10.0.75.2
 
 #创建容器
-docker create --name dev-redis --network ${network_name} --ip 172.18.0.2 redis
-docker create --name dev-consul --network ${network_name} --ip 172.18.0.3 consul
+docker create --name dev-redis --network ${network_name} --ip 172.18.0.2 redis:5.0.2
+docker create --name dev-consul --network ${network_name} --ip 172.18.0.3 consul:1.4.0
