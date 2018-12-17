@@ -14,13 +14,15 @@ buildscript {
 }
 
 //需要redis服务名
-String[] redisProjects = ['service-safe-box','service-authentication','service-cipher']
-String[] consulProjects = ['service-safe-box','service-authentication','service-cipher']
+String[] redisProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
+String[] consulProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
 //需要mysql服务名
-String[] mysqlProjects = ['service-safe-box','service-authentication']
+String[] mysqlProjects = ['service-safe-box', 'service-authentication']
+
+String[] starterProjects=['hodgepodge-spring-boot-starter']
 
 //所有子项目配置
-subprojects {
+allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
     sourceCompatibility = 1.8
@@ -33,20 +35,16 @@ subprojects {
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
-
-
     dependencies {
-
         compile group: 'com.alibaba', name: 'fastjson', version: '1.2.51'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
         compile group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
         testCompile group: 'junit', name: 'junit', version: '4.12'
     }
 }
 
 //所有服务配置
-configure(subprojects.findAll { it.name.startsWith('service-')|| it.name == 'hodgepodge-spring-boot-starter' }) {
-
-
+configure(subprojects.findAll { it.name.startsWith('service-') }) {
     apply plugin: 'org.springframework.boot'
     apply plugin: "io.spring.dependency-management"
 
@@ -94,5 +92,15 @@ configure(subprojects.findAll { consulProjects.contains(it.name) }) {
     }
 }
 
+configure(subprojects.findAll { starterProjects.contains(it.name) }) {
+// 用这个插件不会生成jar包   apply plugin: 'org.springframework.boot' 
+    dependencies {
+        // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure-processor
+//        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure-processor', version: '2.1.1.RELEASE'
+
+        compileOnly group: 'org.springframework.boot', name: 'spring-boot-autoconfigure' , version:springBootVersion
+        compileOnly group: 'org.springframework.data', name: 'spring-data-redis', version:springBootVersion
+    }
+}
 
 

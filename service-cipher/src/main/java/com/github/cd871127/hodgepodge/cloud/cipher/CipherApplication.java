@@ -7,7 +7,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @SpringBootApplication
 @EnableRedisHttpSession
-@Configuration
 public class CipherApplication {
     public static void main(String[] args) {
         SpringApplication.run(CipherApplication.class, args);
