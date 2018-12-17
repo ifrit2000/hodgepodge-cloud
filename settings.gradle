@@ -4,4 +4,5 @@ include 'service-authentication'
 include 'lib-core'
 include 'service-safe-box'
 include 'service-cipher'
+include 'hodgepodge-spring-boot-starter'
 

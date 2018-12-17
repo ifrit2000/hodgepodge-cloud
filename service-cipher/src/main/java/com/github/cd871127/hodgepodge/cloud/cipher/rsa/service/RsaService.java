@@ -18,17 +18,17 @@ public class RsaService {
     private RsaEncipher rsaEncipher;
 
     @Resource
-    private RedisTemplate<String, KeyPair> keyPairRedisTemplate;
+    private RedisTemplate<String, KeyPair> redisTemplate;
 
     public Map<String, String> getPublicKey(String keyId) {
         KeyPair keyPair;
         if (keyId == null) {
             keyPair = rsaEncipher.getKeyPair();
-            keyId=UUID.randomUUID().toString().replaceAll("-", "");
-            keyPairRedisTemplate.opsForValue()
+            keyId = UUID.randomUUID().toString().replaceAll("-", "");
+            redisTemplate.opsForValue()
                     .set(keyId, keyPair, 3, TimeUnit.MINUTES);
         } else {
-            keyPair = keyPairRedisTemplate.opsForValue().get(keyId);
+            keyPair = redisTemplate.opsForValue().get(keyId);
         }
         if (keyPair == null) {
             return null;

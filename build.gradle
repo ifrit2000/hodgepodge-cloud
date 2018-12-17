@@ -44,7 +44,7 @@ subprojects {
 }
 
 //所有服务配置
-configure(subprojects.findAll { it.name.startsWith('service-') }) {
+configure(subprojects.findAll { it.name.startsWith('service-')|| it.name == 'hodgepodge-spring-boot-starter' }) {
 
 
     apply plugin: 'org.springframework.boot'
@@ -74,6 +74,8 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 configure(subprojects.findAll { redisProjects.contains(it.name) }) {
     dependencies {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
+        compile group: 'org.springframework.session', name: 'spring-session-data-redis'
+        compile project(":hodgepodge-spring-boot-starter")
     }
 }
 
@@ -91,4 +93,6 @@ configure(subprojects.findAll { consulProjects.contains(it.name) }) {
         compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
     }
 }
+
+
 

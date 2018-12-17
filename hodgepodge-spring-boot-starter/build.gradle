@@ -1,0 +1,5 @@
+
+dependencies {
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+    compileOnly group: 'org.springframework.data', name: 'spring-data-redis'
+}

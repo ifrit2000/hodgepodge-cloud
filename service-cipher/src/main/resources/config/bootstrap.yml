@@ -23,6 +23,7 @@ spring:
       #连接超时时间
     timeout: 10000ms
 
+
   cloud:
     consul:
       host: 172.18.0.3
