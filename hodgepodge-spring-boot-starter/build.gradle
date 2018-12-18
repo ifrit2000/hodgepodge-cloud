@@ -1,0 +1,14 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+    compileOnly group: 'org.springframework.data', name: 'spring-data-redis'
+}

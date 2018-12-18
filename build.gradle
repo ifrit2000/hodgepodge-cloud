@@ -6,10 +6,9 @@ buildscript {
         maven {
             url aliyunMevenRepo
         }
-
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
 
@@ -18,8 +17,6 @@ String[] redisProjects = ['service-safe-box', 'service-authentication', 'service
 String[] consulProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-authentication']
-
-String[] starterProjects=['hodgepodge-spring-boot-starter']
 
 //所有子项目配置
 allprojects {
@@ -92,15 +89,5 @@ configure(subprojects.findAll { consulProjects.contains(it.name) }) {
     }
 }
 
-configure(subprojects.findAll { starterProjects.contains(it.name) }) {
-// 用这个插件不会生成jar包   apply plugin: 'org.springframework.boot' 
-    dependencies {
-        // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure-processor
-//        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure-processor', version: '2.1.1.RELEASE'
-
-        compileOnly group: 'org.springframework.boot', name: 'spring-boot-autoconfigure' , version:springBootVersion
-        compileOnly group: 'org.springframework.data', name: 'spring-data-redis', version:springBootVersion
-    }
-}
 
 
