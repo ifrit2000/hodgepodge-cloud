@@ -1,1 +1,3 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.cd871127.hodgepodge.redis.session.autoconfigure.RedisSessionAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.github.cd871127.hodgepodge.redis.session.autoconfigure.RedisSessionAutoConfiguration,\
+  com.github.cd871127.hodgepodge.log.autoconfigure.ControllerLogAutoConfiguration
