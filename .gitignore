@@ -4,5 +4,7 @@ build/
 */build/
 *.iml
 .vscode
+*.tar.gz
+*.jar
 
 

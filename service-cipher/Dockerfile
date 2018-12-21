@@ -6,6 +6,7 @@ MAINTAINER cdistc@163.com
 RUN groupadd -r app && useradd -r -g app app
 RUN mkdir -p /data/conf && mkdir -p /data/log
 ADD build/libs/service-cipher.jar /data
+ADD build/resources/main/config/ /data/conf
 RUN chown -R app:app /data
 
 
