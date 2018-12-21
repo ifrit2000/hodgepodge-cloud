@@ -17,7 +17,7 @@ String[] redisProjects = ['service-safe-box', 'service-authentication', 'service
 String[] consulProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-authentication']
-String[] testProjects=['service-test']
+String[] testProjects = ['service-test']
 
 //所有子项目配置
 allprojects {

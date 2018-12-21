@@ -48,7 +48,7 @@ public class RsaEncipher implements Encipher {
      * @param keySpec
      * @return
      */
-    public Key stringToKey(KeySpec keySpec) {
+    private Key stringToKey(KeySpec keySpec) {
         Key key;
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
@@ -99,12 +99,4 @@ public class RsaEncipher implements Encipher {
         }
     }
 
-//    public static void main(String[] args) {
-//        RsaEncipher rsaEncipher = new RsaEncipher();
-//        Pair<String, String> pair = rsaEncipher.getStringKeyPair();
-//        byte[] temp = rsaEncipher.encode("1111".getBytes(Constant.CHAR_SET), rsaEncipher.stringToPublicKey(pair.getKey()));
-//        System.out.println(new String(temp, Constant.CHAR_SET));
-//        temp = rsaEncipher.decode(temp, rsaEncipher.stringToPrivateKey(pair.getValue()));
-//        System.out.println(new String(temp, Constant.CHAR_SET));
-//    }
 }

@@ -1,17 +1,15 @@
 package io.github.cd871127.hodgepodge.cloud.authentication.controller;
 
+import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.CommonResponseInfo;
 import io.github.cd871127.hodgepodge.cloud.authentication.service.AuthenticationService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.web.AbstractController;
-import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.CommonResponseInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RequestMapping("/authentication")
 @RestController

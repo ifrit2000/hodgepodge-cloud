@@ -6,6 +6,6 @@ public class Constant {
     private Constant() {
     }
 
-    public static final Charset CHAR_SET=Charset.forName("UTF-8");
+    public static final Charset CHAR_SET = Charset.forName("UTF-8");
 
 }

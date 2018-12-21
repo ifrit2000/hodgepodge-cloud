@@ -6,6 +6,8 @@ public class RsaKeyPair {
 
     private Pair<String, String> pair = new Pair<>();
 
+    private String keyId;
+
     public RsaKeyPair() {
     }
 
@@ -30,4 +32,11 @@ public class RsaKeyPair {
         pair.setValue(privateKey);
     }
 
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
+    }
 }

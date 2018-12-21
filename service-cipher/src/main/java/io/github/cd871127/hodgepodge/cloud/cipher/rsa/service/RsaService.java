@@ -3,6 +3,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.rsa.service;
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaEncipher;
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,22 +23,39 @@ public class RsaService {
     @Resource
     private RedisTemplate<String, RsaKeyPair> redisTemplate;
 
-    public Map<String, String> getPublicKey(String keyId) throws NoSuchAlgorithmException, InvalidKeyIdException {
-        RsaKeyPair rsakeyPair;
-        if (keyId == null) {
-            rsakeyPair = rsaEncipher.getStringKeyPair();
+    private RsaKeyPair getRsaKeyPair(String keyId) throws NoSuchAlgorithmException, InvalidKeyIdException {
+        RsaKeyPair rsaKeyPair;
+        if (StringUtils.isEmpty(keyId)) {
+            rsaKeyPair = rsaEncipher.getStringKeyPair();
             keyId = UUID.randomUUID().toString().replaceAll("-", "");
-            redisTemplate.opsForValue().set(keyId, rsakeyPair, 3, TimeUnit.MINUTES);
+            rsaKeyPair.setKeyId(keyId);
+            redisTemplate.opsForValue().set(keyId, rsaKeyPair, 3, TimeUnit.MINUTES);
         } else {
-            rsakeyPair = redisTemplate.opsForValue().get(keyId);
-            if (rsakeyPair == null) {
+            rsaKeyPair = redisTemplate.opsForValue().get(keyId);
+            if (rsaKeyPair == null) {
                 throw new InvalidKeyIdException("Invalid RSA keyId");
             }
         }
+        return rsaKeyPair;
+    }
+
+    public Map<String, String> getPublicKey(String keyId) throws NoSuchAlgorithmException, InvalidKeyIdException {
+        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId);
         Map<String, String> res = new HashMap<>();
-        res.put("keyId", keyId);
-        res.put("publicKey", rsakeyPair.getPublicKey());
+        res.put("keyId", rsaKeyPair.getKeyId());
+        res.put("publicKey", rsaKeyPair.getPublicKey());
         return res;
+    }
+
+    public byte[] encode(String keyId, byte[] data) throws InvalidKeyIdException, NoSuchAlgorithmException {
+        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId);
+        return rsaEncipher.encode(data, rsaEncipher.stringToPublicKey(rsaKeyPair.getPublicKey()));
+
+    }
+
+    public byte[] decode(String keyId, byte[] data) throws InvalidKeyIdException, NoSuchAlgorithmException {
+        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId);
+        return rsaEncipher.decode(data, rsaEncipher.stringToPrivateKey(rsaKeyPair.getPrivateKey()));
     }
 
 }
