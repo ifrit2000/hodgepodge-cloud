@@ -18,9 +18,9 @@ public class RedisSessionAutoConfiguration {
      * @return
      */
 
-    @Bean(name = "springSessionDefaultRedisSerializer")
+    @Bean
     public RedisSerializer springSessionDefaultRedisSerializer() {
-        log.info("init jsonSerializer for session");
+        log.info("Init jsonSerializer for session");
         return new GenericJackson2JsonRedisSerializer();
     }
 

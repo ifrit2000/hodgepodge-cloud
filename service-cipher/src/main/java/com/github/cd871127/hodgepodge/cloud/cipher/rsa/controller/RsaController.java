@@ -3,6 +3,7 @@ package com.github.cd871127.hodgepodge.cloud.cipher.rsa.controller;
 import com.github.cd871127.hodgepodge.cloud.cipher.rsa.service.RsaService;
 import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
