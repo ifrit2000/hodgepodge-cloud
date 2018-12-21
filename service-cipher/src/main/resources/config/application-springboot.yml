@@ -1,10 +1,4 @@
-server:
-  undertow:
-    worker-threads: 256
-    io-threads: 16
-    buffer-size: 1024
-    direct-buffers: true
-  port: 8888
+
 logging:
   level:
     com.github.cd871127.hodgepodge.cloud: debug

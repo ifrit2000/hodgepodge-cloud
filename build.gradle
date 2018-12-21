@@ -52,9 +52,9 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
         }
     }
 
-    configurations {
-        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
+//    configurations {
+//        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+//    }
 
     dependencies {
         compile project(":lib-core")
@@ -62,7 +62,7 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
+//        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
     }
 }

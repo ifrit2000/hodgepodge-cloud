@@ -3,12 +3,12 @@ package com.github.cd871127.hodgepodge.cloud.cipher.rsa.controller;
 import com.github.cd871127.hodgepodge.cloud.cipher.rsa.service.RsaService;
 import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.cd871127.hodgepodge.cloud.cipher.response.CipherResponse.GET_RSA_PUBLIC_KEY_FAILED;
@@ -33,12 +33,20 @@ public class RsaController {
     }
 
     @Resource
-    RedisTemplate redisTemplate;
+    RedisTemplate<String, Map> redisTemplate;
 
     @RequestMapping(value = "test/{aa}")
     public String test(@PathVariable String aa) {
-        redisTemplate.opsForValue().set("test", aa);
+        Map<String, String> map = new HashMap<>();
+        map.put("test", aa);
+        redisTemplate.opsForValue().set("mm", map);
         return "ok";
+    }
+
+    @RequestMapping(value = "test2")
+    public String test2() {
+        Map res = redisTemplate.opsForValue().get("mm");
+        return res.toString();
     }
 
     @RequestMapping(value = "session/{v}")
