@@ -1,8 +1,8 @@
-CREATE USER 'safeboxdata'@'%' IDENTIFIED BY '123456';
-grant all privileges on safe_box.* to 'safeboxdata'@'%';
+CREATE USER 'appdata'@'%' IDENTIFIED BY '123456';
+grant all privileges on service_cipher.* to 'appdata'@'%';
 
-CREATE USER 'safeboxopr'@'%' IDENTIFIED BY '123456';
-grant select,delete,update on safe_box.* to 'safeboxopr'@'%';
+CREATE USER 'appopr'@'%' IDENTIFIED BY '123456';
+grant select,delete,update on service_cipher.* to 'appopr'@'%';
 
 
 
