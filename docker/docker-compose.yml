@@ -1,0 +1,44 @@
+#docker-compose版本
+version: '3.7'
+
+#创建一个网络
+networks:
+  dev-network:
+    name: dev-network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+#定义各种服务
+services:
+  redis:
+    container_name: dev-redis
+    image: 'redis:5.0.2'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.2
+    command: ["redis-server","/data/redis.conf"]
+    volumes:
+      - /home/anthony/dockerVolume/dev/redis:/data
+
+  consul:
+    container_name: dev-consul
+    image: 'consul:1.4.0'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.3
+    command: ["consul", "agent", "-server", "-bootstrap-expect", "1", "-data-dir", "/consul/data", "-client", "0.0.0.0", "-bind", "172.28.0.3", "-ui"]
+    volumes:
+      - /home/anthony/dockerVolume/dev/consul:/consul/data
+
+  mysql:
+    container_name: dev-mysql
+    image: 'mysql:8.0.13'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.4
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - /home/anthony/dockerVolume/dev/mysql:/data
