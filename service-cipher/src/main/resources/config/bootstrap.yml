@@ -7,7 +7,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   redis:
-    host: 172.18.0.2
+    host: 172.28.0.2
     port: 6379
     database: 0
     jedis:
@@ -26,7 +26,7 @@ spring:
 
   cloud:
     consul:
-      host: 172.18.0.3
+      host: 172.28.0.3
       port: 8500
       #enabled将此值设置为“false”禁用Consul配置
       config:
