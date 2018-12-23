@@ -29,10 +29,10 @@ public class RsaController {
     private Charset charset;
 
     @RequestMapping(value = {"publicKey/{keyId}", "publicKey"}, method = RequestMethod.GET)
-    public ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId) {
+    public ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId, @RequestParam(value = "persistent", required = false, defaultValue = "false") boolean persistent) {
         ServerResponse<Map<String, String>> serverResponse = new ServerResponse<>(SUCCESSFUL);
         try {
-            serverResponse.setData(rsaService.getPublicKey(keyId));
+            serverResponse.setData(rsaService.getPublicKey(keyId, persistent));
         } catch (NoSuchAlgorithmException e) {
             serverResponse.setHodgepodgeResponse(CipherResponse.INVALID_KEY_ID);
         } catch (InvalidKeyIdException e) {

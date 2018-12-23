@@ -5,3 +5,9 @@ redis:
   host: 172.28.0.2
   port: 6379
   database: 0
+mysql:
+  host: 172.28.0.4
+  port: 3306
+  database: service_cipher
+  username: appopr
+  password: 123456

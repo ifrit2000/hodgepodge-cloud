@@ -11,8 +11,8 @@ Cache-Control: no-cache
 Content-Type: application/json;charset=UTF-8
 
 {
-"keyId": "c1dd3cbbfcef4436bda84e130ffbff65",
-"data": "方法一"
+  "keyId": "c1dd3cbbfcef4436bda84e130ffbff65",
+  "data": "方法一"
 }
 
 ###

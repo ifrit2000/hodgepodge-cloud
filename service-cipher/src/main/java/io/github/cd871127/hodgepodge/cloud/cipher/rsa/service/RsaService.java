@@ -3,6 +3,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.rsa.service;
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaEncipher;
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
+import io.github.cd871127.hodgepodge.cloud.cipher.rsa.mapper.RsaMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,10 @@ public class RsaService {
     @Resource
     private RedisTemplate<String, RsaKeyPair> redisTemplate;
 
-    private RsaKeyPair getRsaKeyPair(String keyId) throws NoSuchAlgorithmException, InvalidKeyIdException {
+    @Resource
+    private RsaMapper rsaMapper;
+
+    private RsaKeyPair getRsaKeyPair(String keyId, boolean persistent) throws NoSuchAlgorithmException, InvalidKeyIdException {
         RsaKeyPair rsaKeyPair;
         if (StringUtils.isEmpty(keyId)) {
             rsaKeyPair = rsaEncipher.getStringKeyPair();
@@ -36,11 +40,21 @@ public class RsaService {
                 throw new InvalidKeyIdException("Invalid RSA keyId");
             }
         }
+        System.out.println(keyId.length());
+        System.out.println(rsaKeyPair.getPublicKey().length());
+        System.out.println(rsaKeyPair.getPrivateKey().length());
+        if (persistent) {
+            rsaMapper.insertRsaKeyPair(rsaKeyPair);
+        }
         return rsaKeyPair;
     }
 
-    public Map<String, String> getPublicKey(String keyId) throws NoSuchAlgorithmException, InvalidKeyIdException {
-        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId);
+    private RsaKeyPair getRsaKeyPair(String keyId) throws InvalidKeyIdException, NoSuchAlgorithmException {
+        return getRsaKeyPair(keyId, false);
+    }
+
+    public Map<String, String> getPublicKey(String keyId, boolean persistent) throws NoSuchAlgorithmException, InvalidKeyIdException {
+        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId, persistent);
         Map<String, String> res = new HashMap<>();
         res.put("keyId", rsaKeyPair.getKeyId());
         res.put("publicKey", rsaKeyPair.getPublicKey());
