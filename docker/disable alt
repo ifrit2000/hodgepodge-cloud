@@ -3,3 +3,6 @@ apt install dconf-tools
 Run the dconf editor from the main menu. Navigate to org > cinnamon > desktop > wm > preferences and change the mouse-button-modifier.
 
 Set it to <Ctrl> or <Super>, but don't leave it empty.
+
+
+idea plugin CamelCase CodeGlance KeyPromoterX
