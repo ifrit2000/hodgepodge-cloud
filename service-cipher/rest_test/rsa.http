@@ -28,3 +28,32 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###
+POST http://127.0.0.1:8080/refresh
+
+###
+PUT http://172.28.0.3:8500/v1/agent/service/register
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json;charset=UTF-8
+
+
+{
+    "ID": "my-service-id",
+    "Name": "my-service-name",
+    "Tags": [
+        "release=1",
+        "mytag=xyz"
+    ],
+    "Address": "192.168.1.1",
+    "Port": 8000,
+    "Meta": {
+        "my_version": "4.0"
+    },
+    "EnableTagOverride": false,
+    "Check": {
+        "DeregisterCriticalServiceAfter": "90m",
+        "HTTP": "http://yjmyzz.cnblogs.com/",
+        "Interval": "10s"
+    }
+}
+

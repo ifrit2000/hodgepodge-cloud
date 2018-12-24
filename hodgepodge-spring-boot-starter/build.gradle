@@ -13,6 +13,7 @@ dependencies {
     compileOnly group: 'org.springframework.data', name: 'spring-data-redis'
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
 
 
 }

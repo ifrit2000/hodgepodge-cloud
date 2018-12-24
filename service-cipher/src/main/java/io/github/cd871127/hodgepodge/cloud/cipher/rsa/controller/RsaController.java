@@ -2,6 +2,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.rsa.controller;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.CryptoString;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
+import io.github.cd871127.hodgepodge.cloud.cipher.properties.CipherProperties;
 import io.github.cd871127.hodgepodge.cloud.cipher.response.CipherResponse;
 import io.github.cd871127.hodgepodge.cloud.cipher.rsa.service.RsaService;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ByteArrayConversion;
@@ -27,6 +28,9 @@ public class RsaController {
 
     @Resource
     private Charset charset;
+
+    @Resource
+    private CipherProperties cipherProperties;
 
     @RequestMapping(value = {"publicKey/{keyId}", "publicKey"}, method = RequestMethod.GET)
     public ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId, @RequestParam(value = "persistent", required = false, defaultValue = "false") boolean persistent) {
@@ -59,6 +63,11 @@ public class RsaController {
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(ByteArrayConversion.byteArray2HexString(res));
         return serverResponse;
+    }
+
+    @RequestMapping("test")
+    public String test() {
+        return cipherProperties.getKeyExpire().toString();
     }
 
 }

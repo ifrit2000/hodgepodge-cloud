@@ -1,6 +1,8 @@
 logging:
   level:
     com.github.cd871127.hodgepodge.cloud: debug
+  config: classpath:config/logback-spring.xml
+  path: /home/anthony
 
 
 spring:

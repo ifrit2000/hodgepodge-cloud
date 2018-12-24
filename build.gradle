@@ -14,7 +14,7 @@ buildscript {
 
 //需要redis服务名
 String[] redisProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
-String[] consulProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
+String[] consulProjects = ['service-safe-box', 'service-authentication', 'service-cipher','service-test']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
 String[] testProjects = ['service-test']
@@ -62,8 +62,14 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
 //        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    }
+
+    bootJar{
+        rootSpec.exclude("**/config/*.properties","**/config/*.yml")
     }
 }
 
@@ -85,15 +91,17 @@ configure(subprojects.findAll { mysqlProjects.contains(it.name) }) {
 
 configure(subprojects.findAll { consulProjects.contains(it.name) }) {
     dependencies {
+//        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-all'
         compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-discovery'
-        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
+//        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config'
+//        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
     }
 }
 
 
 configure(subprojects.findAll { testProjects.contains(it.name) }) {
     dependencies {
-        compile project(":hodgepodge-spring-boot-starter")
+//        compile project(":hodgepodge-spring-boot-starter")
     }
 }
 
