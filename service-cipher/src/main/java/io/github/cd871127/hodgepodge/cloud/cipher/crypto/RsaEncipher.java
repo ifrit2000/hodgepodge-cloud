@@ -1,5 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.crypto;
 
+import io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair.RsaKeyPair;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.BadPaddingException;
@@ -25,7 +26,6 @@ public class RsaEncipher implements Encipher {
     public KeyPair getKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator;
         keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-
         keyPairGenerator.initialize(KEY_LENGTH);
         return keyPairGenerator.generateKeyPair();
     }
@@ -40,7 +40,6 @@ public class RsaEncipher implements Encipher {
     public String keyToString(Key key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
-
 
     /**
      * convert key string to key

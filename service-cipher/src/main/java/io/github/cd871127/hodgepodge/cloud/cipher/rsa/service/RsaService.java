@@ -1,7 +1,7 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.rsa.service;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaEncipher;
-import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaKeyPair;
+import io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
 import io.github.cd871127.hodgepodge.cloud.cipher.rsa.mapper.RsaMapper;
 import org.apache.commons.lang3.StringUtils;

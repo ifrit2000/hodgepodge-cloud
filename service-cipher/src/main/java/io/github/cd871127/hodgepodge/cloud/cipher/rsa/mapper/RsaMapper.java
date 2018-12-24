@@ -1,6 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.rsa.mapper;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.crypto.RsaKeyPair;
+import io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair.RsaKeyPair;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
