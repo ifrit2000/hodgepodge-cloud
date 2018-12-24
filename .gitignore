@@ -1,5 +1,6 @@
 .gradle/
 .idea/
+.idea/httpRequests/http-requests-log.http
 build/
 */build/
 *.iml
