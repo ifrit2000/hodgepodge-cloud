@@ -6,4 +6,5 @@ include 'service-safe-box'
 include 'service-cipher'
 include 'hodgepodge-spring-boot-starter'
 include 'service-test'
+include 'service-gateway'
 

@@ -1,29 +1,29 @@
-#spring:
-#  application:
-#    name: service-cipher
-#  profiles:
-#    include: springboot,springcloud
-#    active: dev
-#  main:
-#    allow-bean-definition-overriding: true
-#spring:
-#  redis:
-#    host: 172.28.0.2
-#    port: 6379
-#    database: 0
-#    jedis:
-#      pool:
-#        #最大连接数
-#        max-active: 8
-#        #最大阻塞等待时间(负数表示没限制)
-#        max-wait: -1ms
-#        #最大空闲
-#        max-idle: 8
-#        #最小空闲
-#        min-idle: 0
-#      #连接超时时间
-#    timeout: 10000ms
 spring:
+  application:
+    name: service-cipher
+  profiles:
+    include: springboot,springcloud
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+#spring:
+  redis:
+    host: 172.28.0.2
+    port: 6379
+    database: 0
+    jedis:
+      pool:
+        #最大连接数
+        max-active: 8
+        #最大阻塞等待时间(负数表示没限制)
+        max-wait: -1ms
+        #最大空闲
+        max-idle: 8
+        #最小空闲
+        min-idle: 0
+      #连接超时时间
+    timeout: 10000ms
+#spring:
   cloud:
     consul:
       host: 172.28.0.3

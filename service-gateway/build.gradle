@@ -1,0 +1,4 @@
+
+dependencies {
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-gateway'
+}
