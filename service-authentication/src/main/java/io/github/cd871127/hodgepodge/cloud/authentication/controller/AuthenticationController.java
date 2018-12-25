@@ -1,6 +1,5 @@
 package io.github.cd871127.hodgepodge.cloud.authentication.controller;
 
-import com.github.cd871127.hodgepodge.cloud.lib.web.server.response.CommonResponseInfo;
 import io.github.cd871127.hodgepodge.cloud.authentication.service.AuthenticationService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.web.AbstractController;
