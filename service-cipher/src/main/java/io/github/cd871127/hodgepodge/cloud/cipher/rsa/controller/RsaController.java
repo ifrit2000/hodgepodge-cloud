@@ -2,12 +2,16 @@ package io.github.cd871127.hodgepodge.cloud.cipher.rsa.controller;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.crypto.CryptoString;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
+import io.github.cd871127.hodgepodge.cloud.cipher.properties.Cipher2Properties;
 import io.github.cd871127.hodgepodge.cloud.cipher.properties.CipherProperties;
 import io.github.cd871127.hodgepodge.cloud.cipher.response.CipherResponse;
 import io.github.cd871127.hodgepodge.cloud.cipher.rsa.service.RsaService;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ByteArrayConversion;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +25,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RequestMapping("/rsa")
 @RestController
+@Slf4j
+@RefreshScope
 public class RsaController {
 
     @Resource
@@ -31,6 +37,8 @@ public class RsaController {
 
     @Resource
     private CipherProperties cipherProperties;
+    @Resource
+    private Cipher2Properties cipher2Properties;
 
     @RequestMapping(value = {"publicKey/{keyId}", "publicKey"}, method = RequestMethod.GET)
     public ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId, @RequestParam(value = "persistent", required = false, defaultValue = "false") boolean persistent) {
@@ -65,8 +73,14 @@ public class RsaController {
         return serverResponse;
     }
 
+    @Value("${cipher.keyExpire}")
+    private Long test1;
+
     @RequestMapping("test")
     public String test() {
+        log.debug(test1.toString());
+        log.debug(cipherProperties.getKeyExpire().toString());
+        log.debug(cipher2Properties.getAaa());
         return cipherProperties.getKeyExpire().toString();
     }
 

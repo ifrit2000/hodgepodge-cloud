@@ -94,7 +94,7 @@ configure(subprojects.findAll { consulProjects.contains(it.name) }) {
 //        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-all'
         compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-discovery'
 //        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config'
-//        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
+        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
     }
 }
 
