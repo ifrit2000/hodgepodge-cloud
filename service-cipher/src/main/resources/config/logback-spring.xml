@@ -111,7 +111,7 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
     <!--<logger name="io.github.cd871127.hodgepodge.cloud.cipher.mapper" level="DEBUG">-->
-        <!--<appender-ref ref="CONSOLE"/>-->
+    <!--<appender-ref ref="CONSOLE"/>-->
     <!--</logger>-->
 
     <springProfile name="dev">
