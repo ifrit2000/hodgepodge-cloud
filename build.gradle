@@ -34,7 +34,7 @@ allprojects {
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
     dependencies {
-        compile group: 'com.alibaba', name: 'fastjson', version: fastjsonVersion
+        implementation group: 'com.alibaba', name: 'fastjson', version: fastjsonVersion
         annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
         compile group: 'org.projectlombok', name: 'lombok', version: lombokVersion
         testCompile group: 'junit', name: 'junit', version: junitVersion
