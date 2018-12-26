@@ -14,11 +14,12 @@ buildscript {
 
 //需要redis服务名
 String[] redisProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
-String[] consulProjects = ['service-safe-box', 'service-authentication', 
-                           'service-cipher','service-test',
+String[] consulProjects = ['service-safe-box', 'service-authentication',
+                           'service-cipher', 'service-test',
                            'service-gateway']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
+String[] webProjects = ['service-cipher']
 String[] testProjects = ['service-test']
 
 //所有子项目配置
@@ -63,15 +64,15 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
         compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
 
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
 //        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     }
 
-    bootJar{
-        rootSpec.exclude("**/config/*.properties","**/config/*.yml")
+    bootJar {
+        rootSpec.exclude("**/config/*.properties", "**/config/*.yml")
     }
 }
 
@@ -106,6 +107,18 @@ configure(subprojects.findAll { testProjects.contains(it.name) }) {
 //        compile project(":hodgepodge-spring-boot-starter")
     }
 }
+
+configure(subprojects.findAll { webProjects.contains(it.name) }) {
+    dependencies {
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    }
+}
+
+//task ttt{
+//    println(subprojects.size())
+//}
+
+//compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 
 
 

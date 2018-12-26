@@ -9,11 +9,15 @@ spring:
         healthCheckInterval: 15s
         instanceId: ${spring.application.name}:${random.value}
     gateway:
-      enabled: true
-      routes:
-        - id: service-cipher
-          uri: lb://SERVICE-CIPHER/
-          path: /rsa/**
+      #      enabled: true
+      #      routes:
+      #        - id: service-cipher
+      #          uri: lb://SERVICE-CIPHER/
+      #          path: /rsa/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 
 management:
