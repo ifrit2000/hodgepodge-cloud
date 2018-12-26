@@ -1,23 +1,22 @@
 spring:
   application:
     name: service-gateway
-#  profiles:
-#    include: springboot,springcloud
-#    active: dev
+  profiles:
+    include: mybatis #springboot,springcloud
+    active: dev
   cloud:
     consul:
-      host: 172.28.0.3
-      #      host: 127.0.0.1
+#      host: 172.28.0.3
+      host: 127.0.0.1
       port: 8500
       #enabled将此值设置为“false”禁用Consul配置
       config:
-        enabled: true   #默认是true --
-        format: YAML    # 表示consul上面文件的格式 有四种 YAML PROPERTIES KEY-VALUE FILES
-        data-key: configuration    #表示consul上面的KEY值(或者说文件的名字) 默认是data
-        prefix: config #设置配置值的基本文件夹
-        defaultContext: app
+        format: FILES    # 表示consul上面文件的格式 有四种 YAML PROPERTIES KEY-VALUE FILES
+#        data-key: configuration    #表示consul上面的KEY值(或者说文件的名字) 默认是data
+        prefix: config/${spring.profiles.active} #设置配置值的基本文件夹
+#        defaultContext: app
         #defaultContext设置所有应用程序使用的文件夹名称
-        profileSeparator: ',' #profileSeparator设置用于使用配置文件在属性源中分隔配置文件名称的分隔符的值
+#        profileSeparator: ',' #profileSeparator设置用于使用配置文件在属性源中分隔配置文件名称的分隔符的值
         watch:
           enabled: true
           delay: 1000
@@ -25,3 +24,5 @@ spring:
   output:
     ansi:
       enabled: always
+
+aaa: dev

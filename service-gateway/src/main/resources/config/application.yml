@@ -1,7 +1,8 @@
 spring:
   cloud:
     consul:
-      host: 172.28.0.3
+#      host: 172.28.0.3
+      host: 127.0.0.1
       port: 8500
       discovery:
         tags: version=0.0.1,author=cd871127
@@ -20,12 +21,12 @@ spring:
           lower-case-service-id: true
 
 
-management:
-  endpoint:
-    refresh:
-      enabled: true
-    health:
-      show-details: always
+#management:
+#  endpoint:
+#    refresh:
+#      enabled: true
+#    health:
+#      show-details: always
 
 server:
   port: 8081

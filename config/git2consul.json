@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "logger": {
+    "name": "git2consul",
+    "streams": [
+      {
+        "level": "trace",
+        "type": "rotating-file",
+        "path": "./git2consul.log"
+      }
+    ]
+  },
+  "repos": [
+    {
+      "name": "config",
+      "url": "https://github.com/cd871127/hodgepodge-config.git",
+      "include_branch_name": false,
+      "branches": [
+        "master"
+      ],
+      "hooks": [
+        {
+          "type": "polling",
+          "interval": "1"
+        }
+      ]
+    }
+  ]
+}
