@@ -2,27 +2,33 @@ spring:
   application:
     name: service-gateway
   profiles:
-    include: mybatis #springboot,springcloud
+    include: mybatis,redis,log,consul
     active: dev
+  #  main:
+  #    allow-bean-definition-overriding: true
   cloud:
     consul:
-#      host: 172.28.0.3
-      host: 127.0.0.1
+      host: 172.28.0.3
       port: 8500
-      #enabled将此值设置为“false”禁用Consul配置
       config:
-        format: FILES    # 表示consul上面文件的格式 有四种 YAML PROPERTIES KEY-VALUE FILES
-#        data-key: configuration    #表示consul上面的KEY值(或者说文件的名字) 默认是data
-        prefix: config/${spring.profiles.active} #设置配置值的基本文件夹
-#        defaultContext: app
-        #defaultContext设置所有应用程序使用的文件夹名称
-#        profileSeparator: ',' #profileSeparator设置用于使用配置文件在属性源中分隔配置文件名称的分隔符的值
+        format: FILES
+        prefix: config/${spring.profiles.active}
         watch:
           enabled: true
           delay: 1000
-#        name: service-gateway
   output:
     ansi:
       enabled: always
 
-aaa: dev
+management:
+  endpoint:
+    refresh:
+      enabled: true
+    health:
+      show-details: always
+
+logging:
+  config: classpath:config/logback-spring.xml
+  path: /tmp/log
+
+
