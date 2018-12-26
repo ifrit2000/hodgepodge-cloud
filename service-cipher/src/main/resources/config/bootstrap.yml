@@ -2,14 +2,12 @@ spring:
   application:
     name: service-cipher
   profiles:
-    include: mybatis,redis,log,consul
+    include: mybatis,redis,consul
     active: dev
   #  main:
   #    allow-bean-definition-overriding: true
   cloud:
     consul:
-      host: 172.28.0.3
-      port: 8500
       config:
         format: FILES
         prefix: config/${spring.profiles.active}

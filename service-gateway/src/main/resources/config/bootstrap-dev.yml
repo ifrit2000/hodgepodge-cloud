@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    consul:
+      host: 172.28.0.3
+      port: 8500
+
+server:
+  port: 8081
