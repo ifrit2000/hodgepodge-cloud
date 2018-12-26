@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class GatewayApplication {
 //    @Value("${spring.cloud.consul.config.prefix}")
-    @Value("${test.aaaa}")
+    @Value("${test.ccccc}")
     private String bbb;
 
 

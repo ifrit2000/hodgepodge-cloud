@@ -20,7 +20,7 @@ spring:
         watch:
           enabled: true
           delay: 1000
-        name: service-gateway
+#        name: service-gateway
   output:
     ansi:
       enabled: always
