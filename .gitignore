@@ -7,5 +7,6 @@ build/
 .vscode
 *.tar.gz
 *.jar
+config/*.log
 
 
