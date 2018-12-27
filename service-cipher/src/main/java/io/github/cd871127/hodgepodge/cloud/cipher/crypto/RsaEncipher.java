@@ -23,21 +23,21 @@ public class RsaEncipher implements Encipher {
 
     private static final String ALGORITHM = "RSA/ECB/PKCS1Padding";
 
-    public KeyPair getKeyPair() throws NoSuchAlgorithmException {
+    private KeyPair getKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator;
         keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
         keyPairGenerator.initialize(KEY_LENGTH);
         return keyPairGenerator.generateKeyPair();
     }
 
-    public RsaKeyPair getStringKeyPair() throws NoSuchAlgorithmException {
+    public RsaKeyPair getBase64KeyPair() throws NoSuchAlgorithmException {
         KeyPair keyPair = getKeyPair();
-        String publicKey = keyToString(keyPair.getPublic());
-        String privateKey = keyToString(keyPair.getPrivate());
+        String publicKey = keyToBase64String(keyPair.getPublic());
+        String privateKey = keyToBase64String(keyPair.getPrivate());
         return new RsaKeyPair(publicKey, privateKey);
     }
 
-    public String keyToString(Key key) {
+    public String keyToBase64String(Key key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
@@ -47,7 +47,7 @@ public class RsaEncipher implements Encipher {
      * @param keySpec
      * @return
      */
-    private Key stringToKey(KeySpec keySpec) {
+    private Key base64StringToKey(KeySpec keySpec) {
         Key key;
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
@@ -65,12 +65,12 @@ public class RsaEncipher implements Encipher {
         return key;
     }
 
-    public PublicKey stringToPublicKey(String publicKeyStr) {
-        return (PublicKey) stringToKey(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyStr)));
+    public PublicKey base64StringPublicKey(String publicKeyStr) {
+        return (PublicKey) base64StringToKey(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyStr)));
     }
 
-    public PrivateKey stringToPrivateKey(String privateKeyStr) {
-        return (PrivateKey) stringToKey(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyStr)));
+    public PrivateKey base64StringToPrivateKey(String privateKeyStr) {
+        return (PrivateKey) base64StringToKey(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyStr)));
     }
 
     @Override

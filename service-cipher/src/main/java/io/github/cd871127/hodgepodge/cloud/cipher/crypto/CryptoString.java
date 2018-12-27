@@ -3,6 +3,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.crypto;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ByteArrayConversion;
 
 public class CryptoString extends CryptoObject<String> {
+
     public CryptoString() {
         super(new DataConvert<String>() {
             @Override
