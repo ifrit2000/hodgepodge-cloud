@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Map;
 
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
@@ -47,7 +48,7 @@ public class RsaController {
         if (StringUtils.isEmpty(keyId)) {
             throw new InvalidKeyIdException("empty keyId");
         }
-        byte[] res = rsaService.decode(keyId, ByteArrayConversion.hexString2ByteArray(data));
+        byte[] res = rsaService.decode(keyId, Base64.getDecoder().decode(data));
 
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(ByteArrayConversion.byteArray2HexString(res));
