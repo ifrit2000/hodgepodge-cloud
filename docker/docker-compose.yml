@@ -43,4 +43,4 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123456
     volumes:
-      - /home/anthony/dockerVolume/dev/mysql:/data
+      - /home/anthony/dockerVolume/dev/mysql:/var/lib/mysql

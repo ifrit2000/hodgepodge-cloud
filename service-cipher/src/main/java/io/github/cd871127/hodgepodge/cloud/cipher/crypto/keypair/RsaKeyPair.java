@@ -2,6 +2,9 @@ package io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair;
 
 import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
 
+/**
+ *
+ */
 public class RsaKeyPair implements CipherKeyPair<String, String> {
 
     private Pair<String, String> pair = new Pair<>();

@@ -6,7 +6,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-//http://springcloud.cn/view/415
 public class CipherApplication {
     public static void main(String[] args) {
         SpringApplication.run(CipherApplication.class, args);
