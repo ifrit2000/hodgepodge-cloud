@@ -1,6 +1,7 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.service;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.CipherKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.mapper.CipherKeyMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,31 +18,59 @@ public class CipherKeyService {
     private CipherKeyMapper cipherKeyMapper;
 
     @Resource
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate redisTemplate;
+
+    private RedisTemplate<String, CipherKeyPair> keyPairRedisTemplate;
+
+    private RedisTemplate<String, String> stringRedisTemplate;
 
     @PostConstruct
+    @SuppressWarnings("unchecked")
     private void init() {
-        System.out.println(111);
+        keyPairRedisTemplate = redisTemplate;
+        stringRedisTemplate = redisTemplate;
     }
 
     public void loadKeyIdFromDB() {
-        log.debug("load {} {} keyId", loadKeyIdFromDBByAlgorithm(CipherAlgorithm.RSA), CipherAlgorithm.RSA);
-        log.debug("load {} {} keyId", loadKeyIdFromDBByAlgorithm(CipherAlgorithm.AES), CipherAlgorithm.AES);
+        loadKeyIdFromDBByAlgorithm(CipherAlgorithm.RSA);
+        loadKeyIdFromDBByAlgorithm(CipherAlgorithm.AES);
     }
 
-    private Long loadKeyIdFromDBByAlgorithm(CipherAlgorithm cipherAlgorithm) {
+    private void loadKeyIdFromDBByAlgorithm(CipherAlgorithm cipherAlgorithm) {
         List<String> keyIdList = cipherKeyMapper.selectAllKeyId(cipherAlgorithm);
+        log.debug("{} {} keyIds in DB", cipherAlgorithm, keyIdList.size());
         if (keyIdList.isEmpty()) {
-            return 0L;
+            return;
         }
-        return redisTemplate.boundSetOps(cipherAlgorithm + ".keyId").add(keyIdList.toArray(new String[0]));
+        Long count = stringRedisTemplate.boundSetOps(cipherAlgorithm + ".keyId").add(keyIdList.toArray(new String[0]));
+        log.debug("load {} {} keyIds to Redis", count, cipherAlgorithm);
     }
 
     public Long cacheKeyId(String keyId, CipherAlgorithm cipherAlgorithm) {
-        return redisTemplate.boundSetOps(cipherAlgorithm + ".keyId").add(keyId);
+        return stringRedisTemplate.boundSetOps(cipherAlgorithm + ".keyId").add(keyId);
     }
 
     public Boolean isKeyIdExists(String keyId, CipherAlgorithm cipherAlgorithm) {
-        return redisTemplate.boundSetOps(cipherAlgorithm + ".keyId").isMember(keyId);
+        return stringRedisTemplate.boundSetOps(cipherAlgorithm + ".keyId").isMember(keyId);
+    }
+
+
+    public CipherKeyPair selectKeyPairByKeyId(String keyId) {
+        return cipherKeyMapper.selectKeyPairByKeyId(keyId);
+    }
+
+    public int insertCipherKeyPair(CipherKeyPair cipherKeyPair) {
+        cacheKeyId(cipherKeyPair.getKeyId(), cipherKeyPair.getCipherAlgorithm());
+        return cipherKeyMapper.insertCipherKeyPair(cipherKeyPair);
+    }
+
+    public void cacheCipherKeyPair(CipherKeyPair cipherKeyPair) {
+        keyPairRedisTemplate.boundHashOps(cipherKeyPair.getCipherAlgorithm() + ".keyPair")
+                .put(cipherKeyPair.getKeyId(), cipherKeyPair);
+    }
+
+    public CipherKeyPair restoreCipherKeyPair(String keyId, CipherAlgorithm cipherAlgorithm) {
+        return keyPairRedisTemplate.<String, CipherKeyPair>opsForHash()
+                .get(cipherAlgorithm + ".keyPair", keyId);
     }
 }

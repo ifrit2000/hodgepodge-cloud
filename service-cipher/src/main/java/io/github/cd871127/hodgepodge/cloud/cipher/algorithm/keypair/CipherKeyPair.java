@@ -1,16 +1,23 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair;
 
-public interface CipherKeyPair<K, V> {
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
+import lombok.Data;
 
-    String getKeyId();
+@Data
+public class CipherKeyPair {
 
-    K getPublicKey();
+    private String keyId;
+    private String publicKey;
+    private String privateKey;
+    private CipherAlgorithm cipherAlgorithm;
 
-    V getPrivateKey();
+    public CipherKeyPair() {
+    }
 
-    void setKeyId(String keyId);
+    public CipherKeyPair(String publicKey, String privateKey) {
+        this();
+        setPublicKey(publicKey);
+        setPrivateKey(privateKey);
+    }
 
-    void setPublicKey(K publicKey);
-
-    void setPrivateKey(V privateKey);
 }

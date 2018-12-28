@@ -1,12 +1,12 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.service.impl;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.AsymmetricCipher;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
-import io.github.cd871127.hodgepodge.cloud.cipher.mapper.RsaMapper;
+import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherKeyService;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,7 +15,6 @@ import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class RsaService implements CipherService {
@@ -23,30 +22,30 @@ public class RsaService implements CipherService {
     @Resource
     private AsymmetricCipher rsaCipher;
 
-    @Resource
-    private RedisTemplate<String, RsaKeyPair> redisTemplate;
 
     @Resource
-    private RsaMapper rsaMapper;
+    private CipherKeyService cipherKeyService;
+
 
     private RsaKeyPair getRsaKeyPair(String keyId, Long expire) throws NoSuchAlgorithmException, InvalidKeyIdException {
         RsaKeyPair rsaKeyPair;
         if (StringUtils.isEmpty(keyId)) {
+            //empty keyId
             rsaKeyPair = rsaCipher.getBase64KeyPair();
             keyId = UUID.randomUUID().toString().replaceAll("-", "");
             rsaKeyPair.setKeyId(keyId);
             if (0 == expire) {
-                rsaMapper.insertRsaKeyPair(rsaKeyPair);
+                cipherKeyService.insertCipherKeyPair(rsaKeyPair);
             } else {
-                redisTemplate.opsForValue().set(keyId, rsaKeyPair, expire, TimeUnit.SECONDS);
+                cipherKeyService.cacheCipherKeyPair(rsaKeyPair);
             }
         } else {
-            rsaKeyPair = redisTemplate.opsForValue().get(keyId);
-//            if (rsaKeyPair == null) {
-//                throw new InvalidKeyIdException("Invalid RSA keyId");
-//            }
+            if (cipherKeyService.isKeyIdExists(keyId, CipherAlgorithm.RSA)) {
+                rsaKeyPair = (RsaKeyPair) cipherKeyService.selectKeyPairByKeyId(keyId);
+            } else {
+                rsaKeyPair = (RsaKeyPair) cipherKeyService.restoreCipherKeyPair(keyId, CipherAlgorithm.RSA);
+            }
         }
-
         return rsaKeyPair;
     }
 
