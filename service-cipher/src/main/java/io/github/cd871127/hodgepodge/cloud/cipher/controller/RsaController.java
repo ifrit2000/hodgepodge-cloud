@@ -17,7 +17,6 @@ import java.util.Base64;
 import java.util.Map;
 
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RequestMapping("/rsa")
 @RestController
@@ -27,7 +26,7 @@ public class RsaController {
     @Resource
     private RsaService rsaService;
 
-    @RequestMapping(value = {"publicKey/{keyId}", "publicKey"}, method = RequestMethod.GET)
+    @GetMapping(value = {"publicKey/{keyId}", "publicKey"})
     public ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId, @RequestParam(value = "expire", required = false, defaultValue = "300") Long expire) {
         ServerResponse<Map<String, String>> serverResponse = new ServerResponse<>(SUCCESSFUL);
         try {
@@ -40,7 +39,7 @@ public class RsaController {
         return serverResponse;
     }
 
-    @RequestMapping(value = {"decode"}, method = POST)
+    @PostMapping(value = {"decode"})
     public ServerResponse<String> encode(@RequestBody CryptoString cryptoString, HttpServletRequest request) throws NoSuchAlgorithmException, InvalidKeyIdException {
 
         String keyId = cryptoString.getKeyId();
