@@ -47,15 +47,6 @@ public class ControllerLogger {
 
     @Around("controller()")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Object o;
-        try {
-            Long start = System.currentTimeMillis();
-            o = proceedingJoinPoint.proceed();
-            log.info("TimeCost:{}", System.currentTimeMillis() - start);
-        } catch (Throwable throwable) {
-            log.error(throwable.getMessage());
-            throw throwable;
-        }
-        return o;
+        return logService.around(proceedingJoinPoint);
     }
 }

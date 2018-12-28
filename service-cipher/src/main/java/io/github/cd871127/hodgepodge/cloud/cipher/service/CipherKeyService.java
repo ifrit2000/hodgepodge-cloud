@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -64,13 +65,12 @@ public class CipherKeyService {
         return cipherKeyMapper.insertCipherKeyPair(cipherKeyPair);
     }
 
-    public void cacheCipherKeyPair(CipherKeyPair cipherKeyPair) {
-        keyPairRedisTemplate.boundHashOps(cipherKeyPair.getCipherAlgorithm() + ".keyPair")
-                .put(cipherKeyPair.getKeyId(), cipherKeyPair);
+    public void cacheCipherKeyPair(CipherKeyPair cipherKeyPair, Long expire) {
+        keyPairRedisTemplate.opsForValue()
+                .set(cipherKeyPair.getKeyId(), cipherKeyPair, expire, TimeUnit.SECONDS);
     }
 
-    public CipherKeyPair restoreCipherKeyPair(String keyId, CipherAlgorithm cipherAlgorithm) {
-        return keyPairRedisTemplate.<String, CipherKeyPair>opsForHash()
-                .get(cipherAlgorithm + ".keyPair", keyId);
+    public CipherKeyPair restoreCipherKeyPair(String keyId) {
+        return keyPairRedisTemplate.opsForValue().get(keyId);
     }
 }

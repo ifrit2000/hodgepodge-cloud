@@ -24,11 +24,19 @@ def encode(public_key, data):
     return base64.b64encode(rsa_encoder.encrypt(data.encode(CHAR_SET))).decode(CHAR_SET)
 
 
-def decode():
-    pass
+def decode(key_id, data):
+    body = {"keyId": key_id, "data": data}
+    header = {'Content-Type': 'application/json'}
+    response = build_http_request().request("post", '/rsa/decode', headers=header, body=json.dumps(body))
+    result = json.loads(response.data.decode())['data']
+    return base64.b64decode(result).decode()
 
 
 if __name__ == "__main__":
     key_id, public_key = get_public_key()
-    test = encode(public_key, '123')
-    print(test)
+    data = 'JS排序:localeCompare() 方法实现中文排序、sort方法实现..._博客园'
+    encode_data = encode(public_key, data)
+    print(encode_data)
+    decode_data = decode(key_id, encode_data)
+    print(decode_data)
+    print(decode_data == data)

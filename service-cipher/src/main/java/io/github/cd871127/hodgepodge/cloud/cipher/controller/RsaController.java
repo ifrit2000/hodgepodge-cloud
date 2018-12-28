@@ -2,6 +2,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.controller;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CryptoString;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
+import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.impl.RsaService;
 import io.github.cd871127.hodgepodge.cloud.cipher.util.response.CipherResponse;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
@@ -33,8 +34,8 @@ public class RsaController {
             serverResponse.setData(rsaService.getPublicKey(keyId, expire));
         } catch (NoSuchAlgorithmException e) {
             serverResponse.setHodgepodgeResponse(CipherResponse.INVALID_KEY_ID);
-        } catch (InvalidKeyIdException e) {
-            serverResponse.setHodgepodgeResponse(CipherResponse.RSA_NOT_EXISTS);
+        } catch (KeyIdExpiredException e) {
+            serverResponse.setHodgepodgeResponse(CipherResponse.KEY_ID_EXPIRED);
         }
         return serverResponse;
     }
@@ -47,20 +48,17 @@ public class RsaController {
         if (StringUtils.isEmpty(keyId)) {
             throw new InvalidKeyIdException("empty keyId");
         }
-        byte[] res = rsaService.decode(keyId, Base64.getDecoder().decode(data));
-
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        serverResponse.setData(Base64.getEncoder().encodeToString(res));
+        try {
+            byte[] res = rsaService.decode(keyId, Base64.getDecoder().decode(data));
+            serverResponse.setData(Base64.getEncoder().encodeToString(res));
+        } catch (NoSuchAlgorithmException e) {
+            serverResponse.setHodgepodgeResponse(CipherResponse.INVALID_KEY_ID);
+        } catch (KeyIdExpiredException e) {
+            serverResponse.setHodgepodgeResponse(CipherResponse.KEY_ID_EXPIRED);
+        }
         return serverResponse;
     }
-//
-//    @Resource
-//    private CommonService commonService;
-//
-//    @GetMapping("test")
-//    public String test() {
-//        commonService.loadKeyIdFromDB();
-//        return "ok";
-//    }
+
 
 }
