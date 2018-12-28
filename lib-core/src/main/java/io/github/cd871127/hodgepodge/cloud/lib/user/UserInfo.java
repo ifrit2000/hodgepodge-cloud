@@ -7,6 +7,7 @@ public class UserInfo {
     private String userId;
     private String username;
     private String password;
+    private String passwordKeyId;
     private String phone;
     private String eMail;
     private String token;
