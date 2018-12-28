@@ -13,13 +13,13 @@ buildscript {
 }
 
 //需要redis服务名
-String[] redisProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
-String[] consulProjects = ['service-safe-box', 'service-authentication',
+String[] redisProjects = ['service-safe-box', 'service-auth', 'service-cipher']
+String[] consulProjects = ['service-safe-box', 'service-auth',
                            'service-cipher', 'service-test',
                            'service-gateway']
 //需要mysql服务名
-String[] mysqlProjects = ['service-safe-box', 'service-authentication', 'service-cipher']
-String[] webProjects = ['service-cipher']
+String[] mysqlProjects = ['service-safe-box', 'service-auth', 'service-cipher']
+String[] webProjects = ['service-cipher','service-auth']
 String[] testProjects = ['service-test']
 
 //所有子项目配置
