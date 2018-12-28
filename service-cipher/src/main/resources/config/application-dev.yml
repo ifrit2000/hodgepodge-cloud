@@ -1,5 +1,5 @@
 cipher:
   rsa:
-    key-length: 20281
-    key-algorithm: RSA1
-    algorithm: RSA/ECB/PKCS1Padding1
+    key-length: 2048
+    key-algorithm: RSA
+    algorithm: RSA/ECB/PKCS1Padding

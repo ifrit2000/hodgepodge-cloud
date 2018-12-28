@@ -1,4 +1,4 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.response;
+package io.github.cd871127.hodgepodge.cloud.cipher.util.response;
 
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.HodgepodgeResponse;
 

@@ -1,4 +1,4 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.crypto;
+package io.github.cd871127.hodgepodge.cloud.cipher.algorithm;
 
 import io.github.cd871127.hodgepodge.cloud.lib.util.ByteArrayConversion;
 

@@ -1,10 +1,9 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.rsa.controller;
+package io.github.cd871127.hodgepodge.cloud.cipher.controller;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.crypto.CryptoString;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CryptoString;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
-import io.github.cd871127.hodgepodge.cloud.cipher.response.CipherResponse;
-import io.github.cd871127.hodgepodge.cloud.cipher.rsa.service.impl.RsaService;
-import io.github.cd871127.hodgepodge.cloud.lib.util.ByteArrayConversion;
+import io.github.cd871127.hodgepodge.cloud.cipher.service.impl.RsaService;
+import io.github.cd871127.hodgepodge.cloud.cipher.util.response.CipherResponse;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -51,8 +50,17 @@ public class RsaController {
         byte[] res = rsaService.decode(keyId, Base64.getDecoder().decode(data));
 
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        serverResponse.setData(ByteArrayConversion.byteArray2HexString(res));
+        serverResponse.setData(Base64.getEncoder().encodeToString(res));
         return serverResponse;
     }
+//
+//    @Resource
+//    private CommonService commonService;
+//
+//    @GetMapping("test")
+//    public String test() {
+//        commonService.loadKeyIdFromDB();
+//        return "ok";
+//    }
 
 }

@@ -1,5 +1,6 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair;
+package io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair;
 
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
 import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
 
 /**
@@ -18,6 +19,16 @@ public class RsaKeyPair implements CipherKeyPair<String, String> {
         setPublicKey(publicKey);
         setPrivateKey(privateKey);
     }
+
+    public CipherAlgorithm getCipherAlgorithm() {
+        return cipherAlgorithm;
+    }
+
+    public void setCipherAlgorithm(CipherAlgorithm cipherAlgorithm) {
+        this.cipherAlgorithm = cipherAlgorithm;
+    }
+
+    private CipherAlgorithm cipherAlgorithm = CipherAlgorithm.RSA;
 
     @Override
     public String getPublicKey() {

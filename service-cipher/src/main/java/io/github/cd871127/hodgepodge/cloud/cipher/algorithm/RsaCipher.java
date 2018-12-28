@@ -1,4 +1,4 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.crypto;
+package io.github.cd871127.hodgepodge.cloud.cipher.algorithm;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.configure.properties.CipherConfig;
 
@@ -9,9 +9,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-public class AesCipher extends AsymmetricCipher {
+public class RsaCipher extends AsymmetricCipher {
 
-    public AesCipher(CipherConfig cipherConfig) {
+    public RsaCipher(CipherConfig cipherConfig) {
         super(cipherConfig);
     }
 

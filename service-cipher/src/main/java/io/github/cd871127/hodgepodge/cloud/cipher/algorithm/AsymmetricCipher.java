@@ -1,7 +1,7 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.crypto;
+package io.github.cd871127.hodgepodge.cloud.cipher.algorithm;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.configure.properties.CipherConfig;
-import io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair.RsaKeyPair;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import lombok.Data;
 
 import javax.crypto.BadPaddingException;

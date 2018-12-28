@@ -27,7 +27,7 @@ python_public_key = "-----BEGIN PUBLIC KEY-----\n%s\n-----END PUBLIC KEY-----"
 
 public_key = RSA.importKey(python_public_key % publicKey)
 rsa_encoder = PKCS1_v1_5.new(public_key)
-text = 'nihao'
+text = 'ascii字符，肉眼不可理解'
 text = str(base64.b64encode(rsa_encoder.encrypt(text.encode(CHAR_SET))), CHAR_SET)
 
 print(text)

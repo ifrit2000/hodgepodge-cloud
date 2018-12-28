@@ -1,4 +1,4 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.crypto.keypair;
+package io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair;
 
 public interface CipherKeyPair<K, V> {
 
