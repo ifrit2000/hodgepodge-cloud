@@ -32,6 +32,7 @@ public class RsaService implements CipherService {
         if (StringUtils.isEmpty(keyId)) {
             //empty keyId
             rsaKeyPair = rsaCipher.getBase64KeyPair();
+            //TODO change keyId generate method
             keyId = UUID.randomUUID().toString().replaceAll("-", "");
             rsaKeyPair.setKeyId(keyId);
             if (0 == expire) {
