@@ -8,8 +8,17 @@ public class RsaKeyPair extends CipherKeyPair {
         setCipherAlgorithm(CipherAlgorithm.RSA);
     }
 
+    public RsaKeyPair(CipherKeyPair cipherKeyPair) {
+        setKeyId(cipherKeyPair.getKeyId());
+        setPrivateKey(cipherKeyPair.getPrivateKey());
+        setPublicKey(cipherKeyPair.getPublicKey());
+        setCipherAlgorithm(CipherAlgorithm.RSA);
+    }
+
     public RsaKeyPair(String publicKey, String privateKey) {
         super(publicKey, privateKey);
         setCipherAlgorithm(CipherAlgorithm.RSA);
     }
+
+
 }

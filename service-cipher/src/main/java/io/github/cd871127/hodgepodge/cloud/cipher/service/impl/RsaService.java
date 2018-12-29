@@ -44,7 +44,8 @@ public class RsaService implements CipherService {
             }
         } else {
             if (cipherKeyService.isKeyIdExists(keyId, CipherAlgorithm.RSA)) {
-                rsaKeyPair = (RsaKeyPair) cipherKeyService.selectKeyPairByKeyId(keyId);
+//                rsaKeyPair = (RsaKeyPair) cipherKeyService.selectKeyPairByKeyId(keyId);
+                rsaKeyPair = new RsaKeyPair(cipherKeyService.selectKeyPairByKeyId(keyId));
             } else {
                 rsaKeyPair = (RsaKeyPair) cipherKeyService.restoreCipherKeyPair(keyId);
                 if (rsaKeyPair == null) {

@@ -12,8 +12,8 @@ def build_http_request():
     return urllib3.PoolManager().connection_from_host(host="127.0.0.1", port=8082)
 
 
-def get_public_key():
-    response = build_http_request().request("get", '/rsa/publicKey')
+def get_public_key(expire=300):
+    response = build_http_request().request("get", '/rsa/publicKey?expire=' + str(expire))
     result = json.loads(response.data.decode())['data']
     return result['keyId'], result['publicKey']
 

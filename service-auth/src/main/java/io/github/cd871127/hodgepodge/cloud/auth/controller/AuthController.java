@@ -1,13 +1,17 @@
 package io.github.cd871127.hodgepodge.cloud.auth.controller;
 
+import io.github.cd871127.hodgepodge.cloud.auth.exception.UserExistException;
 import io.github.cd871127.hodgepodge.cloud.auth.mapper.AuthMapper;
 import io.github.cd871127.hodgepodge.cloud.auth.service.AuthService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
+import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
+import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+
+import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
 @RestController
 @RequestMapping("/auth")
@@ -16,18 +20,11 @@ public class AuthController {
     @Resource
     private AuthService authService;
 
-    @Resource
-    private AuthMapper authMapper;
 
-    @GetMapping("test")
-    public String test() {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setPassword("1");
-        userInfo.setUserId("1");
-        userInfo.setPasswordKeyId("1");
-        userInfo.setUsername("1");
-        authMapper.insertUserInfo(userInfo);
-        authMapper.updateUserInfo(userInfo);
-        return "ok";
+    @PostMapping("{userId}")
+    public ServerResponse<UserInfo> login(@PathVariable String userId, @RequestBody String password) throws ResponseException, UserExistException {
+        ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(authService.login(userId,password));
+        return serverResponse;
     }
 }

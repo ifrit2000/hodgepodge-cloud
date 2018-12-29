@@ -49,8 +49,8 @@ public class UserService {
     }
 
     public void changePassword(String userId, String newPassword, String oldPassword) throws ResponseException {
-        if (authService.verifyPassword(userId, oldPassword)) {
-
-        }
+//        if (authService.verifyPassword(userId, oldPassword)) {
+//
+//        }
     }
 }

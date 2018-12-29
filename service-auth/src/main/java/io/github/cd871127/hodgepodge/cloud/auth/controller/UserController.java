@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
+import java.util.Base64;
+
 import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_ERROR;
 import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_EXIST;
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.FAILED;
@@ -25,33 +27,13 @@ public class UserController {
     @Resource
     private UserService userService;
 
-//    @GetMapping("{userId}/{password}")
-//    public ServerResponse<UserInfo> login(@PathVariable String userId, @PathVariable String password) {
-//        UserInfo userInfo = new UserInfo();
-//        userInfo.setUserId(userId);
-//        userInfo.setPassword(password);
-//        UserInfo resultUserInfo = userService.login(userInfo);
-//        ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
-//        serverResponse.setData(resultUserInfo);
-//        return serverResponse;
-//    }
-
     @PostMapping("")
-    public ServerResponse<UserInfo> register(@RequestBody UserInfo userInfo) throws UserExistException {
+    public ServerResponse<UserInfo> register(@RequestBody UserInfo userInfo) throws UserExistException, ResponseException {
+        System.out.println(Base64.getDecoder().decode(userInfo.getPassword()));
         UserInfo resultUserInfo = userService.addUserInfo(userInfo);
         ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(resultUserInfo);
         return serverResponse;
-    }
-
-    @Resource
-    private CipherService cipherService;
-
-    @GetMapping("{test}")
-    public String test(@PathVariable String test) throws ResponseException {
-        System.out.println(cipherService.publicKey((long) 500));
-        System.out.println(cipherService.publicKey("2222"));
-        return null;
     }
 
     @PatchMapping("{userId}")
