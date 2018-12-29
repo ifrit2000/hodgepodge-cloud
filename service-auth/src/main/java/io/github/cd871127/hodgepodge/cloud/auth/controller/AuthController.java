@@ -3,12 +3,11 @@ package io.github.cd871127.hodgepodge.cloud.auth.controller;
 import io.github.cd871127.hodgepodge.cloud.auth.mapper.AuthMapper;
 import io.github.cd871127.hodgepodge.cloud.auth.service.AuthService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
-import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
-import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
 @RestController
 @RequestMapping("/auth")
@@ -16,8 +15,6 @@ public class AuthController {
 
     @Resource
     private AuthService authService;
-
-
 
     @Resource
     private AuthMapper authMapper;

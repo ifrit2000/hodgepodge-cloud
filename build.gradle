@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'com.bmuschko:gradle-docker-plugin:4.2.0'
     }
 }
 
@@ -48,6 +49,7 @@ allprojects {
 configure(subprojects.findAll { it.name.startsWith('service-') }) {
     apply plugin: 'org.springframework.boot'
     apply plugin: "io.spring.dependency-management"
+    apply plugin: 'com.bmuschko.docker-spring-boot-application'
 
     dependencyManagement {
         imports {
@@ -71,9 +73,17 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     }
 
-    bootJar {
-        rootSpec.exclude("**/config/*.properties", "**/config/*.yml")
+//    bootJar {
+//        rootSpec.exclude("**/config/*.properties", "**/config/*.yml")
+//    }
+    docker {
+        springBootApplication {
+            baseImage = 'cd871127/jdk11:0.0.1'
+            ports = [8080]
+            tag = "cd871127/hodgepodge-${project.name}:0.0.1"
+        }
     }
+
 }
 
 configure(subprojects.findAll { redisProjects.contains(it.name) }) {

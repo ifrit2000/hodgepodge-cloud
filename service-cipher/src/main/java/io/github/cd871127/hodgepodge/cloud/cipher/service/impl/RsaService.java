@@ -2,6 +2,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.service.impl;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.AsymmetricCipher;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.DataEntity;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherKeyService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -66,17 +68,20 @@ public class RsaService implements CipherService {
         return res;
     }
 
-    public byte[] encode(String keyId, byte[] data) throws KeyIdExpiredException, NoSuchAlgorithmException {
-        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId);
-        return rsaCipher.encode(data, rsaCipher.base64StringPublicKey(rsaKeyPair.getPublicKey()));
+    public byte[] encode(DataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
+        RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
+        return rsaCipher.encode(dataEntity.getBytes(), rsaCipher.base64StringPublicKey(rsaKeyPair.getPublicKey()));
 
     }
 
-    public byte[] decode(String keyId, byte[] data) throws KeyIdExpiredException, NoSuchAlgorithmException {
-        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId);
+    public byte[] decode(DataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
+        RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         PrivateKey privateKey = rsaCipher.base64StringToPrivateKey(rsaKeyPair.getPrivateKey());
-        return rsaCipher.decode(data, privateKey);
-//        return rsaEncipher.decode(data, rsaEncipher.base64StringToPrivateKey(rsaKeyPair.getPrivateKey()));
+        return rsaCipher.decode(dataEntity.getBytes(), privateKey);
+    }
+
+    public boolean compare(DataEntity dataEntity1, DataEntity dataEntity2) throws KeyIdExpiredException, NoSuchAlgorithmException {
+        return Arrays.equals(decode(dataEntity1), decode(dataEntity2));
     }
 
 }

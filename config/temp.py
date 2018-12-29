@@ -16,9 +16,8 @@ def deregister(consul_host='172.28.0.3', consul_port='8500'):
         res = r.data.decode('utf-8')
         services = json.loads(res)
         for k, v in services.items():
-            print(k)
-            print(v)
             http.request('put', 'http://172.28.0.3:8500/v1/agent/service/deregister/' + k)
+            print("deregister service:", k)
 
 
 deregister()

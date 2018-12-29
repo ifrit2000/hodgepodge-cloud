@@ -9,7 +9,7 @@ CHAR_SET = 'utf-8'
 
 
 def build_http_request():
-    return urllib3.PoolManager().connection_from_host(host="127.0.0.1", port=8080)
+    return urllib3.PoolManager().connection_from_host(host="127.0.0.1", port=8082)
 
 
 def get_public_key():

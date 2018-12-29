@@ -1,17 +1,17 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.controller;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CryptoString;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.DataEntity;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.CipherException;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.impl.RsaService;
+import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Map;
@@ -37,16 +37,21 @@ public class RsaController {
     }
 
     @PostMapping(value = {"decode"})
-    public ServerResponse<String> encode(@RequestBody CryptoString cryptoString, HttpServletRequest request) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
-
-        String keyId = cryptoString.getKeyId();
-        String data = cryptoString.getData();
-        if (StringUtils.isEmpty(keyId)) {
+    public ServerResponse<String> decode(@RequestBody DataEntity dataEntity) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
+        if (StringUtils.isEmpty(dataEntity.getKeyId())) {
             throw new InvalidKeyIdException("empty keyId");
         }
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        byte[] res = rsaService.decode(keyId, Base64.getDecoder().decode(data));
+        byte[] res = rsaService.decode(dataEntity);
         serverResponse.setData(Base64.getEncoder().encodeToString(res));
+        return serverResponse;
+    }
+
+    @PostMapping(value = "comparison")
+    public ServerResponse<Boolean> comparison(@RequestBody Pair<DataEntity, DataEntity> dataEntityPair) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
+        boolean result = rsaService.compare(dataEntityPair.getLeft(), dataEntityPair.getRight());
+        ServerResponse<Boolean> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(result);
         return serverResponse;
     }
 
