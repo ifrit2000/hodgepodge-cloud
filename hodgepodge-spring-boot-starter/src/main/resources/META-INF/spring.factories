@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   io.github.cd871127.hodgepodge.redis.RedisAutoConfiguration,\
   io.github.cd871127.hodgepodge.log.autoconfigure.ControllerLogAutoConfiguration,\
-  io.github.cd871127.hodgepodge.charset.CharsetAutoConfiguration
+  io.github.cd871127.hodgepodge.charset.CharsetAutoConfiguration,\
+  io.github.cd871127.hodgepodge.web.autoconfigure.ControllerAdviseAutoConfiguration

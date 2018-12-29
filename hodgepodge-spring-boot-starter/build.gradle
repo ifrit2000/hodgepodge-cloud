@@ -9,6 +9,7 @@ dependencyManagement {
 }
 
 dependencies {
+    compile project(":lib-core")
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
     compileOnly group: 'org.springframework.data', name: 'spring-data-redis'
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-aop'

@@ -1,5 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.auth.controller;
 
+import io.github.cd871127.hodgepodge.cloud.auth.mapper.AuthMapper;
 import io.github.cd871127.hodgepodge.cloud.auth.service.AuthService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
@@ -9,28 +10,27 @@ import javax.annotation.Resource;
 
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
-@RestController("/auth")
+@RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     @Resource
     private AuthService authService;
 
-    @GetMapping("user/{userId}/{password}")
-    public ServerResponse<UserInfo> login(@PathVariable String userId, @PathVariable String password) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(userId);
-        userInfo.setPassword(password);
-        UserInfo resultUserInfo = authService.login(userInfo);
-        ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        serverResponse.setData(resultUserInfo);
-        return serverResponse;
-    }
 
-    @PostMapping("user")
-    public ServerResponse register(@RequestBody UserInfo userInfo) {
-        UserInfo resultUserInfo = authService.register(userInfo);
-        ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        serverResponse.setData(resultUserInfo);
-        return serverResponse;
+
+    @Resource
+    private AuthMapper authMapper;
+
+    @GetMapping("test")
+    public String test() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setPassword("1");
+        userInfo.setUserId("1");
+        userInfo.setPasswordKeyId("1");
+        userInfo.setUsername("1");
+        authMapper.insertUserInfo(userInfo);
+        authMapper.updateUserInfo(userInfo);
+        return "ok";
     }
 }

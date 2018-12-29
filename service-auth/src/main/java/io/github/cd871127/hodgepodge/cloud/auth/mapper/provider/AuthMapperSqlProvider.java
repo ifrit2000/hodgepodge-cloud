@@ -4,7 +4,14 @@ import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import org.apache.ibatis.jdbc.SQL;
 
 public class AuthMapperSqlProvider {
-    String updateUserInfo(UserInfo userInfo) {
-        return new SQL().UPDATE("").SET("a").toString();
+
+    private int a = 0;
+
+    public String updateUserInfo(UserInfo userInfo) {
+        return new SQL() {{
+            UPDATE("USER_INFO");
+            SET("USER_ID=#{userId}", "USERNAME=#{username}");
+            WHERE("1=1", "2=2");
+        }}.toString();
     }
 }
