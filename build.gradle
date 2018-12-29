@@ -19,7 +19,7 @@ String[] consulProjects = ['service-safe-box', 'service-auth',
                            'service-gateway']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-auth', 'service-cipher']
-String[] webProjects = ['service-cipher','service-auth']
+String[] webProjects = ['service-cipher', 'service-auth']
 String[] testProjects = ['service-test']
 
 //所有子项目配置

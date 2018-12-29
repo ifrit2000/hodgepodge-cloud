@@ -1,5 +1,3 @@
-import urllib3
-
 from t66yspider import T66ySpider
 
 if __name__ == "__main__":

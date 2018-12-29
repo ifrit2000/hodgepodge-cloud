@@ -1,5 +1,3 @@
-
-
 class Crawler(object):
 
     def get(self):

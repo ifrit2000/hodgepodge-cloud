@@ -24,5 +24,5 @@ class T66ySpider(object):
 
 if __name__ == "__main__":
     spider = T66ySpider()
-    spider2=T66ySpider(urllib3.PoolManager())
+    spider2 = T66ySpider(urllib3.PoolManager())
     spider2.get()

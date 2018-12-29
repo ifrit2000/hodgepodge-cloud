@@ -38,22 +38,22 @@ Content-Type: application/json;charset=UTF-8
 
 
 {
-    "ID": "my-service-id",
-    "Name": "my-service-name",
-    "Tags": [
-        "release=1",
-        "mytag=xyz"
-    ],
-    "Address": "192.168.1.1",
-    "Port": 8000,
-    "Meta": {
-        "my_version": "4.0"
-    },
-    "EnableTagOverride": false,
-    "Check": {
-        "DeregisterCriticalServiceAfter": "90m",
-        "HTTP": "http://yjmyzz.cnblogs.com/",
-        "Interval": "10s"
-    }
+  "ID": "my-service-id",
+  "Name": "my-service-name",
+  "Tags": [
+    "release=1",
+    "mytag=xyz"
+  ],
+  "Address": "192.168.1.1",
+  "Port": 8000,
+  "Meta": {
+    "my_version": "4.0"
+  },
+  "EnableTagOverride": false,
+  "Check": {
+    "DeregisterCriticalServiceAfter": "90m",
+    "HTTP": "http://yjmyzz.cnblogs.com/",
+    "Interval": "10s"
+  }
 }
 
