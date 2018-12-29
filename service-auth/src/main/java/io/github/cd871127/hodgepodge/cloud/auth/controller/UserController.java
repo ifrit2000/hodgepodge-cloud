@@ -29,7 +29,6 @@ public class UserController {
 
     @PostMapping("")
     public ServerResponse<UserInfo> register(@RequestBody UserInfo userInfo) throws UserExistException, ResponseException {
-        System.out.println(Base64.getDecoder().decode(userInfo.getPassword()));
         UserInfo resultUserInfo = userService.addUserInfo(userInfo);
         ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(resultUserInfo);

@@ -1,6 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.auth.exception;
 
-public class UserException extends Exception {
+public class UserException extends AuthException {
     public UserException() {
     }
 

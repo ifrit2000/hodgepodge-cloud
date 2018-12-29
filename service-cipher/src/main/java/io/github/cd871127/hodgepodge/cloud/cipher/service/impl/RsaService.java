@@ -61,6 +61,7 @@ public class RsaService implements CipherService {
         return getRsaKeyPair(keyId, 0L);
     }
 
+    @Override
     public Map<String, String> getPublicKey(String keyId, Long expire) throws NoSuchAlgorithmException, KeyIdExpiredException {
         RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId, expire);
         Map<String, String> res = new HashMap<>();
@@ -69,12 +70,14 @@ public class RsaService implements CipherService {
         return res;
     }
 
+    @Override
     public byte[] encode(CipherDataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
         RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         return rsaCipher.encode(dataEntity.getBytes(), rsaCipher.base64StringPublicKey(rsaKeyPair.getPublicKey()));
 
     }
 
+    @Override
     public byte[] decode(CipherDataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
         RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         PrivateKey privateKey = rsaCipher.base64StringToPrivateKey(rsaKeyPair.getPrivateKey());

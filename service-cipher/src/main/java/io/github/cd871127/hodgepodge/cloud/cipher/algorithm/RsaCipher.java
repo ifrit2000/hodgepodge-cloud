@@ -15,6 +15,7 @@ public class RsaCipher extends AsymmetricCipher {
         super(cipherConfig);
     }
 
+    @Override
     protected Key base64StringToKey(KeySpec keySpec) {
         Key key;
         try {
@@ -33,10 +34,12 @@ public class RsaCipher extends AsymmetricCipher {
         return key;
     }
 
+    @Override
     public PublicKey base64StringPublicKey(String publicKeyStr) {
         return (PublicKey) base64StringToKey(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyStr)));
     }
 
+    @Override
     public PrivateKey base64StringToPrivateKey(String privateKeyStr) {
         return (PrivateKey) base64StringToKey(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyStr)));
     }

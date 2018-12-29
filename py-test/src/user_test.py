@@ -13,7 +13,7 @@ def register():
     request = urllib3.PoolManager().connection_from_host(host="127.0.0.1", port=8080)
 
     user_info = {
-        "userId": "aaaa1",
+        "userId": "test03",
         "username": "博客园",
         "password": password,
         "passwordKeyId": key_id,
@@ -32,11 +32,11 @@ def register():
 
 def login(user_id, password):
     request = urllib3.PoolManager().connection_from_host(host="127.0.0.1", port=8080)
-    request.request("POST","/auth/"+user_id,body=json.dumps(password),
+    request.request("POST","/auth/"+user_id,body=password,
                     headers={'Content-Type': 'application/json'})
 
 
-login("aaaa1",
-      "KkEj2Ddcpm4zrr/y8GQsOc4TI2+HJ+G8w0cyW4Wdjli5sGgk3Ta6xHZm+ER3TiTn11jDOCIX+FwsUx6vlM/IbqWGGIczV9Jc+LGg50iCNaxLYSSFBT5uWkCG118vdbjne5Q2lbZUcLLIL0KjT/53m4HhMa84l+XmyXQdhNLsLku2WkoBYMpR18CvEkJmFIY/hpshfnvctH3Nnhak4F0mw2tZLRTWpPuR8AiS0eVtjfy5zrzutd6/rO3Ov4Mj4CcZM8A9QtMXVkA84kGaqdJiicR2VfixxEHai0w/NUBe0/ln25JlaZ1wEoBJE09FIYtVhKGkKpLoaOKPjs6mqu2ECg==")
+login("test03",
+     "akrwZt/hhxmComK9yMQWxzDsgD3PmAcM32Y/6IFSXW4krY/kdJKTKzWNNpXQ4nowcbsWytO5GLu9o0nd0ivY9U/mYVPxlgQxIhYrsXjIt0lHtZWOiRflXXNZ0/o9krc7Hhz91of1R2UfRvqvjRbxDNWfih+/HRYpI0IMil85p3DAW74RLvLDW31MOxDSkH4pKHvyxthC7MGU1ammmZedhwbYvA1X8Kw50AE1t9UK/OnIEAVNwuEWwoIUPUJiA2WdGccCYwjkr3kQxbTghL7cNieitEWA1ddFz9kiGYN64uvDrYIg2+9CIv8JchQid14af5MY1E2jA8/4lbHzjyjA8g==")
 
 # register()
