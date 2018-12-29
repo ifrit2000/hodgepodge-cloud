@@ -2,7 +2,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.service.impl;
 
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.AsymmetricCipher;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.DataEntity;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherKeyService;
@@ -68,19 +68,19 @@ public class RsaService implements CipherService {
         return res;
     }
 
-    public byte[] encode(DataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
+    public byte[] encode(CipherDataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
         RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         return rsaCipher.encode(dataEntity.getBytes(), rsaCipher.base64StringPublicKey(rsaKeyPair.getPublicKey()));
 
     }
 
-    public byte[] decode(DataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
+    public byte[] decode(CipherDataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
         RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         PrivateKey privateKey = rsaCipher.base64StringToPrivateKey(rsaKeyPair.getPrivateKey());
         return rsaCipher.decode(dataEntity.getBytes(), privateKey);
     }
 
-    public boolean compare(DataEntity dataEntity1, DataEntity dataEntity2) throws KeyIdExpiredException, NoSuchAlgorithmException {
+    public boolean compare(CipherDataEntity dataEntity1, CipherDataEntity dataEntity2) throws KeyIdExpiredException, NoSuchAlgorithmException {
         return Arrays.equals(decode(dataEntity1), decode(dataEntity2));
     }
 

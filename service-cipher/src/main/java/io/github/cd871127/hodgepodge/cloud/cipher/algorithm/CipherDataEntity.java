@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Base64;
 
 @Data
-public class DataEntity {
+public class CipherDataEntity {
 
     private String keyId;
     /**

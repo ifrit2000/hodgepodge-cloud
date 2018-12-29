@@ -1,6 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.controller;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.DataEntity;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.CipherException;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
@@ -37,7 +37,7 @@ public class RsaController {
     }
 
     @PostMapping(value = {"decode"})
-    public ServerResponse<String> decode(@RequestBody DataEntity dataEntity) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
+    public ServerResponse<String> decode(@RequestBody CipherDataEntity dataEntity) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
         if (StringUtils.isEmpty(dataEntity.getKeyId())) {
             throw new InvalidKeyIdException("empty keyId");
         }
@@ -48,7 +48,7 @@ public class RsaController {
     }
 
     @PostMapping(value = "comparison")
-    public ServerResponse<Boolean> comparison(@RequestBody Pair<DataEntity, DataEntity> dataEntityPair) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
+    public ServerResponse<Boolean> comparison(@RequestBody Pair<CipherDataEntity, CipherDataEntity> dataEntityPair) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
         boolean result = rsaService.compare(dataEntityPair.getLeft(), dataEntityPair.getRight());
         ServerResponse<Boolean> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(result);

@@ -31,7 +31,8 @@ public class UserService {
             throw new UserExistException();
         } else {
             assert userInfo.getUserId() != null;
-            cipherService.publicKey(0L);
+            Map<String, String> publicKeyMap = cipherService.publicKey(0L);
+            userInfo.setPasswordKeyId(publicKeyMap.get("keyId"));
             userMapper.insertUserInfo(userInfo);
             redisTemplate.opsForSet().add(USER_ID_REDIS_KEY, userInfo.getUserId());
         }
@@ -47,7 +48,7 @@ public class UserService {
         redisTemplate.opsForSet().add(USER_ID_REDIS_KEY, userIdList.toArray(new String[0]));
     }
 
-    public void changePassword(String userId, String newPassword, String oldPassword) {
+    public void changePassword(String userId, String newPassword, String oldPassword) throws ResponseException {
         if (authService.verifyPassword(userId, oldPassword)) {
 
         }

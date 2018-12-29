@@ -1,6 +1,7 @@
 package io.github.cd871127.hodgepodge.cloud.auth.service;
 
 import io.github.cd871127.hodgepodge.cloud.auth.client.CipherClient;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseHandler;
@@ -18,8 +19,8 @@ public class CipherService {
         return ResponseHandler.handleResponse(cipherClient.publicKey(expire));
     }
 
-    public Boolean comparison(Map<String, String> data1, Map<String, String> data2) throws ResponseException {
-        Pair<Map<String, String>, Map<String, String>> pair = new Pair<>();
+    public Boolean comparison(CipherDataEntity data1, CipherDataEntity data2) throws ResponseException {
+        Pair<CipherDataEntity, CipherDataEntity> pair = new Pair<>();
         pair.setLeft(data1);
         pair.setRight(data2);
         return ResponseHandler.handleResponse(cipherClient.comparison(pair));

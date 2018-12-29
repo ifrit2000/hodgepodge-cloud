@@ -2,6 +2,7 @@ package io.github.cd871127.hodgepodge.cloud.auth.service;
 
 import io.github.cd871127.hodgepodge.cloud.auth.mapper.AuthMapper;
 import io.github.cd871127.hodgepodge.cloud.auth.mapper.UserMapper;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,8 @@ public class AuthService {
     public boolean verifyPassword(String userId, String password) throws ResponseException {
         UserInfo userInfo = userMapper.selectSingleUserInfo(userId);
         String keyId = userInfo.getPasswordKeyId();
-        Map<String, String> passwordMap1 = new HashMap<>();
-        passwordMap1.put("keyId", keyId);
-        passwordMap1.put("data", password);
-        Map<String, String> passwordMap2 = new HashMap<>();
-        passwordMap2.put("keyId", userInfo.getPassword());
-        return cipherService.comparison(passwordMap1, passwordMap2);
+        CipherDataEntity data1 = new CipherDataEntity(keyId, password);
+        CipherDataEntity data2 = new CipherDataEntity(keyId, userInfo.getPassword());
+        return cipherService.comparison(data1, data2);
     }
 }
