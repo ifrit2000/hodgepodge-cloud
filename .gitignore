@@ -8,5 +8,6 @@ build/
 *.tar.gz
 *.jar
 config/git*.log
+*/__pycache__/
 
 
