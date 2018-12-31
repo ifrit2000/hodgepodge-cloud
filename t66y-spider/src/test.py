@@ -6,7 +6,6 @@ import parser
 def get_html(url):
     pool_manager = PoolManager()
     headers = {
-        "Host": "www.t66y.com",
         "Connection": "keep-alive",
         "Cache-Control": "max-age=0",
         "Upgrade-Insecure-Requests": 1,
