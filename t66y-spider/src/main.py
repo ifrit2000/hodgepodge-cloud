@@ -13,8 +13,10 @@ def long_time_task(name):
     end = time.time()
     print('Task %s runs %0.2f seconds.' % (name, (end - start)))
 
-def test(url):
-    spider.Spider().run(url)
+
+def err():
+    print("111")
+
 
 if __name__ == '__main__':
     # print('Parent process %s.' % os.getpid())
@@ -26,7 +28,9 @@ if __name__ == '__main__':
     # p.join()
     # print('All subprocesses done.')
     p = Pool(2)
+
     for i in [2, 3]:
-        p.apply_async(test, args=("http://t66y.com/thread0806.php?fid=15&search=&page=%s" % i,))
+        a = spider.Spider()
+        p.apply_async(a.test, args=(("http://t66y.com/thread0806.php?fid=15&search=&page=%s" % i),))
     p.close()
     p.join()

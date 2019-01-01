@@ -1,6 +1,11 @@
+from urllib3 import PoolManager
+
+
 class HttpConnection(object):
 
-    def __init__(self, http_con_pool):
+    def __init__(self, http_con_pool=None):
+        if http_con_pool is None:
+            http_con_pool = PoolManager(10)
         self.__http_con_pool = http_con_pool
         self.__headers = {
             "Connection": "keep-alive",

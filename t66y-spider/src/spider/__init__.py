@@ -10,7 +10,10 @@ from parser import Parser
 class Spider(object):
 
     def __init__(self):
-        self.__connection = HttpConnection(PoolManager(10))
+        self.__connection = HttpConnection()
+
+    def test(self, url):
+        self.run(url)
 
     def run(self, page_url):
         topic_list = self.__topic_list(page_url)
