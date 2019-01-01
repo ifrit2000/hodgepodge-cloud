@@ -1,48 +1,58 @@
-import pymysql
-
-
 class MySql(object):
 
-    def __init__(self, host="172.28.0.4", user="appopr", password="123456", database="service_cipher"
-                 , use_unicode=True, charset='utf8', cursorclass=pymysql.cursors.DictCursor):
-        self.__host = host
-        self.__user = user
-        self.__password = password
-        self.__database = database
-        self.__use_unicode = use_unicode
-        self.__charset = charset
-        self.__cursorclass = cursorclass
-        self.__db = pymysql.connect(host=self.__host, user=self.__user, password=self.__password,
-                                    database=self.__database
-                                    , use_unicode=self.__use_unicode, charset=self.__charset,
-                                    cursorclass=self.__cursorclass)
+    def __init__(self, connection=None):
+        self.__connection = connection
 
-    def insert(self):
-        cursor = self.__db.cursor()
-        cursor.execute("select * from t66y.FORUM_POSTS")
-        data = cursor.fetchall()
+    @property
+    def connection(self):
+        return self.__connection
+
+    @connection.setter
+    def connection(self, connection):
+        self.__connection = connection
+
+    def insert_topic(self, topics=None):
+        if topics is None:
+            return None
+        cursor = self.__connection.cursor()
+        topic_sql_template = """insert into t66y.TOPIC_INFO(TOPIC_URL, TOPIC_AREA, TOPIC_TITLE) 
+        VALUES('%s','%s','%s')"""
+        images_sql_template = """insert into t66y.IMAGE_INFO(TOPIC_URL, IMAGE_URL) 
+        VALUE %s"""
+        torrent_sql_template = """insert into t66y.TORRENT_INFO(TOPIC_URL, TORRENT_URL, TORRENT_HASH) 
+        VALUE %s"""
+
+        for topic in topics:
+            cursor.execute(topic_sql_template % (topic.url, topic.area, topic.title))
+            image_value = ""
+            for image in topic.images:
+                image_value = image_value + "('%s','%s')," % (topic.url, image)
+            if image_value != "":
+                sql = (images_sql_template % image_value).rstrip(",")
+                cursor.execute(sql)
+
+            torrent_value = ""
+            for torrent_link in topic.torrent_links:
+                torrent_hash = torrent_link[torrent_link.find("hash=") + len("hash="):]
+                torrent_value = torrent_value + "('%s','%s','%s')," % (topic.url, torrent_link, torrent_hash)
+            if torrent_value != "":
+                sql = (torrent_sql_template % torrent_value).rstrip(",")
+                cursor.execute(sql)
+
+        self.__connection.commit()
         cursor.close()
-        return data
-
-    def update(self, sql):
-        self.__write(sql)
-
-    def delete(self, sql):
-        self.__write(sql)
-
-    def select(self, sql):
-        cursor = self.__db.cursor()
-        cursor.execute(sql)
-        data = cursor.fetchall()
-        cursor.close()
-        return data
-
-    def __write(self, sql):
-        cursor = self.__db.cursor()
-        res = cursor.execute(sql)
-        self.__db.commit()
-        cursor.close()
-        return res
 
     def close(self):
-        self.__db.close()
+        self.__connection.close()
+
+
+if __name__ == '__main__':
+    # mysql = MySql()
+    # sql = "insert into t66y.TOPIC_INFO(TOPIC_URL, TOPIC_PARTITION, TOPIC_TITLE) VALUE ('222','33','22')"
+    #
+    # mysql.insert(sql)
+    # mysql.close()
+    a = "http://www.rmdown.com/link.php?hash=1835b7f877f818f7122971610ac212649323ae65506"
+    c = a[a.find("has1h=") + len("has1h="):]
+    print(c)
+    print(a)

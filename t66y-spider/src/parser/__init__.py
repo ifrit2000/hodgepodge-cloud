@@ -34,11 +34,24 @@ class Parser(object):
 
 class Topic(object):
 
-    def __init__(self, url=None, title=None, images=None, torrent_links=None):
+    def __init__(self, url="", title="", area="", images=None, torrent_links=None):
         self.__url = url
         self.__title = title
+        if images is None:
+            images = []
         self.__images = images
+        if torrent_links is None:
+            torrent_links = []
         self.__torrent_links = torrent_links
+        self.__area = area
+
+    @property
+    def area(self):
+        return self.__area
+
+    @area.setter
+    def area(self, area):
+        self.__area = area
 
     @property
     def url(self):
