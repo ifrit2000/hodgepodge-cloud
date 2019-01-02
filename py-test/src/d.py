@@ -24,7 +24,6 @@ class Daemon:
         self.stdin = stdin
         self.stdout = stdout
         self.stderr = stderr
-        # self.logger = logging.getLogger()
 
     def daemonize(self):
         try:

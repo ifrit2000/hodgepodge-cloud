@@ -5,9 +5,7 @@ import os
 import signal
 import sys
 import time
-from logging import *
 
-logyyx = Logger('tsl.log', DEBUG)
 
 
 def test():
@@ -18,24 +16,23 @@ def test():
 
 
 class Daemon:
-    def __init__(self, pidFile='test.pid', stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
-        self.pidFile = pidFile
+    def __init__(self, pid_file='test.pid', stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
+        self.__pid_file = pid_file
+        self.__stdin = stdin
+        self.__stdout = stdout
+        self.__stderr = stderr
 
-        self.stdin = stdin
-        self.stdout = stdout
-        self.stderr = stderr
 
     def daemonize(self):
         try:
             # 第一次fork，生成子进程，脱离父进程
             if os.fork() > 0:
-                print(os.getpid())
                 raise SystemExit(0)  # 退出主进程
         except OSError as e:
             logyyx.error("fork #1 failed:\n")
             # sys.exit(1)
             raise RuntimeError('fork #1 faild: {0} ({1})\n'.format(e.errno, e.strerror))
-        os.chdir("/home/anthony/test")  # 修改工作目录
+        os.chdir("/")  # 修改工作目录
         os.setsid()  # 设置新的会话连接
         os.umask(0)  # 重新设置文件创建权限
         try:
@@ -52,25 +49,25 @@ class Daemon:
         sys.stderr.flush()
 
         # Replace file descriptors for stdin, stdout, and stderr
-        with open(self.stdin, 'rb', 0) as f:
+        with open(self.__stdin, 'rb', 0) as f:
             os.dup2(f.fileno(), sys.stdin.fileno())
-        with open(self.stdout, 'ab', 0) as f:
+        with open(self.__stdout, 'ab', 0) as f:
             os.dup2(f.fileno(), sys.stdout.fileno())
-        with open(self.stderr, 'ab', 0) as f:
+        with open(self.__stderr, 'ab', 0) as f:
             os.dup2(f.fileno(), sys.stderr.fileno())
         # Write the PID file
-        with open(self.pidFile, 'w') as f:
+        with open(self.__pid_file, 'w') as f:
             print(os.getpid(), file=f)
 
         # Arrange to have the PID file removed on exit/signal
-        atexit.register(lambda: os.remove(self.pidFile))
+        atexit.register(lambda: os.remove(self.__pid_file))
 
         signal.signal(signal.SIGTERM, self.__sigterm_handler)
-        signal.signal(signal.SIGCHLD, self.wait_child)
+        signal.signal(signal.SIGCHLD, self.__wait_child)
         return
 
     @staticmethod
-    def wait_child(signum, frame):
+    def __wait_child(signum, frame):
         logyyx.info('receive SIGCHLD')
         try:
             while True:
@@ -94,7 +91,7 @@ class Daemon:
         raise SystemExit(1)
 
     def start(self):
-        if os.path.exists(self.pidFile):
+        if os.path.exists(self.__pid_file):
             print("the deamon is already running!!!")
             return
         try:
@@ -102,7 +99,6 @@ class Daemon:
         except RuntimeError as e:
             print(e, file=sys.stderr)
             raise SystemExit(1)
-
         self.run()
 
     def run(self):
