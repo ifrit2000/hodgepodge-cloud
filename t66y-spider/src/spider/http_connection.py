@@ -31,3 +31,5 @@ class HttpConnection(object):
     @http_con_pool.setter
     def http_con_pool(self, http_con_pool):
         self.__http_con_pool = http_con_pool
+
+

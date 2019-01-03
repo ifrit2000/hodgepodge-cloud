@@ -44,3 +44,24 @@ services:
       - MYSQL_ROOT_PASSWORD=123456
     volumes:
       - /home/anthony/dockerVolume/dev/mysql:/var/lib/mysql
+
+  mongo:
+    container_name: dev-mongo
+    image: 'mongo:4.0.5'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.5
+    #    command: ['']
+    volumes:
+      - /home/anthony/dockerVolume/dev/mongo/db:/data/db
+      - /home/anthony/dockerVolume/dev/mongo/configdb:/data/configdb
+
+  rabbitmq:
+    container_name: dev-rabbitmq
+    image: 'rabbitmq:3.7.8-management'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.6
+    #    command: ['']
+    volumes:
+      - /home/anthony/dockerVolume/dev/rabbitmq:/var/lib/rabbitmq

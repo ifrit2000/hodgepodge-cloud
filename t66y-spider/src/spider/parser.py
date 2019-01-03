@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 
 
@@ -84,3 +86,18 @@ class Topic(object):
     @torrent_links.setter
     def torrent_links(self, torrent_links):
         self.__torrent_links = torrent_links
+
+    def to_dict(self):
+        return {"title": self.title, "url": self.url, "area": self.area,
+                "images": self.images, "torrent_links": self.torrent_links}
+
+    @staticmethod
+    def from_json(json_str):
+        json_obj = json.loads(json_str)
+        topic = Topic()
+        topic.title = json_obj["title"]
+        topic.url = json_obj["url"]
+        topic.area = json_obj["area"]
+        topic.images = json_obj["images"]
+        topic.torrent_links = json_obj["torrent_links"]
+        return topic
