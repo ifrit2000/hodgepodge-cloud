@@ -6,33 +6,48 @@ import signal
 import sys
 import time
 
+from spider.logger import get_logger
 
 
 def test():
     f = open("12", "a")
-    f.write("123")
+    f.write("123\n")
     f.close()
     return
 
 
 class Daemon:
-    def __init__(self, pid_file='test.pid', stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
-        self.__pid_file = pid_file
+    __work_dir = '/tmp/spider'
+    __logger = get_logger(logger_name="daemon", filename="daemon.log")
+
+    def __init__(self, pid_file='spider.pid', stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
+        self.__pid_file = os.path.join(Daemon.work_dir(), pid_file)
         self.__stdin = stdin
         self.__stdout = stdout
         self.__stderr = stderr
 
+        # create work dir
+        if not os.path.exists(Daemon.work_dir()):
+            os.mkdir(Daemon.work_dir())
 
-    def daemonize(self):
+    @staticmethod
+    def logger():
+        return Daemon.__logger
+
+    @staticmethod
+    def work_dir():
+        return Daemon.__work_dir
+
+    def __daemon(self):
         try:
             # 第一次fork，生成子进程，脱离父进程
             if os.fork() > 0:
                 raise SystemExit(0)  # 退出主进程
         except OSError as e:
-            logyyx.error("fork #1 failed:\n")
+            self.__logger.error("fork #1 failed:\n")
             # sys.exit(1)
             raise RuntimeError('fork #1 faild: {0} ({1})\n'.format(e.errno, e.strerror))
-        os.chdir("/")  # 修改工作目录
+        os.chdir(Daemon.work_dir())  # 修改工作目录
         os.setsid()  # 设置新的会话连接
         os.umask(0)  # 重新设置文件创建权限
         try:
@@ -40,7 +55,7 @@ class Daemon:
             if os.fork() > 0:
                 raise SystemExit(0)
         except OSError as e:
-            logyyx.error("fork #2 failed:\n")
+            self.__logger.error("fork #2 failed:\n")
             # sys.exit(1)
             raise RuntimeError('fork #2 faild: {0} ({1})\n'.format(e.errno, e.strerror))
 
@@ -67,82 +82,67 @@ class Daemon:
         return
 
     @staticmethod
-    def __wait_child(signum, frame):
-        logyyx.info('receive SIGCHLD')
+    def __wait_child(sig_no, frame):
+        Daemon.logger().info('receive SIGCHLD')
         try:
             while True:
+                Daemon.logger().info('__wait_child')
                 # -1 表示任意子进程
                 # os.WNOHANG 表示如果没有可用的需要 wait 退出状态的子进程，立即返回不阻塞
-                cpid, status = os.waitpid(-1, os.WNOHANG)
-                if cpid == 0:
-                    logyyx.info('no child process was immediately available')
+                c_pid, status = os.waitpid(-1, os.WNOHANG)
+                if c_pid == 0:
+                    Daemon.logger().info('no child process was immediately available')
                     break
                 exitcode = status >> 8
-                logyyx.info('child process %s exit with exitcode %s', cpid, exitcode)
+                Daemon.logger().info('child process %s exit with exitcode %s', c_pid, exitcode)
         except OSError as e:
             if e.errno == errno.ECHILD:
-                logyyx.error('current process has no existing unwaited-for child processes.')
+                Daemon.logger().error(e)
+                Daemon.logger().error('current process has no existing unwaited-for child processes.')
             else:
+                Daemon.logger().error("unknown error")
                 raise
-        logyyx.info('handle SIGCHLD end')
+        Daemon.logger().info('handle SIGCHLD end')
 
     @staticmethod
-    def __sigterm_handler(signo, frame):
+    def __sigterm_handler(sig_no, frame):
+        Daemon.logger().info('end')
         raise SystemExit(1)
 
     def start(self):
         if os.path.exists(self.__pid_file):
-            print("the deamon is already running!!!")
+            Daemon.logger().error("the deamon is already running!!!")
             return
         try:
-            self.daemonize()
+            self.__daemon()
         except RuntimeError as e:
-            print(e, file=sys.stderr)
+            Daemon.logger().error(e, file=sys.stderr)
             raise SystemExit(1)
         self.run()
 
     def run(self):
+        Daemon.logger().info("start")
         while True:
             try:
                 p = multiprocessing.Pool(1)
                 p.apply(test)
                 p.close()
-
-            except:
-                pass
-            time.sleep(10)
+            except Exception as e:
+                Daemon.logger().error(e, file=sys.stderr)
+            time.sleep(1)
 
     def stop(self):
         try:
-            if os.path.exists(self.pidFile):
-                with open(self.pidFile) as f:
+            if os.path.exists(self.__pid_file):
+                with open(self.__pid_file) as f:
                     os.kill(int(f.read()), signal.SIGTERM)
             else:
-                print('Not running.', file=sys.stderr)
+                Daemon.logger().info('Not running.', file=sys.stderr)
                 raise SystemExit(1)
         except OSError as e:
-            if 'No such process' in str(e) and os.path.exists(self.pidFile):
-                os.remove(self.pidFile)
+            if 'No such process' in str(e) and os.path.exists(self.__pid_file):
+                os.remove(self.__pid_file)
 
     def restart(self):
         self.stop()
         self.start()
-
-
-if __name__ == "__main__":
-    LOG = './tsl.log'
-    daemon = Daemon(stdout=LOG, stderr=LOG)
-
-    # daemon.start()
-    if len(sys.argv) != 2:
-        print('Usage: {} [start|stop]'.format(sys.argv[0]))
-        raise SystemExit(1)
-    if 'start' == sys.argv[1]:
-        daemon.start()
-    elif 'stop' == sys.argv[1]:
-        daemon.stop()
-    elif 'restart' == sys.argv[1]:
-        daemon.restart()
-    else:
-        print('Unknown command {0}'.format(sys.argv[1]))
-        raise SystemExit(1)
