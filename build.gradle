@@ -64,6 +64,8 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 //        compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
 //    }
 
+
+
     dependencies {
         compile project(":lib-core")
         compile group: 'org.springframework.boot', name: 'spring-boot-devtools'

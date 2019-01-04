@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class CipherApplication implements ApplicationRunner {
     public static void main(String[] args) {
+        System.out.println(System.getProperty("java.class.path"));
         SpringApplication.run(CipherApplication.class, args);
     }
 

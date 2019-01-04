@@ -3,3 +3,6 @@ spring:
     consul:
       host: 172.28.0.3
       port: 8500
+logging:
+  config: config/logback-spring.xml
+  path: logs

@@ -3,7 +3,7 @@ spring:
     name: service-cipher
   profiles:
     include: mybatis,redis,consul
-    active: dev,local
+    active: dev
   #  main:
   #    allow-bean-definition-overriding: true
   cloud:
@@ -24,6 +24,7 @@ management:
       enabled: true
     health:
       show-details: always
+
 
 
 
