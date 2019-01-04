@@ -76,16 +76,11 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 //    bootJar {
 //        rootSpec.exclude("**/config/*.properties", "**/config/*.yml")
 //    }
-    ext {
-        pdir = project.buildDir
-        jarName = bootJar.archiveName
-        version1 = project.version
-        projectName = project.name
-    }
 
-    task createDockerfile(type: Dockerfile, dependsOn: bootJar, group: "docker") {
-        destFile = project.file("${project.buildDir}/libs/Dockerfile")
-        doFirst {
+    project.afterEvaluate {
+        task createDockerfile(type: Dockerfile, dependsOn: bootJar, group: "docker") {
+            destFile = project.file("${project.buildDir}/libs/Dockerfile")
+
             from "${dockerJdkImage}"
             runCommand("groupadd -r app && useradd -r -g app app")
             runCommand("mkdir -p /app/config && mkdir -p /app/logs")
@@ -97,28 +92,30 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
             exposePort(8080)
 //        defaultCommand("sh", "-c", "java \$DUIC_OPTS -jar $jarName")
             entryPoint("java", "-jar", "${bootJar.archiveName}")
+
         }
-    }
 
-    task buildImage(type: DockerBuildImage, dependsOn: createDockerfile, group: "docker") {
-        tags.add("cd871127/${project.name}:${project.version}")
-        remove = true
-        description 'Executes bootRepackage, generates a docker file and builds image from it'
-        inputDir = createDockerfile.destFile.get().asFile.parentFile
-    }
+        task buildImage(type: DockerBuildImage, dependsOn: createDockerfile, group: "docker") {
+            tags.add("cd871127/${project.name}:${project.version}")
+            remove = true
+            description 'Executes bootRepackage, generates a docker file and builds image from it'
+            inputDir = createDockerfile.destFile.get().asFile.parentFile
+        }
 
-    task removeAppImage(type: DockerRemoveImage, group: 'Docker') {
-        description 'Remove the docker image using force'
-        force = true
-        targetImageId { "cd871127/${project.name}:${project.version}" }
-        onError { exception ->
-            if (exception.message.contains('No such image')) {
-                println "Docker image: cd871127/${project.name}:${project.version} not found."
-            } else {
-                print exception
+        task removeAppImage(type: DockerRemoveImage, group: 'Docker') {
+            description 'Remove the docker image using force'
+            force = true
+            targetImageId { "cd871127/${project.name}:${project.version}" }
+            onError { exception ->
+                if (exception.message.contains('No such image')) {
+                    println "Docker image: cd871127/${project.name}:${project.version} not found."
+                } else {
+                    print exception
+                }
             }
         }
     }
+
 }
 
 configure(subprojects.findAll { redisProjects.contains(it.name) }) {
