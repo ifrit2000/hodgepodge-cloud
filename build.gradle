@@ -115,7 +115,6 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
             }
         }
     }
-
 }
 
 configure(subprojects.findAll { redisProjects.contains(it.name) }) {
