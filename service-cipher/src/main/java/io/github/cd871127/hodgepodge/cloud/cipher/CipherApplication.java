@@ -11,13 +11,15 @@ import org.springframework.core.annotation.Order;
 
 import javax.annotation.Resource;
 
+/**
+ * @author anthony
+ */
 @SpringBootApplication
 @EnableDiscoveryClient
 @Order(2)
 @Slf4j
 public class CipherApplication implements ApplicationRunner {
     public static void main(String[] args) {
-        System.out.println(System.getProperty("java.class.path"));
         SpringApplication.run(CipherApplication.class, args);
     }
 
