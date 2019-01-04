@@ -65,3 +65,14 @@ services:
     #    command: ['']
     volumes:
       - /home/anthony/dockerVolume/dev/rabbitmq:/var/lib/rabbitmq
+
+  service-cipher:
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    container_name: service-cipher
+    image: 'cd871127/service-cipher:0.0.1'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.9
