@@ -1,0 +1,7 @@
+cipher:
+  rsa:
+    key-length: 2048
+    key-algorithm: RSA
+    algorithm: RSA/ECB/PKCS1Padding
+server:
+  port: 8080

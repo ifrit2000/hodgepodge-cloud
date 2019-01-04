@@ -75,4 +75,7 @@ services:
     image: 'cd871127/service-cipher:0.0.1'
     networks:
       dev-network:
-        ipv4_address: 172.28.0.9
+        ipv4_address: 172.28.0.7
+    volumes:
+      - /home/anthony/dockerVolume/dev/app/service-cipher/config:/app/config
+      - /home/anthony/dockerVolume/dev/app/service-cipher/logs:/app/logs

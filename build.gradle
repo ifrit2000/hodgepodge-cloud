@@ -73,9 +73,9 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     }
 
-//    bootJar {
-//        rootSpec.exclude("**/config/*.properties", "**/config/*.yml")
-//    }
+    bootJar {
+        rootSpec.exclude("**/config/")
+    }
 
     project.afterEvaluate {
         task createDockerfile(type: Dockerfile, dependsOn: bootJar, group: "docker") {
@@ -95,13 +95,6 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 
         }
 
-        task buildImage(type: DockerBuildImage, dependsOn: createDockerfile, group: "docker") {
-            tags.add("cd871127/${project.name}:${project.version}")
-            remove = true
-            description 'Executes bootRepackage, generates a docker file and builds image from it'
-            inputDir = createDockerfile.destFile.get().asFile.parentFile
-        }
-
         task removeAppImage(type: DockerRemoveImage, group: 'Docker') {
             description 'Remove the docker image using force'
             force = true
@@ -113,6 +106,14 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
                     print exception
                 }
             }
+        }
+
+        task buildImage(type: DockerBuildImage, dependsOn: createDockerfile, group: "docker") {
+            dependsOn removeAppImage
+            tags.add("cd871127/${project.name}:${project.version}")
+            remove = true
+            description 'Executes bootRepackage, generates a docker file and builds image from it'
+            inputDir = createDockerfile.destFile.get().asFile.parentFile
         }
     }
 }
