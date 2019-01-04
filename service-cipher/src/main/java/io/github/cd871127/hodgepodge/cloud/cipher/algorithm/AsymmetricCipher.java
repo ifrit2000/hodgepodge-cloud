@@ -1,5 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.algorithm;
 
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.CipherKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.configure.properties.CipherConfig;
 import lombok.Data;
@@ -66,11 +67,11 @@ public abstract class AsymmetricCipher {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
-    public RsaKeyPair getBase64KeyPair() throws NoSuchAlgorithmException {
+    public CipherKeyPair getBase64KeyPair() throws NoSuchAlgorithmException {
         KeyPair keyPair = getKeyPair();
         String publicKey = keyToBase64String(keyPair.getPublic());
         String privateKey = keyToBase64String(keyPair.getPrivate());
-        return new RsaKeyPair(publicKey, privateKey);
+        return new CipherKeyPair(publicKey, privateKey);
     }
 
     private KeyPair getKeyPair() throws NoSuchAlgorithmException {

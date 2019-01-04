@@ -3,6 +3,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.service.impl;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.AsymmetricCipher;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherDataEntity;
+import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.CipherKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherKeyService;
@@ -29,41 +30,42 @@ public class RsaService implements CipherService {
     private CipherKeyService cipherKeyService;
 
 
-    private RsaKeyPair getRsaKeyPair(String keyId, Long expire) throws NoSuchAlgorithmException, KeyIdExpiredException {
-        RsaKeyPair rsaKeyPair;
+    private CipherKeyPair getRsaKeyPair(String keyId, Long expire) throws NoSuchAlgorithmException, KeyIdExpiredException {
+        CipherKeyPair cipherKeyPair;
         if (StringUtils.isEmpty(keyId)) {
             //empty keyId
-            rsaKeyPair = rsaCipher.getBase64KeyPair();
+            cipherKeyPair = rsaCipher.getBase64KeyPair();
+            cipherKeyPair.setCipherAlgorithm(CipherAlgorithm.RSA);
             //TODO change keyId generate method
             keyId = UUID.randomUUID().toString().replaceAll("-", "");
-            rsaKeyPair.setKeyId(keyId);
+            cipherKeyPair.setKeyId(keyId);
             if (0 == expire) {
-                cipherKeyService.insertCipherKeyPair(rsaKeyPair);
+                cipherKeyService.insertCipherKeyPair(cipherKeyPair);
             } else {
-                cipherKeyService.cacheCipherKeyPair(rsaKeyPair, expire);
+                cipherKeyService.cacheCipherKeyPair(cipherKeyPair, expire);
             }
         } else {
             if (cipherKeyService.isKeyIdExists(keyId, CipherAlgorithm.RSA)) {
 //                rsaKeyPair = (RsaKeyPair) cipherKeyService.selectKeyPairByKeyId(keyId);
-                rsaKeyPair = new RsaKeyPair(cipherKeyService.selectKeyPairByKeyId(keyId));
+                cipherKeyPair = new RsaKeyPair(cipherKeyService.selectKeyPairByKeyId(keyId));
             } else {
-                rsaKeyPair = (RsaKeyPair) cipherKeyService.restoreCipherKeyPair(keyId);
-                if (rsaKeyPair == null) {
+                cipherKeyPair = cipherKeyService.restoreCipherKeyPair(keyId);
+                if (cipherKeyPair == null) {
                     //key died
                     throw new KeyIdExpiredException();
                 }
             }
         }
-        return rsaKeyPair;
+        return cipherKeyPair;
     }
 
-    private RsaKeyPair getRsaKeyPair(String keyId) throws KeyIdExpiredException, NoSuchAlgorithmException {
+    private CipherKeyPair getRsaKeyPair(String keyId) throws KeyIdExpiredException, NoSuchAlgorithmException {
         return getRsaKeyPair(keyId, 0L);
     }
 
     @Override
     public Map<String, String> getPublicKey(String keyId, Long expire) throws NoSuchAlgorithmException, KeyIdExpiredException {
-        RsaKeyPair rsaKeyPair = getRsaKeyPair(keyId, expire);
+        CipherKeyPair rsaKeyPair = getRsaKeyPair(keyId, expire);
         Map<String, String> res = new HashMap<>();
         res.put("keyId", rsaKeyPair.getKeyId());
         res.put("publicKey", rsaKeyPair.getPublicKey());
@@ -72,14 +74,14 @@ public class RsaService implements CipherService {
 
     @Override
     public byte[] encode(CipherDataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
-        RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
+        CipherKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         return rsaCipher.encode(dataEntity.getBytes(), rsaCipher.base64StringPublicKey(rsaKeyPair.getPublicKey()));
 
     }
 
     @Override
     public byte[] decode(CipherDataEntity dataEntity) throws KeyIdExpiredException, NoSuchAlgorithmException {
-        RsaKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
+        CipherKeyPair rsaKeyPair = getRsaKeyPair(dataEntity.getKeyId());
         PrivateKey privateKey = rsaCipher.base64StringToPrivateKey(rsaKeyPair.getPrivateKey());
         return rsaCipher.decode(dataEntity.getBytes(), privateKey);
     }

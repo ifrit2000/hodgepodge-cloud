@@ -28,6 +28,15 @@ public class RsaController {
     @Resource
     private RsaService rsaService;
 
+    /**
+     * get public key of rsa
+     *
+     * @param keyId
+     * @param expire
+     * @return
+     * @throws KeyIdExpiredException
+     * @throws NoSuchAlgorithmException
+     */
     @GetMapping(value = {"publicKey/{keyId}", "publicKey"})
     public ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId, @RequestParam(value = "expire", required = false, defaultValue = "300") Long expire) throws KeyIdExpiredException, NoSuchAlgorithmException {
         ServerResponse<Map<String, String>> serverResponse = new ServerResponse<>(SUCCESSFUL);
@@ -36,6 +45,13 @@ public class RsaController {
         return serverResponse;
     }
 
+    /**
+     * @param dataEntity
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyIdException
+     * @throws KeyIdExpiredException
+     */
     @PostMapping(value = {"decode"})
     public ServerResponse<String> decode(@RequestBody CipherDataEntity dataEntity) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
         if (StringUtils.isEmpty(dataEntity.getKeyId())) {
@@ -47,6 +63,15 @@ public class RsaController {
         return serverResponse;
     }
 
+    /**
+     * compare two encoded data
+     *
+     * @param dataEntityPair need key id for decoding
+     * @return if equals return true, else return false
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyIdException
+     * @throws KeyIdExpiredException
+     */
     @PostMapping(value = "comparison")
     public ServerResponse<Boolean> comparison(@RequestBody Pair<CipherDataEntity, CipherDataEntity> dataEntityPair) throws NoSuchAlgorithmException, InvalidKeyIdException, KeyIdExpiredException {
         boolean result = rsaService.compare(dataEntityPair.getLeft(), dataEntityPair.getRight());

@@ -22,7 +22,7 @@ public class CipherProperties {
 
     @EqualsAndHashCode(callSuper = true)
     @Data
-    public static class Aes extends CipherConfig {
+    private static class Aes extends CipherConfig {
 
     }
 }

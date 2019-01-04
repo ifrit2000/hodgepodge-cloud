@@ -32,6 +32,9 @@ public class CipherKeyService {
         stringRedisTemplate = redisTemplate;
     }
 
+    /**
+     * load key id to redis for search
+     */
     public void loadKeyIdFromDB() {
         loadKeyIdFromDBByAlgorithm(CipherAlgorithm.RSA);
         loadKeyIdFromDBByAlgorithm(CipherAlgorithm.AES);
@@ -47,10 +50,24 @@ public class CipherKeyService {
         log.debug("load {} {} keyIds to Redis", count, cipherAlgorithm);
     }
 
+    /**
+     * add key id to redis
+     *
+     * @param keyId
+     * @param cipherAlgorithm
+     * @return
+     */
     public Long cacheKeyId(String keyId, CipherAlgorithm cipherAlgorithm) {
         return stringRedisTemplate.boundSetOps(cipherAlgorithm + ".keyId").add(keyId);
     }
 
+    /**
+     * judge if key id exists
+     *
+     * @param keyId
+     * @param cipherAlgorithm
+     * @return
+     */
     public Boolean isKeyIdExists(String keyId, CipherAlgorithm cipherAlgorithm) {
         return stringRedisTemplate.boundSetOps(cipherAlgorithm + ".keyId").isMember(keyId);
     }

@@ -16,8 +16,4 @@ public class CipherConfiguration {
         return new RsaCipher(cipherProperties.getRsa());
     }
 
-//    @Bean(name = "aesCipher")
-//    public AsymmetricCipher aesCipher(CipherProperties cipherProperties) {
-//        return new AesCipher(cipherProperties.getAes());
-//    }
 }

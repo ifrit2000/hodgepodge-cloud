@@ -1,5 +1,6 @@
-group 'io.github.cd871127'
-version '0.0.1'
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
     repositories {
@@ -9,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath 'com.bmuschko:gradle-docker-plugin:4.2.0'
+        classpath "com.bmuschko:gradle-docker-plugin:4.2.0"
     }
 }
 
@@ -25,8 +26,11 @@ String[] testProjects = ['service-test']
 
 //所有子项目配置
 allprojects {
+    group 'io.github.cd871127'
+    version '0.0.1'
     apply plugin: 'java'
     apply plugin: 'idea'
+
     sourceCompatibility = 1.8
 
     repositories {
@@ -49,8 +53,7 @@ allprojects {
 configure(subprojects.findAll { it.name.startsWith('service-') }) {
     apply plugin: 'org.springframework.boot'
     apply plugin: "io.spring.dependency-management"
-    apply plugin: 'com.bmuschko.docker-spring-boot-application'
-
+    apply plugin: "com.bmuschko.docker-remote-api"
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
@@ -64,11 +67,8 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
     dependencies {
         compile project(":lib-core")
         compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
-
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
-//        compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     }
@@ -76,14 +76,49 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
 //    bootJar {
 //        rootSpec.exclude("**/config/*.properties", "**/config/*.yml")
 //    }
-    docker {
-        springBootApplication {
-            baseImage = 'cd871127/jdk11:0.0.1'
-            ports = [8080]
-            tag = "cd871127/hodgepodge-${project.name}:0.0.1"
+    ext {
+        pdir = project.buildDir
+        jarName = bootJar.archiveName
+        version1 = project.version
+        projectName = project.name
+    }
+
+    task createDockerfile(type: Dockerfile, dependsOn: bootJar, group: "docker") {
+        destFile = project.file("${project.buildDir}/libs/Dockerfile")
+        doFirst {
+            from "${dockerJdkImage}"
+            runCommand("groupadd -r app && useradd -r -g app app")
+            runCommand("mkdir -p /app/config && mkdir -p /app/logs")
+            runCommand("chown -R app:app /app")
+            addFile("${bootJar.archiveName}", "/app/")
+            volume("/app/config", "/app/logs")
+//        environmentVariable("TZ", "Asia/Shanghai") // 默认时区设置为东8区
+            workingDir("/app")
+            exposePort(8080)
+//        defaultCommand("sh", "-c", "java \$DUIC_OPTS -jar $jarName")
+            entryPoint("java", "-jar", "${bootJar.archiveName}")
         }
     }
 
+    task buildImage(type: DockerBuildImage, dependsOn: createDockerfile, group: "docker") {
+        tags.add("cd871127/${project.name}:${project.version}")
+        remove = true
+        description 'Executes bootRepackage, generates a docker file and builds image from it'
+        inputDir = createDockerfile.destFile.get().asFile.parentFile
+    }
+
+    task removeAppImage(type: DockerRemoveImage, group: 'Docker') {
+        description 'Remove the docker image using force'
+        force = true
+        targetImageId { "cd871127/${project.name}:${project.version}" }
+        onError { exception ->
+            if (exception.message.contains('No such image')) {
+                println "Docker image: cd871127/${project.name}:${project.version} not found."
+            } else {
+                print exception
+            }
+        }
+    }
 }
 
 configure(subprojects.findAll { redisProjects.contains(it.name) }) {
@@ -104,13 +139,10 @@ configure(subprojects.findAll { mysqlProjects.contains(it.name) }) {
 
 configure(subprojects.findAll { consulProjects.contains(it.name) }) {
     dependencies {
-//        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-all'
         compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-discovery'
-//        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config'
         compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-config'
     }
 }
-
 
 configure(subprojects.findAll { testProjects.contains(it.name) }) {
     dependencies {
@@ -123,12 +155,6 @@ configure(subprojects.findAll { webProjects.contains(it.name) }) {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     }
 }
-
-//task ttt{
-//    println(subprojects.size())
-//}
-
-//compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 
 
 
