@@ -1,0 +1,52 @@
+[
+  {
+    "Node": "3adb1371e245",
+    "CheckID": "serfHealth",
+    "Name": "Serf Health Status",
+    "Status": "passing",
+    "Notes": "",
+    "Output": "Agent alive and reachable",
+    "ServiceID": "",
+    "ServiceName": "",
+    "ServiceTags": [],
+    "Definition": {},
+    "CreateIndex": 13,
+    "ModifyIndex": 13
+  },
+  {
+    "Node": "3adb1371e245",
+    "CheckID": "service:service-cipher-5da12fcf2822aabb61900dd028582ce2",
+    "Name": "Service 'service-cipher' check",
+    "Status": "passing",
+    "Notes": "",
+    "Output": "HTTP GET http://4e206aeb34f9:8080/actuator/health: 200  Output: {\"status\":\"UP\",\"details\":{\"diskSpace\":{\"status\":\"UP\",\"details\":{\"total\":109360898048,\"free\":72454381568,\"threshold\":10485760}},\"db\":{\"status\":\"UP\",\"details\":{\"database\":\"MySQL\",\"hello\":1}},\"refreshScope\":{\"status\":\"UP\"},\"discoveryComposite\":{\"status\":\"UP\",\"details\":{\"discoveryClient\":{\"status\":\"UP\",\"details\":{\"services\":[\"consul\",\"service-cipher\"]}}}},\"hystrix\":{\"status\":\"UP\"},\"redis\":{\"status\":\"UP\",\"details\":{\"version\":\"5.0.2\"}}}}",
+    "ServiceID": "service-cipher-5da12fcf2822aabb61900dd028582ce2",
+    "ServiceName": "service-cipher",
+    "ServiceTags": [
+      "version=0.0.1",
+      "author=cd871127",
+      "secure=false"
+    ],
+    "Definition": {},
+    "CreateIndex": 7700,
+    "ModifyIndex": 7788
+  },
+  {
+    "Node": "3adb1371e245",
+    "CheckID": "service:service-cipher-aecc88699d71d9436c36bfa534cb4382",
+    "Name": "Service 'service-cipher' check",
+    "Status": "critical",
+    "Notes": "",
+    "Output": "Get http://192.168.2.102:8082/actuator/health: dial tcp 192.168.2.102:8082: connect: connection refused",
+    "ServiceID": "service-cipher-aecc88699d71d9436c36bfa534cb4382",
+    "ServiceName": "service-cipher",
+    "ServiceTags": [
+      "version=0.0.1",
+      "author=cd871127",
+      "secure=false"
+    ],
+    "Definition": {},
+    "CreateIndex": 7441,
+    "ModifyIndex": 7730
+  }
+]

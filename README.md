@@ -30,3 +30,11 @@ task test{
 }
 }
 解决方案: 把task用project.afterEvaluate包起来
+
+consul自动注销失效的服务
+关键字DeregisterCriticalServiceAfter
+https://www.consul.io/api/agent/check.html
+关键字deregister_critical_service_after
+https://www.consul.io/docs/agent/checks.html
+
+
