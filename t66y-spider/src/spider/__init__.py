@@ -34,6 +34,7 @@ class Processor(object):
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+        # "Cookie": "__cfduid=d0b366b14290cf500a30a32f3795a55c31546769053; PHPSESSID=lbt215f5ilp6hdmn0bs2nn49l5; serverInfo=www.t66y.com%7C45.62.117.196; 227c9_lastvisit=0%091546769149%09%2Fnotice.php%3F"
     }
     __t66y_domain_list = ["t66y.com", "hh.flexui.win"]
     __thread_count = 10
@@ -52,9 +53,12 @@ class Processor(object):
     @staticmethod
     def __parser_page_html(page_html):
         topic_list = []
+        print(page_html)
         soup = BeautifulSoup(page_html, "html.parser")
 
         table = soup.find(name="table", id="ajaxtable")
+        if table is None:
+            return list()
         # 判断是否首页
         topic_start_flag = table.find_all(name="tr", attrs={"class": "tr2"})
         topic_start_flag = topic_start_flag[len(topic_start_flag) - 1]
@@ -66,6 +70,9 @@ class Processor(object):
     @staticmethod
     def __parser_topic_html(topic):
         soup = BeautifulSoup(topic["html"], "html.parser")
+        if soup.select(".tpc_content img") is None:
+            topic["status"] = "error"
+            return topic
         topic["images"] = list(
             map(lambda image: image['data-src'].replace(".th", ""),
                 filter(lambda image: image['data-src'].endswith(".jpg"), soup.select(".tpc_content img"))))
@@ -82,7 +89,7 @@ class Processor(object):
             # TODO log exception
             return
         result = dict()
-        for page_num in [1, 2, 3]:  # __page_num:
+        for page_num in self.__page_num:  # __page_num:
             result[page_num] = self.__handle_page(fid, page_num)
         with shelve.open("%s" % fid) as db:
             db["data"] = result
@@ -102,6 +109,9 @@ class Processor(object):
             return list()
         page_html = response.data.decode("gbk")
         topic_list = self.__parser_page_html(page_html)
+        if len(topic_list) == 0:
+            self.logger.error("ERROR handle fid %s,page %s, get topic num: %s" % (fid, page_num, len(topic_list)))
+            return list()
         self.logger.info("finish handle fid %s,page %s, get topic num: %s" % (fid, page_num, len(topic_list)))
         with ThreadPoolExecutor(self.__thread_count) as executor:
             all_task = [executor.submit(self.__handle_topic, topic, http_pool) for topic in topic_list]
@@ -129,7 +139,7 @@ class Processor(object):
         return self.__parser_topic_html(topic)
 
     @classmethod
-    def __check_domain(cls):
+    def check_domain(cls):
         http_pool = urllib3.PoolManager(1)
         latencies = dict()
         for url in cls.__t66y_domain_list:
@@ -158,9 +168,12 @@ def _get_logger(logger_name="default", filename='spider.log', log_path="/tmp/spi
     date_format = "%Y-%m-%d %H:%M:%S"
     logger = logging.getLogger(logger_name)
     logger.setLevel(level)
-    handler = logging.FileHandler(os.path.join(log_path, filename))
-    handler.setFormatter(logging.Formatter(fmt=log_format, datefmt=date_format))
-    logger.addHandler(handler)
+    handlers = list()
+    handlers.append(logging.FileHandler(os.path.join(log_path, filename)))
+    handlers.append(logging.StreamHandler(sys.stdout))
+    for handler in handlers:
+        handler.setFormatter(logging.Formatter(fmt=log_format, datefmt=date_format))
+        logger.addHandler(handler)
     return logger
 
 
