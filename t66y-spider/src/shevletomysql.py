@@ -1,29 +1,19 @@
-class MySql(object):
+import pymysql
 
-    def __init__(self, connection=None):
-        self.__connection = connection
 
-    @property
-    def connection(self):
-        return self.__connection
-
-    @connection.setter
-    def connection(self, connection):
-        self.__connection = connection
-
-    def insert_topic(self, topics=None):
-        if topics is None:
-            return None
-        cursor = self.__connection.cursor()
+def insert_topic(connection, topics=None):
+    if topics is None:
+        return None
+    with connection.cursor() as cursor:
         topic_sql_template = """insert into t66y.TOPIC_INFO(TOPIC_URL, TOPIC_AREA, TOPIC_TITLE) 
-        VALUES('%s','%s','%s')"""
+            VALUES('%s','%s','%s')"""
         images_sql_template = """insert into t66y.IMAGE_INFO(TOPIC_URL, IMAGE_URL) 
-        VALUE %s"""
+            VALUE %s"""
         torrent_sql_template = """insert into t66y.TORRENT_INFO(TOPIC_URL, TORRENT_URL, TORRENT_HASH) 
-        VALUE %s"""
+            VALUE %s"""
 
         for topic in topics:
-            cursor.execute(topic_sql_template % (topic.url, topic.area, topic.title))
+            cursor.execute(topic_sql_template % (topic.get("url"), topic.area, topic.title))
             image_value = ""
             for image in topic.images:
                 image_value = image_value + "('%s','%s')," % (topic.url, image)
@@ -38,21 +28,17 @@ class MySql(object):
             if torrent_value != "":
                 sql = (torrent_sql_template % torrent_value).rstrip(",")
                 cursor.execute(sql)
-
-        self.__connection.commit()
-        cursor.close()
-
-    def close(self):
-        self.__connection.close()
+            cursor.commit()
 
 
 if __name__ == '__main__':
-    # mysql = MySql()
-    # sql = "insert into t66y.TOPIC_INFO(TOPIC_URL, TOPIC_PARTITION, TOPIC_TITLE) VALUE ('222','33','22')"
-    #
-    # mysql.insert(sql)
-    # mysql.close()
-    a = "http://www.rmdown.com/link.php?hash=1835b7f877f818f7122971610ac212649323ae65506"
-    c = a[a.find("has1h=") + len("has1h="):]
-    print(c)
-    print(a)
+    connection = pymysql.connect(host='localhost',
+                                 user='user',
+                                 password='passwd',
+                                 db='db',
+                                 charset='utf8mb4',
+                                 cursorclass=pymysql.cursors.DictCursor)
+    a = dict()
+    a.setdefault("url", 123)
+    print(a.get("url"))
+

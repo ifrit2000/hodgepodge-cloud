@@ -3,6 +3,7 @@ import errno
 import logging
 import multiprocessing
 import os
+import random
 import shelve
 import signal
 import sys
@@ -34,10 +35,11 @@ class Processor(object):
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-        # "Cookie": "__cfduid=d0b366b14290cf500a30a32f3795a55c31546769053; PHPSESSID=lbt215f5ilp6hdmn0bs2nn49l5; serverInfo=www.t66y.com%7C45.62.117.196; 227c9_lastvisit=0%091546769149%09%2Fnotice.php%3F"
+        ,"Cookie": "PHPSESSID=3q23r1ceckr5p1h84n2c023hg5"
     }
     __t66y_domain_list = ["t66y.com", "hh.flexui.win"]
     __thread_count = 10
+    # __t66y_domain = "hh.flexui.win"
     __t66y_domain = "t66y.com"
     __t66y_page_path = "thread0806.php"
 
@@ -53,18 +55,20 @@ class Processor(object):
     @staticmethod
     def __parser_page_html(page_html):
         topic_list = []
-        print(page_html)
         soup = BeautifulSoup(page_html, "html.parser")
 
         table = soup.find(name="table", id="ajaxtable")
         if table is None:
             return list()
         # 判断是否首页
-        topic_start_flag = table.find_all(name="tr", attrs={"class": "tr2"})
-        topic_start_flag = topic_start_flag[len(topic_start_flag) - 1]
-        for tr in topic_start_flag.find_next_siblings(name="tr", attrs={"class": "tr3 t_one tac"}):
-            a = tr.find(name="h3").a
-            topic_list.append({"url": a['href'], "title": a.text})
+        try:
+            topic_start_flag = table.find_all(name="tr", attrs={"class": "tr2"})
+            topic_start_flag = topic_start_flag[len(topic_start_flag) - 1]
+            for tr in topic_start_flag.find_next_siblings(name="tr", attrs={"class": "tr3 t_one tac"}):
+                a = tr.find(name="h3").a
+                topic_list.append({"url": a['href'], "title": a.text})
+        except Exception as e:
+            print(e)
         return topic_list
 
     @staticmethod
@@ -73,11 +77,15 @@ class Processor(object):
         if soup.select(".tpc_content img") is None:
             topic["status"] = "error"
             return topic
-        topic["images"] = list(
-            map(lambda image: image['data-src'].replace(".th", ""),
-                filter(lambda image: image['data-src'].endswith(".jpg"), soup.select(".tpc_content img"))))
-        topic["torrent_links"] = list(
-            map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
+        try:
+            topic["images"] = list(
+                map(lambda image: image['data-src'].replace(".th", ""),
+                    filter(lambda image: image['data-src'].endswith(".jpg"), soup.select(".tpc_content img"))))
+            topic["torrent_links"] = list(
+                map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
+        except Exception as e:
+            print(e)
+            topic["status"] = "image or torrent error"
         return topic
 
     def run(self):
@@ -91,8 +99,6 @@ class Processor(object):
         result = dict()
         for page_num in self.__page_num:  # __page_num:
             result[page_num] = self.__handle_page(fid, page_num)
-        with shelve.open("%s" % fid) as db:
-            db["data"] = result
 
     def __handle_page(self, fid, page_num):
         self.logger.info("start handle fid %s,page %s" % (fid, page_num))
@@ -104,10 +110,13 @@ class Processor(object):
         except Exception as e:
             self.logger.error("%s,%s" % (page_url, fields), exc_info=True, stack_info=True)
             response = None
-        if response is not None and response.status != 200:
+        if response is None or response.status != 200:
             self.logger.error("%s,%s status:%s" % (page_url, fields, response.status))
             return list()
-        page_html = response.data.decode("gbk")
+        page_html = response.data.decode("gbk","ignore")
+        if page_html == "<html><head><meta http-equiv='refresh' content='2;url=codeform.php'></head>":
+            self.logger.error("need valid code")
+
         topic_list = self.__parser_page_html(page_html)
         if len(topic_list) == 0:
             self.logger.error("ERROR handle fid %s,page %s, get topic num: %s" % (fid, page_num, len(topic_list)))
@@ -115,10 +124,13 @@ class Processor(object):
         self.logger.info("finish handle fid %s,page %s, get topic num: %s" % (fid, page_num, len(topic_list)))
         with ThreadPoolExecutor(self.__thread_count) as executor:
             all_task = [executor.submit(self.__handle_topic, topic, http_pool) for topic in topic_list]
+            time.sleep(random.randint(50, 150) / 100.0)
         result = list()
         for future in as_completed(all_task):
             data = future.result()
             result.append(data)
+        with shelve.open("%s" % fid) as db:
+            db[str(page_num)] = result
         return result
         # with shelve.open("%s.%s" % (fid, page_num)) as db:
         #     db["data"] = res
@@ -128,13 +140,21 @@ class Processor(object):
         try:
             response = http_pool.request("get", page_url, headers=self.__headers)
         except Exception as e:
-            self.logger.error("page_url", exc_info=True, stack_info=True)
+            self.logger.error("topic_url:%s" % topic["url"], exc_info=True, stack_info=True)
             response = None
-        if response is not None and response.status != 200:
+        if response is None or response.status != 200:
             self.logger.error("%s status:%s" % (page_url, response.status))
             topic["status"] = "get topic html failed"
             return topic
-        topic_html = response.data.decode("gbk")
+        try:
+            topic_html = response.data.decode("gbk","ignore")
+        except Exception as e:
+            self.logger.error("topic_url:%s" % topic["url"], exc_info=True, stack_info=True)
+            topic["status"] = "get topic html failed"
+            return topic
+        if topic_html == "<html><head><meta http-equiv='refresh' content='2;url=codeform.php'></head>":
+            self.logger.error("need valid code")
+            return topic
         topic["html"] = topic_html
         return self.__parser_topic_html(topic)
 
