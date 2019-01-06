@@ -32,13 +32,14 @@ def insert_topic(connection, topics=None):
 
 
 if __name__ == '__main__':
-    connection = pymysql.connect(host='localhost',
-                                 user='user',
-                                 password='passwd',
-                                 db='db',
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    connection = pymysql.connect(host="172.28.0.4",
+                                 user='appdata',
+                                 password='123456',
+                                 db='t66y',
+                                 charset='utf8',
+                                 cursorclass=pymysql.cursors.DictCursor,
+                                 use_unicode=True)
+    connection.close()
     a = dict()
-    a.setdefault("url", 123)
-    print(a.get("url"))
-
+    a["url"] = 12
+    print(a.get("url", "1"))
