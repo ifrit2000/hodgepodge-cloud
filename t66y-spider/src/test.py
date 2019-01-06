@@ -1,6 +1,6 @@
 import sys
 
-from spider.daemon import Daemon
+from spider_ori.daemon import Daemon
 
 if __name__ == "__main__":
 

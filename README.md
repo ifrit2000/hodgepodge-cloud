@@ -38,3 +38,4 @@ https://www.consul.io/api/agent/check.html
 https://www.consul.io/docs/agent/checks.html
 
 
+anthony adm cdrom sudo dip plugdev lpadmin sambashare docker

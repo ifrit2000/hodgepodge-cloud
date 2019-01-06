@@ -6,7 +6,7 @@ import signal
 import sys
 import time
 
-from spider.logger import get_logger
+from spider_ori.logger import get_logger
 
 
 def test():

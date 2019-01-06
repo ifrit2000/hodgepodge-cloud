@@ -1,6 +1,6 @@
 import pika
 
-from spider.parser import Topic
+from spider_ori.parser import Topic
 
 host = '172.28.0.6'
 credential = pika.PlainCredentials('app', 'app')

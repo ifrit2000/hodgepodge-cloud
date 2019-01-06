@@ -2,8 +2,8 @@ import os
 import threading
 from urllib.parse import urlparse, parse_qs
 
-from spider.http_connection import HttpConnection
-from spider.parser import Parser
+from spider_ori.http_connection import HttpConnection
+from spider_ori.parser import Parser
 
 
 class Spider(object):
