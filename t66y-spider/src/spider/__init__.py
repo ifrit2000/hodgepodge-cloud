@@ -35,7 +35,7 @@ class Processor(object):
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-        ,"Cookie": "PHPSESSID=3q23r1ceckr5p1h84n2c023hg5"
+        , "Cookie": "PHPSESSID=3q23r1ceckr5p1h84n2c023hg5"
     }
     __t66y_domain_list = ["t66y.com", "hh.flexui.win"]
     __thread_count = 10
@@ -78,11 +78,13 @@ class Processor(object):
             topic["status"] = "error"
             return topic
         try:
-            topic["images"] = list(
-                map(lambda image: image['data-src'].replace(".th", ""),
-                    filter(lambda image: image['data-src'].endswith(".jpg"), soup.select(".tpc_content img"))))
             topic["torrent_links"] = list(
                 map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
+            get_image = lambda tag: list(
+                map(lambda image: image[tag].replace(".th", ""),
+                    filter(lambda image: image.get(tag) is not None and image[tag].endswith(".jpg"),
+                           soup.select(".tpc_content img"))))
+            topic["images"] = list(set(get_image("data-src")) | set(get_image("src")))
         except Exception as e:
             print(e)
             topic["status"] = "image or torrent error"
@@ -113,7 +115,7 @@ class Processor(object):
         if response is None or response.status != 200:
             self.logger.error("%s,%s status:%s" % (page_url, fields, response.status))
             return list()
-        page_html = response.data.decode("gbk","ignore")
+        page_html = response.data.decode("gbk", "ignore")
         if page_html == "<html><head><meta http-equiv='refresh' content='2;url=codeform.php'></head>":
             self.logger.error("need valid code")
 
@@ -147,7 +149,7 @@ class Processor(object):
             topic["status"] = "get topic html failed"
             return topic
         try:
-            topic_html = response.data.decode("gbk","ignore")
+            topic_html = response.data.decode("gbk", "ignore")
         except Exception as e:
             self.logger.error("topic_url:%s" % topic["url"], exc_info=True, stack_info=True)
             topic["status"] = "get topic html failed"
