@@ -3,6 +3,7 @@ package io.github.cd871127.hodgepodge.cloud.lib.web.server.response;
 public enum GeneralHodgepodgeResponse implements HodgepodgeResponse {
     SUCCESSFUL("000000", "成功"),
 
+    UNKNOWN_ERROR("999998","UNKNOWN_ERROR"),
     FAILED("999999", "失败");
 
     private String code;

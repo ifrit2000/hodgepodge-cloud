@@ -8,6 +8,7 @@ import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.RsaKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherKeyService;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.CipherService;
+import io.github.cd871127.hodgepodge.cloud.lib.util.IdGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,6 @@ import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class RsaService implements CipherService {
@@ -25,10 +25,8 @@ public class RsaService implements CipherService {
     @Resource
     private AsymmetricCipher rsaCipher;
 
-
     @Resource
     private CipherKeyService cipherKeyService;
-
 
     private CipherKeyPair getRsaKeyPair(String keyId, Long expire) throws NoSuchAlgorithmException, KeyIdExpiredException {
         CipherKeyPair cipherKeyPair;
@@ -36,8 +34,7 @@ public class RsaService implements CipherService {
             //empty keyId
             cipherKeyPair = rsaCipher.getBase64KeyPair();
             cipherKeyPair.setCipherAlgorithm(CipherAlgorithm.RSA);
-            //TODO change keyId generate method
-            keyId = UUID.randomUUID().toString().replaceAll("-", "");
+            keyId = IdGenerator.getId();
             cipherKeyPair.setKeyId(keyId);
             if (0 == expire) {
                 cipherKeyService.insertCipherKeyPair(cipherKeyPair);

@@ -5,7 +5,10 @@ import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.HodgepodgeRes
 public enum UserResponse implements HodgepodgeResponse {
 
     USER_ERROR("000201","nonono"),
-    USER_EXIST("000202", "USER_EXIST");
+    USER_EXIST("000202", "USER_EXIST"),
+    USER_NOT_EXIST("000203", "USER_NOT_EXIST"),
+    INVALID_PASSWORD("000204", "INVALID_PASSWORD");
+
 
     private String code;
     private String message;
