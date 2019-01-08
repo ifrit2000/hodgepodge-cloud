@@ -13,7 +13,7 @@ def parser_topic_html(topic):
         get_image = lambda tag: list(
             map(lambda image: image[tag].replace(".th", ""),
                 filter(lambda image: image.get(tag) is not None and (
-                            image[tag].endswith(".jpg") or image[tag].endswith(".JPG") or image[tag].endswith(".jpeg")),
+                        image[tag].endswith(".jpg") or image[tag].endswith(".JPG") or image[tag].endswith(".jpeg")),
                        soup.select(".tpc_content img"))))
         topic["images"] = list(set(get_image("data-src")) | set(get_image("src")))
         topic["torrent_links"] = list(
@@ -48,4 +48,3 @@ if __name__ == '__main__':
             parser_topic_html(topic)
 
     con.close()
-
