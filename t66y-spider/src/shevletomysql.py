@@ -1,4 +1,3 @@
-import os
 import shelve
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -59,7 +58,8 @@ def insert_topic(topic_list=None):
 
 def data_from_shelve(fid, topic_dict):
     topic_list = None
-    with shelve.open(os.path.join("/home/anthony/Desktop/data", fid)) as db:
+    with shelve.open(fid) as db:
+        # with shelve.open(os.path.join("/home/anthony/Desktop/data", fid)) as db:
         for page_num in range(1, 101):
             topic_list = db.get(str(page_num), [])
             for topic in topic_list:
@@ -79,13 +79,15 @@ def data_from_shelve(fid, topic_dict):
 def task(fid):
     topic_dict = {}
     data_from_shelve(fid, topic_dict)
+    print("%s write db:" % fid)
     insert_topic(list(topic_dict.values()))
+    print("%s Finished:" % fid)
 
 
 if __name__ == '__main__':
-
     try:
         with ThreadPoolExecutor(7) as executor:
             all_task = [executor.submit(task, fid) for fid in ["2", "4", "5", "15", "25", "26", "27"]]
+
     except Exception as e:
         print(traceback.format_exc())

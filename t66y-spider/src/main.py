@@ -33,8 +33,8 @@ if __name__ == '__main__':
     # print(response.status)
 
     # print(response.data.decode('gbk'))
-    task("4")
-    task("5")
+    for fid in fid_dict.keys():
+        task(fid)
     # task("27")
 
     # with shelve.open("27") as db:

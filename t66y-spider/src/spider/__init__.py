@@ -4,12 +4,13 @@ import logging
 import multiprocessing
 import os
 import random
-import shelve
 import signal
 import sys
 import time
+import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import pymysql
 import urllib3
 from bs4 import BeautifulSoup
 
@@ -35,7 +36,7 @@ class Processor(object):
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-        , "Cookie": "PHPSESSID=3q23r1ceckr5p1h84n2c023hg5"
+        # , "Cookie": "PHPSESSID=3q23r1ceckr5p1h84n2c023hg5"
     }
     __t66y_domain_list = ["t66y.com", "hh.flexui.win"]
     __thread_count = 10
@@ -78,16 +79,22 @@ class Processor(object):
             topic["status"] = "error"
             return topic
         try:
-            topic["torrent_links"] = list(
-                map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
             get_image = lambda tag: list(
                 map(lambda image: image[tag].replace(".th", ""),
-                    filter(lambda image: image.get(tag) is not None and image[tag].endswith(".jpg"),
+                    filter(lambda image: image.get(tag) is not None and (
+                            image[tag].endswith(".jpg") or image[tag].endswith(".JPG") or image[tag].endswith(
+                        ".jpeg") or image[tag].endswith(".png")),
                            soup.select(".tpc_content img"))))
             topic["images"] = list(set(get_image("data-src")) | set(get_image("src")))
+            topic["torrent_links"] = list(
+                map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
+            if topic["images"] is None or len(topic["images"]) == 0:
+                topic["status"] = "2"  # image error
+            if topic["torrent_links"] is None or len(topic["torrent_links"]) == 0:
+                topic["status"] = "3"  # torrent_error
         except Exception as e:
             print(e)
-            topic["status"] = "image or torrent error"
+            topic["status"] = "1"
         return topic
 
     def run(self):
@@ -99,10 +106,63 @@ class Processor(object):
             # TODO log exception
             return
         result = dict()
-        for page_num in self.__page_num:  # __page_num:
-            result[page_num] = self.__handle_page(fid, page_num)
+        mysql_con = pymysql.connect(host="172.28.0.4",
+                                    port=3306,
+                                    user='appdata',
+                                    password='123456',
+                                    db='t66y',
+                                    charset='utf8',
+                                    cursorclass=pymysql.cursors.DictCursor,
+                                    use_unicode=True)
 
-    def __handle_page(self, fid, page_num):
+        for page_num in self.__page_num:  # __page_num:
+            result[page_num] = self.__handle_page(fid, page_num, mysql_con)
+
+    @staticmethod
+    def insert_topic_list(topic_list=None, connection=None):
+        if topic_list is None:
+            return None
+        topic_sql_template = """insert into t66y.TOPIC_INFO(TOPIC_URL, TOPIC_AREA, TOPIC_TITLE, TOPIC_STATUS) 
+                VALUES('%s','%s','%s','%s')"""
+        images_sql_template = """insert into t66y.IMAGE_INFO(TOPIC_URL, IMAGE_URL) 
+                VALUE %s"""
+        torrent_sql_template = """insert into t66y.TORRENT_INFO(TOPIC_URL, TORRENT_URL, TORRENT_HASH) 
+                VALUE %s"""
+        html_sql_template = """insert into t66y.HTML_INFO(TOPIC_URL, HTML) 
+                VALUES('%s','%s')"""
+        connection.ping(reconnect=True)
+        try:
+            with connection.cursor() as cursor:
+                for topic in topic_list:
+                    cursor.execute(
+                        topic_sql_template % (
+                            topic.get("url"), topic.get("area"), topic.get("title"), topic.get("status")))
+                    image_value = ""
+                    for image in topic.get("images", []):
+                        image_value = image_value + "('%s','%s')," % (topic.get("url"), image)
+                    if image_value != "":
+                        sql = (images_sql_template % image_value).rstrip(",")
+                        cursor.execute(sql)
+
+                    torrent_value = ""
+                    for torrent_link in topic.get("torrent_links", []):
+                        torrent_hash = torrent_link[torrent_link.find("hash=") + len("hash="):]
+                        torrent_value = torrent_value + "('%s','%s','%s')," % (
+                            topic.get("url"), torrent_link, torrent_hash)
+                    if torrent_value != "":
+                        sql = (torrent_sql_template % torrent_value).rstrip(",")
+                        cursor.execute(sql)
+                    if topic.get("status") != "0" and topic.get("html") is not None:
+                        sql = html_sql_template % (topic.get("url"), pymysql.escape_string(topic.get("html")))
+                        cursor.execute(sql)
+                connection.commit()
+        except Exception as e:
+            print(traceback.format_exc())
+            connection.rollback()
+        finally:
+            connection.close()
+
+    def __handle_page(self, fid, page_num, mysql_con):
         self.logger.info("start handle fid %s,page %s" % (fid, page_num))
         http_pool = urllib3.PoolManager(self.__thread_count)
         page_url = os.path.join(self.__t66y_domain, self.__t66y_page_path)
@@ -124,18 +184,32 @@ class Processor(object):
             self.logger.error("ERROR handle fid %s,page %s, get topic num: %s" % (fid, page_num, len(topic_list)))
             return list()
         self.logger.info("finish handle fid %s,page %s, get topic num: %s" % (fid, page_num, len(topic_list)))
+        all_task = []
         with ThreadPoolExecutor(self.__thread_count) as executor:
-            all_task = [executor.submit(self.__handle_topic, topic, http_pool) for topic in topic_list]
-            time.sleep(random.randint(50, 150) / 100.0)
+            with mysql_con.cursor() as cursor:
+                for topic in topic_list:
+                    try:
+                        mysql_con.ping(reconnect=True)
+                        cursor.execute(
+                            "select count(1) url_num from TOPIC_INFO where TOPIC_URL='%s'" % topic.get("url", '1'))
+                    except Exception as e:
+                        print(topic)
+                        print("select count(1) url_num from TOPIC_INFO where TOPIC_URL='%s'" % topic.get("url", '1'))
+                        mysql_con.rollback()
+                        exit(0)
+                    if cursor.fetchone()["url_num"] == 0:
+                        all_task.append(executor.submit(self.__handle_topic, topic, http_pool))
+                        time.sleep(random.randint(50, 150) / 100.0)
         result = list()
         for future in as_completed(all_task):
             data = future.result()
             result.append(data)
-        with shelve.open("%s" % fid) as db:
-            db[str(page_num)] = result
+        print("fid: %s, page_num: %s %s topics write db" % (fid, page_num, len(result)))
+        if len(result) >= 1:
+            Processor.insert_topic_list(result, mysql_con)
+        # with shelve.open("%s" % fid) as db:
+        #     db[str(page_num)] = result
         return result
-        # with shelve.open("%s.%s" % (fid, page_num)) as db:
-        #     db["data"] = res
 
     def __handle_topic(self, topic, http_pool):
         page_url = os.path.join(self.__t66y_domain, topic["url"])
@@ -146,13 +220,13 @@ class Processor(object):
             response = None
         if response is None or response.status != 200:
             self.logger.error("%s status:%s" % (page_url, response.status))
-            topic["status"] = "get topic html failed"
+            topic["status"] = "4"  # "get topic html failed"
             return topic
         try:
             topic_html = response.data.decode("gbk", "ignore")
         except Exception as e:
             self.logger.error("topic_url:%s" % topic["url"], exc_info=True, stack_info=True)
-            topic["status"] = "get topic html failed"
+            topic["status"] = "5"  # "get topic html failed"
             return topic
         if topic_html == "<html><head><meta http-equiv='refresh' content='2;url=codeform.php'></head>":
             self.logger.error("need valid code")
