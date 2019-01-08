@@ -42,7 +42,7 @@ if __name__ == '__main__':
     user_info = {
         "userId": "cdistc",
         "username": "博客园",
-        "password": "1234561",
+        "password": "123456",
         "phone": "123123",
         "eMail": "ggg"
     }

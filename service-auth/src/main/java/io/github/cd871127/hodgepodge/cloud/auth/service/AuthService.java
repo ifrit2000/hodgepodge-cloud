@@ -2,25 +2,29 @@ package io.github.cd871127.hodgepodge.cloud.auth.service;
 
 import io.github.cd871127.hodgepodge.cloud.auth.exception.LoginFailedException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserNotExistException;
-import io.github.cd871127.hodgepodge.cloud.auth.mapper.AuthMapper;
 import io.github.cd871127.hodgepodge.cloud.auth.mapper.UserMapper;
 import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.util.IdGenerator;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
 public class AuthService {
-    @Resource
-    private AuthMapper authMapper;
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private RedisTemplate<String, UserInfo> redisTemplate;
+
+    private static final String TOKEN_PREFIX = "TOKEN.";
 
     @Resource
     private CipherService cipherService;
@@ -44,6 +48,9 @@ public class AuthService {
         }
         //add token
         userInfo.setToken(IdGenerator.getId());
+        userInfo.setPassword(null);
+        userInfo.setPasswordKeyId(null);
+        redisTemplate.opsForValue().set(TOKEN_PREFIX + userInfo.getToken(), userInfo, 30, TimeUnit.MINUTES);
         return userInfo;
     }
 }

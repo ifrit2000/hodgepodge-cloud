@@ -7,6 +7,9 @@ buildscript {
         maven {
             url aliyunMevenRepo
         }
+        maven{
+            url springRepo
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -36,6 +39,9 @@ allprojects {
     repositories {
         maven {
             url aliyunMevenRepo
+        }
+        maven{
+            url springRepo
         }
     }
 

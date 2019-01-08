@@ -33,7 +33,7 @@ public class RedisAutoConfiguration {
 
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(
-            RedisConnectionFactory redisConnectionFactory) throws UnknownHostException {
+            RedisConnectionFactory redisConnectionFactory)  {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setDefaultSerializer(new GenericFastJsonRedisSerializer());
         template.setConnectionFactory(redisConnectionFactory);

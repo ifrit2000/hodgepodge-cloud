@@ -2,7 +2,6 @@ package io.github.cd871127.hodgepodge.cloud.auth.controller;
 
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserExistException;
-import io.github.cd871127.hodgepodge.cloud.auth.service.CipherService;
 import io.github.cd871127.hodgepodge.cloud.auth.service.UserService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
@@ -11,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-
-import java.util.Base64;
 
 import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_ERROR;
 import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_EXIST;
@@ -36,10 +33,9 @@ public class UserController {
     }
 
     @PatchMapping("{userId}")
-    public ServerResponse changePassword(@PathVariable String userId) {
+    public ServerResponse changePassword(@RequestBody UserInfo userInfo) {
 //        ServerResponse serverResponse = cipherClient.publicKey(null, null);
-
-//        userService.changePassword(userId, null, null);
+        userService.changePassword(userInfo);
         return null;
     }
 
