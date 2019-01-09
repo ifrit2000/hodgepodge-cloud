@@ -20,6 +20,9 @@ public interface CipherClient {
     @PostMapping(value = "/rsa/comparison")
     ServerResponse<Boolean> comparison(@RequestBody Pair<CipherDataEntity, CipherDataEntity> dataEntityPair);
 
-    @PatchMapping(value = "/cipher/cipherKey/{keyId}")
-    ServerResponse<String> persistentKey(@PathVariable String keyId);
+    @PatchMapping(value = "/cipher/keyPair/{keyId}")
+    ServerResponse<String> persistentKeyPair(@PathVariable String keyId);
+
+    @DeleteMapping(value="/cipher/keyPair/{keyId}")
+    ServerResponse<Boolean> deleteKeyPair(@PathVariable String keyId);
 }

@@ -2,10 +2,7 @@ package io.github.cd871127.hodgepodge.cloud.cipher.mapper;
 
 import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherAlgorithm;
 import io.github.cd871127.hodgepodge.cloud.lib.cipher.keypair.CipherKeyPair;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -23,4 +20,7 @@ public interface CipherKeyMapper {
 
     @Select("select count(1) from SECRET_KEY_INFO where KEY_ID=#{keyId}")
     int isKeyPairInDb(@Param("keyId") String keyId);
+
+    @Delete("delete from SECRET_KEY_INFO where KEY_ID=#{keyId}")
+    Boolean deleteKeyPair(String keyId);
 }

@@ -39,3 +39,7 @@ https://www.consul.io/docs/agent/checks.html
 
 
 anthony adm cdrom sudo dip plugdev lpadmin sambashare docker
+
+
+feign不支持patch请求，如果需要使用patch需要引入下面的jar包
+compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.1.0'

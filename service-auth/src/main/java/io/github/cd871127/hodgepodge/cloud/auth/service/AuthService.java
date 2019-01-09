@@ -25,11 +25,12 @@ public class AuthService {
     private RedisTemplate<String, UserInfo> redisTemplate;
 
     private static final String TOKEN_PREFIX = "TOKEN.";
+    private static final String USER_INFO_PREFIX = "USER_INFO.";
 
     @Resource
     private CipherService cipherService;
 
-    public Boolean verifyPassword(String keyId1, String password1, String keyId2, String password2) throws ResponseException {
+    Boolean verifyPassword(String keyId1, String password1, String keyId2, String password2) throws ResponseException {
         CipherDataEntity data1 = new CipherDataEntity(keyId1, password1);
         CipherDataEntity data2 = new CipherDataEntity(keyId2, password2);
         return cipherService.comparison(data1, data2);
@@ -51,6 +52,7 @@ public class AuthService {
         userInfo.setPassword(null);
         userInfo.setPasswordKeyId(null);
         redisTemplate.opsForValue().set(TOKEN_PREFIX + userInfo.getToken(), userInfo, 30, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(USER_INFO_PREFIX + userInfo.getUserId(), userInfo, 30, TimeUnit.MINUTES);
         return userInfo;
     }
 }

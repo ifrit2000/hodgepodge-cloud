@@ -78,6 +78,8 @@ configure(subprojects.findAll { it.name.startsWith('service-') }) {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+        compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.1.0'
+
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     }
 

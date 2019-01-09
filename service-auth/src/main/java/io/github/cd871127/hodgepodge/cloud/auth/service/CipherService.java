@@ -31,7 +31,11 @@ public class CipherService {
         return ResponseHandler.handleResponse(cipherClient.publicKey(keyId));
     }
 
-    public String persistentKey(String keyId) throws ResponseException {
-        return (String) ResponseHandler.handleResponse(cipherClient.persistentKey(keyId));
+    public String persistentKeyPair(String keyId) throws ResponseException {
+        return ResponseHandler.handleResponse(cipherClient.persistentKeyPair(keyId));
+    }
+
+    public Boolean deleteKeyPair(String keyId) throws ResponseException {
+        return ResponseHandler.handleResponse(cipherClient.deleteKeyPair(keyId));
     }
 }

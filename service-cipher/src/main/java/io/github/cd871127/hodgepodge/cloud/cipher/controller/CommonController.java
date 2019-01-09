@@ -45,11 +45,18 @@ public class CommonController {
         return serverResponse;
     }
 
-    @PatchMapping("cipherKey/{keyId}")
-    public ServerResponse<String> persistentKey(@PathVariable String keyId) throws KeyIdExpiredException {
+    @PatchMapping("keyPair/{keyId}")
+    public ServerResponse<String> persistentKeyPair(@PathVariable String keyId) throws KeyIdExpiredException {
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
         commonService.persistentKey(keyId);
         serverResponse.setData(keyId);
+        return serverResponse;
+    }
+
+    @DeleteMapping(value="keyPair/{keyId}")
+    public ServerResponse<Boolean> deleteKeyPair(@PathVariable String keyId){
+        ServerResponse<Boolean> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(commonService.deleteKeyPair(keyId));
         return serverResponse;
     }
 

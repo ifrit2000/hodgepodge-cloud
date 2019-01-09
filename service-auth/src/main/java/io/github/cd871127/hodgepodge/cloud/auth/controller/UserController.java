@@ -34,7 +34,7 @@ public class UserController {
         return serverResponse;
     }
 
-    @PatchMapping("{userId}")
+    @PatchMapping("password/{userId}")
     public ServerResponse<String> changePassword(@PathVariable String userId, @RequestBody Map<String, String> paraMap) throws AuthException, ResponseException {
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
         String keyId = userService.changePassword(userId, paraMap.get("newPasswordKeyId"), paraMap.get("newPassword"), paraMap.get("oldPassword"));

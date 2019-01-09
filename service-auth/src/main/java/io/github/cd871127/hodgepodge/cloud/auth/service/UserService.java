@@ -31,7 +31,7 @@ public class UserService {
 
     private final String USER_ID_REDIS_KEY = "userIdSet";
 
-    public UserInfo addUserInfo(UserInfo userInfo) throws UserExistException, ResponseException {
+    public UserInfo addUserInfo(UserInfo userInfo) throws UserExistException {
         //check if User exists
         if (isUserExists(userInfo.getUserId())) {
             throw new UserExistException();
@@ -59,12 +59,20 @@ public class UserService {
         if (userInfo == null) {
             throw new UserNotExistException("user not exist");
         }
-        Boolean res = authService.verifyPassword(newPasswordKeyId, newPassword, newPasswordKeyId, oldPassword);
+        Boolean res = authService.verifyPassword(userInfo.getPasswordKeyId(), userInfo.getPassword(), newPasswordKeyId, oldPassword);
         if (res != null && res) {
             //persistent Key id
-            String keyId = cipherService.persistentKey(newPasswordKeyId);
+            if (authService.verifyPassword(newPasswordKeyId, newPassword, newPasswordKeyId, oldPassword)) {
+                throw new AuthException("old and new is the same");
+            }
+            String keyId = cipherService.persistentKeyPair(newPasswordKeyId);
             //update userInfo
             if (keyId != null) {
+                //delete old key
+                Boolean isDeleted = cipherService.deleteKeyPair(userInfo.getPasswordKeyId());
+                if (isDeleted == null || !isDeleted) {
+                    log.warn("key id {} delete failed", userInfo.getPasswordKeyId());
+                }
                 userMapper.updateUserPassword(userId, keyId, newPassword);
                 return keyId;
             } else {
