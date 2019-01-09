@@ -1,4 +1,29 @@
 spring:
+  application:
+    name: service-safe-box
   profiles:
-    include: springboot, springcloud
+    include: mybatis,redis,consul
     active: dev
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    consul:
+      config:
+        format: FILES
+        prefix: config/${spring.profiles.active}
+        watch:
+          enabled: true
+          delay: 1000
+  output:
+    ansi:
+      enabled: always
+
+management:
+  endpoint:
+    refresh:
+      enabled: true
+    health:
+      show-details: always
+
+
+

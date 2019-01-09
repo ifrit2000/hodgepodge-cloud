@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import static com.github.cd871127.hodgepodge.cloud.lib.web.server.response.CommonResponseInfo.SUCCESSFUL;
+import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
 @RestController
 @RequestMapping("/account")

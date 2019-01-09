@@ -4,8 +4,8 @@ spring:
   profiles:
     include: mybatis,redis,consul
     active: dev
-    main:
-      allow-bean-definition-overriding: true
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     consul:
       config:

@@ -30,7 +30,7 @@ public class CommonController {
      * @return
      */
     @GetMapping(value = "config/{algorithm}")
-    public ServerResponse<CipherConfig> cipherConfig(@Autowired CipherProperties cipherProperties, @PathVariable String algorithm) {
+    public ServerResponse<CipherConfig> cipherConfig(@Autowired CipherProperties cipherProperties, @PathVariable("algorithm") String algorithm) {
         ServerResponse<CipherConfig> serverResponse = new ServerResponse<>(SUCCESSFUL);
         CipherConfig cipherConfig = null;
         if ("RSA".equalsIgnoreCase(algorithm)) {
@@ -46,7 +46,7 @@ public class CommonController {
     }
 
     @PatchMapping("keyPair/{keyId}")
-    public ServerResponse<String> persistentKeyPair(@PathVariable String keyId) throws KeyIdExpiredException {
+    public ServerResponse<String> persistentKeyPair(@PathVariable("keyId") String keyId) throws KeyIdExpiredException {
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
         commonService.persistentKey(keyId);
         serverResponse.setData(keyId);
@@ -54,7 +54,7 @@ public class CommonController {
     }
 
     @DeleteMapping(value="keyPair/{keyId}")
-    public ServerResponse<Boolean> deleteKeyPair(@PathVariable String keyId){
+    public ServerResponse<Boolean> deleteKeyPair(@PathVariable("keyId") String keyId){
         ServerResponse<Boolean> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(commonService.deleteKeyPair(keyId));
         return serverResponse;
