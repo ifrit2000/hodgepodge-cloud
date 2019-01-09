@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -61,10 +60,8 @@ public class UserService {
         }
         Boolean res = authService.verifyPassword(newPasswordKeyId, newPassword, newPasswordKeyId, oldPassword);
         if (res != null && res) {
-            //encode new password
-            Map<String, String> publicKeyMap = cipherService.publicKey(userInfo.getPasswordKeyId());
-            String publicKey = publicKeyMap.get("");
-            String keyId = publicKeyMap.get("");
+            //persistent Key id
+            cipherService.persistentKey(newPasswordKeyId);
             //update userInfo
 
 
