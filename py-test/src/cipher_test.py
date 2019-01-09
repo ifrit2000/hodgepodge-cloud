@@ -9,11 +9,11 @@ CHAR_SET = 'utf-8'
 
 
 def build_http_request():
-    return urllib3.PoolManager().connection_from_host(host="172.28.0.7", port=8080)
+    return urllib3.PoolManager().connection_from_host(host="172.28.0.51", port=8080)
 
 
 def get_public_key(expire=300):
-    response = build_http_request().request("get", '/rsa/publicKey?expire=' + str(expire))
+    response = build_http_request().request("get", '/service-cipher/rsa/publicKey?expire=' + str(expire))
     result = json.loads(response.data.decode())['data']
     return result['keyId'], result['publicKey']
 

@@ -66,16 +66,31 @@ services:
     volumes:
       - /home/anthony/dockerVolume/dev/rabbitmq:/var/lib/rabbitmq
 
+  service-gateway:
+    depends_on:
+      - consul
+    container_name: service-gateway
+    image: 'cd871127/service-gateway:0.0.1'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.51
+    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+    command: ['-Xms128m','-Xmx128m','-Xmn32m']
+    volumes:
+      - /home/anthony/dockerVolume/dev/app/service-gateway/config:/app/config
+      - /home/anthony/dockerVolume/dev/app/service-gateway/logs:/app/logs
+
   service-cipher:
     depends_on:
       - redis
       - consul
       - mysql
+      - service-gateway
     container_name: service-cipher
     image: 'cd871127/service-cipher:0.0.1'
     networks:
       dev-network:
-        ipv4_address: 172.28.0.7
+        ipv4_address: 172.28.0.101
     #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
     command: ['-Xms128m','-Xmx128m','-Xmn32m']
     volumes:
@@ -88,11 +103,12 @@ services:
       - consul
       - mysql
       - service-cipher
+      - service-gateway
     container_name: service-auth
     image: 'cd871127/service-auth:0.0.1'
     networks:
       dev-network:
-        ipv4_address: 172.28.0.8
+        ipv4_address: 172.28.0.102
     #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
     command: ['-Xms128m','-Xmx128m','-Xmn32m']
     volumes:

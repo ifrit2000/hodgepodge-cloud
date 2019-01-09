@@ -4,8 +4,8 @@ spring:
   profiles:
     include: consul
     active: dev
-  #  main:
-  #    allow-bean-definition-overriding: true
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     consul:
       config:
@@ -14,6 +14,11 @@ spring:
         watch:
           enabled: true
           delay: 1000
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
   output:
     ansi:
       enabled: always
@@ -25,8 +30,6 @@ management:
     health:
       show-details: always
 
-logging:
-  config: classpath:config/logback-spring.xml
-  path: /tmp/log
+
 
 
