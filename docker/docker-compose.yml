@@ -82,6 +82,23 @@ services:
       - /home/anthony/dockerVolume/dev/app/service-cipher/config:/app/config
       - /home/anthony/dockerVolume/dev/app/service-cipher/logs:/app/logs
 
+  service-auth:
+    depends_on:
+      - redis
+      - consul
+      - mysql
+      - service-cipher
+    container_name: service-auth
+    image: 'cd871127/service-auth:0.0.1'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.8
+    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+    command: ['-Xms128m','-Xmx128m','-Xmn32m']
+    volumes:
+      - /home/anthony/dockerVolume/dev/app/service-auth/config:/app/config
+      - /home/anthony/dockerVolume/dev/app/service-auth/logs:/app/logs
+
 #  -Xms设置堆的最小空间大小。
 #
 #  -Xmx设置堆的最大空间大小。
