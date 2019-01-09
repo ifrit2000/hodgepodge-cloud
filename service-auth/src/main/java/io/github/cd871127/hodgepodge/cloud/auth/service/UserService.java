@@ -1,5 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.auth.service;
 
+import io.github.cd871127.hodgepodge.cloud.auth.exception.AuthException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.PasswordNotMatchException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserExistException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserNotExistException;
@@ -53,7 +54,7 @@ public class UserService {
         }
     }
 
-    public void changePassword(String userId, String newPasswordKeyId, String newPassword, String oldPassword) throws UserNotExistException, ResponseException, PasswordNotMatchException {
+    public String changePassword(String userId, String newPasswordKeyId, String newPassword, String oldPassword) throws AuthException, ResponseException {
         UserInfo userInfo = userMapper.selectSingleUserInfo(userId);
         if (userInfo == null) {
             throw new UserNotExistException("user not exist");
@@ -61,9 +62,14 @@ public class UserService {
         Boolean res = authService.verifyPassword(newPasswordKeyId, newPassword, newPasswordKeyId, oldPassword);
         if (res != null && res) {
             //persistent Key id
-            cipherService.persistentKey(newPasswordKeyId);
+            String keyId = cipherService.persistentKey(newPasswordKeyId);
             //update userInfo
-
+            if (keyId != null) {
+                userMapper.updateUserPassword(userId, keyId, newPassword);
+                return keyId;
+            } else {
+                throw new AuthException("persistentKey failed");
+            }
 
         } else {
             throw new PasswordNotMatchException("PasswordNotMatchException");

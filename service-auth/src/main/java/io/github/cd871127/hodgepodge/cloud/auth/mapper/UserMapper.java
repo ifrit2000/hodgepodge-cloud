@@ -1,9 +1,7 @@
 package io.github.cd871127.hodgepodge.cloud.auth.mapper;
 
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -21,4 +19,7 @@ public interface UserMapper {
     UserInfo selectSingleUserInfo(String userId);
 //    @UpdateProvider(type = AuthMapperSqlProvider.class, method = "updateUserInfo")
 //    int updateUserInfo(UserInfo userInfo);
+
+    @Update("update USER_INFO set PASSWORD=#{password} ,PASSWORD_KEY_ID=#{passwordKeyId} where USER_ID=#{userId}")
+    int updateUserPassword(@Param("userId") String userId, @Param("passwordKeyId") String passwordKeyId, @Param("password") String password);
 }

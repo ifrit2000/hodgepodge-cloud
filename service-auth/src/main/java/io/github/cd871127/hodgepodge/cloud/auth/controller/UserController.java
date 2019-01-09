@@ -1,9 +1,9 @@
 package io.github.cd871127.hodgepodge.cloud.auth.controller;
 
+import io.github.cd871127.hodgepodge.cloud.auth.exception.AuthException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.PasswordNotMatchException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserExistException;
-import io.github.cd871127.hodgepodge.cloud.auth.exception.UserNotExistException;
 import io.github.cd871127.hodgepodge.cloud.auth.service.UserService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
@@ -35,9 +35,11 @@ public class UserController {
     }
 
     @PatchMapping("{userId}")
-    public ServerResponse changePassword(@PathVariable String userId, @RequestBody Map<String, String> paraMap) throws UserNotExistException, PasswordNotMatchException, ResponseException {
-        userService.changePassword(userId, paraMap.get("newPasswordKeyId"), paraMap.get("newPassword"), paraMap.get("oldPassword"));
-        return new ServerResponse<>(SUCCESSFUL);
+    public ServerResponse<String> changePassword(@PathVariable String userId, @RequestBody Map<String, String> paraMap) throws AuthException, ResponseException {
+        ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        String keyId = userService.changePassword(userId, paraMap.get("newPasswordKeyId"), paraMap.get("newPassword"), paraMap.get("oldPassword"));
+        serverResponse.setData(keyId);
+        return serverResponse;
     }
 
 
