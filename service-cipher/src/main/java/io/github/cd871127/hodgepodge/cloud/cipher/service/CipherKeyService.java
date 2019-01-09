@@ -1,8 +1,8 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.service;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.CipherKeyPair;
 import io.github.cd871127.hodgepodge.cloud.cipher.mapper.CipherKeyMapper;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherAlgorithm;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.keypair.CipherKeyPair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

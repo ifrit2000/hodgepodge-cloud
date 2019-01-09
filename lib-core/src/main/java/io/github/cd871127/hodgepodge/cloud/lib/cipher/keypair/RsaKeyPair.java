@@ -1,6 +1,6 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair;
+package io.github.cd871127.hodgepodge.cloud.lib.cipher.keypair;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherAlgorithm;
 
 public class RsaKeyPair extends CipherKeyPair {
 

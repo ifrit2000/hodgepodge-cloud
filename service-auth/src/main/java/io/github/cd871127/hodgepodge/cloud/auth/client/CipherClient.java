@@ -1,5 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.auth.client;
 
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherConfig;
 import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
@@ -19,4 +20,7 @@ public interface CipherClient {
 
     @PostMapping(value = "/rsa/comparison")
     ServerResponse<Boolean> comparison(@RequestBody Pair<CipherDataEntity, CipherDataEntity> dataEntityPair);
+
+    @GetMapping(value="/rsa/config")
+    ServerResponse<CipherConfig> rsaCipherConfig();
 }

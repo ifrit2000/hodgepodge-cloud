@@ -1,6 +1,4 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.algorithm;
-
-import io.github.cd871127.hodgepodge.cloud.cipher.configure.properties.CipherConfig;
+package io.github.cd871127.hodgepodge.cloud.lib.cipher;
 
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;

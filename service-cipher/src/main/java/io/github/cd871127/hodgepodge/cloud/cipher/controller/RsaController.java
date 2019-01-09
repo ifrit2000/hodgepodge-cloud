@@ -1,14 +1,17 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.controller;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherDataEntity;
+import io.github.cd871127.hodgepodge.cloud.cipher.configure.properties.CipherProperties;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.CipherException;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.InvalidKeyIdException;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
 import io.github.cd871127.hodgepodge.cloud.cipher.service.impl.RsaService;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherConfig;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.lib.util.Pair;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +30,7 @@ public class RsaController {
 
     @Resource
     private RsaService rsaService;
+
 
     /**
      * get public key of rsa
@@ -77,6 +81,13 @@ public class RsaController {
         boolean result = rsaService.compare(dataEntityPair.getLeft(), dataEntityPair.getRight());
         ServerResponse<Boolean> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(result);
+        return serverResponse;
+    }
+
+    @GetMapping(value = "config")
+    public ServerResponse<CipherConfig> cipherConfig(@Autowired CipherProperties cipherProperties) {
+        ServerResponse<CipherConfig> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(cipherProperties.getRsa());
         return serverResponse;
     }
 

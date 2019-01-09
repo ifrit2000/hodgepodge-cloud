@@ -1,7 +1,7 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.mapper;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherAlgorithm;
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.keypair.CipherKeyPair;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherAlgorithm;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.keypair.CipherKeyPair;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

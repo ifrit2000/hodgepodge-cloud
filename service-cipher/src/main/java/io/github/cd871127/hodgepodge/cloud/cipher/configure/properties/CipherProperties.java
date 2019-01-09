@@ -1,5 +1,6 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.configure.properties;
 
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;

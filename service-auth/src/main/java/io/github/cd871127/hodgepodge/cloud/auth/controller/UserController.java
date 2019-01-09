@@ -1,7 +1,9 @@
 package io.github.cd871127.hodgepodge.cloud.auth.controller;
 
+import io.github.cd871127.hodgepodge.cloud.auth.exception.PasswordNotMatchException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserException;
 import io.github.cd871127.hodgepodge.cloud.auth.exception.UserExistException;
+import io.github.cd871127.hodgepodge.cloud.auth.exception.UserNotExistException;
 import io.github.cd871127.hodgepodge.cloud.auth.service.UserService;
 import io.github.cd871127.hodgepodge.cloud.lib.user.UserInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.util.ResponseException;
@@ -10,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
-import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_ERROR;
-import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_EXIST;
+import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.*;
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.FAILED;
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
@@ -33,10 +35,9 @@ public class UserController {
     }
 
     @PatchMapping("{userId}")
-    public ServerResponse changePassword(@RequestBody UserInfo userInfo) {
-//        ServerResponse serverResponse = cipherClient.publicKey(null, null);
-        userService.changePassword(userInfo);
-        return null;
+    public ServerResponse changePassword(@PathVariable String userId, @RequestBody Map<String, String> paraMap) throws UserNotExistException, PasswordNotMatchException, ResponseException {
+        userService.changePassword(userId, paraMap.get("newPasswordKeyId"), paraMap.get("newPassword"), paraMap.get("oldPassword"));
+        return new ServerResponse<>(SUCCESSFUL);
     }
 
 
@@ -48,6 +49,8 @@ public class UserController {
             throw userException;
         } catch (UserExistException e) {
             serverResponse.setHodgepodgeResponse(USER_EXIST);
+        } catch (PasswordNotMatchException e) {
+            serverResponse.setHodgepodgeResponse(INVALID_PASSWORD);
         } catch (UserException e) {
             serverResponse.setHodgepodgeResponse(USER_ERROR);
         }

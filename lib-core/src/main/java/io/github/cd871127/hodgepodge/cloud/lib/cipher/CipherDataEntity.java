@@ -20,13 +20,12 @@ public class CipherDataEntity {
         setData(data);
         setKeyId(keyId);
     }
-//
-//    public byte[] getBytes() {
-//        return Base64.getDecoder().decode(this.data);
-//    }
-//
-//    public void setBytes(byte[] bytes) {
-//        setData(Base64.getEncoder().encodeToString(bytes));
-//    }
+    public byte[] getBytes() {
+        return Base64.getDecoder().decode(this.data);
+    }
+
+    public void setBytes(byte[] bytes) {
+        setData(Base64.getEncoder().encodeToString(bytes));
+    }
 
 }

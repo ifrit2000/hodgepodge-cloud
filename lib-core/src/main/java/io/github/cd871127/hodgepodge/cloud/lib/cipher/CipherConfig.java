@@ -1,4 +1,4 @@
-package io.github.cd871127.hodgepodge.cloud.cipher.configure.properties;
+package io.github.cd871127.hodgepodge.cloud.lib.cipher;
 
 import lombok.Data;
 

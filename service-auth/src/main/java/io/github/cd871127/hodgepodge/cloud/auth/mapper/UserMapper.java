@@ -21,5 +21,4 @@ public interface UserMapper {
     UserInfo selectSingleUserInfo(String userId);
 //    @UpdateProvider(type = AuthMapperSqlProvider.class, method = "updateUserInfo")
 //    int updateUserInfo(UserInfo userInfo);
-
 }

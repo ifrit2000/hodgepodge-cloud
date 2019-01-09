@@ -1,7 +1,7 @@
 package io.github.cd871127.hodgepodge.cloud.cipher.service;
 
-import io.github.cd871127.hodgepodge.cloud.cipher.algorithm.CipherDataEntity;
 import io.github.cd871127.hodgepodge.cloud.cipher.exception.KeyIdExpiredException;
+import io.github.cd871127.hodgepodge.cloud.lib.cipher.CipherDataEntity;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
