@@ -5,12 +5,11 @@ import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerRespons
 import io.github.cd871127.hodgepodge.cloud.safebox.asset.dto.AssetDTO;
 import io.github.cd871127.hodgepodge.cloud.safebox.asset.service.AssetService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.jdbc.SQL;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
+import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.FAILED;
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
 @RestController
@@ -29,15 +28,18 @@ public class AssetController {
     }
 
     @PostMapping("")
-    ServerResponse<AssetDTO> saveAsset(@RequestBody AssetDTO assetDTO) {
-        return null;
+    ServerResponse saveAsset(@RequestBody AssetDTO assetDTO) {
+        ServerResponse serverResponse = new ServerResponse<>(SUCCESSFUL);
+        if (assetService.saveAsset(assetDTO) == 0) {
+            serverResponse.setHodgepodgeResponse(FAILED);
+        }
+        return serverResponse;
     }
 
     @DeleteMapping("{userId}/{assetId}")
     ServerResponse<AssetDTO> removeAssetByUserId() {
         return null;
     }
-
 
 
 }

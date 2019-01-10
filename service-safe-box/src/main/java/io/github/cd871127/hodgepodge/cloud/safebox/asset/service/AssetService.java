@@ -19,4 +19,7 @@ public class AssetService {
         return new PageInfo<>(assetMapper.findAssetByUserId(userId, assetId));
     }
 
+    public int saveAsset(AssetDTO assetDTO) {
+        return assetMapper.saveAsset(assetDTO);
+    }
 }

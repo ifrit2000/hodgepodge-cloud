@@ -25,7 +25,3 @@ management:
     health:
       show-details: always
 
-#mybatis:
-#  configuration:
-#    interceptors:
-#      - io.github.cd871127.hodgepodge.mybatis.SqlLogInterceptor

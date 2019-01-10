@@ -3,7 +3,6 @@ package io.github.cd871127.hodgepodge.mybatis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -37,19 +36,12 @@ public class SqlLogInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         try {
-            MappedStatement mappedStatement = null;
-            MapperMethod.ParamMap parameter = null;
-            for (Object arg : invocation.getArgs()) {
-                if (arg instanceof MappedStatement) {
-                    mappedStatement = (MappedStatement) arg;
-                }
-                if (arg instanceof MapperMethod.ParamMap) {
-                    parameter = (MapperMethod.ParamMap) arg;
-                }
+            MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
+            Object parameter = null;
+            if (invocation.getArgs().length >= 1) {
+                parameter = invocation.getArgs()[1];
             }
-            if (parameter == null || mappedStatement == null) {
-                throw new Exception("show sql parameter failed");
-            }
+
             BoundSql boundSql = mappedStatement.getBoundSql(parameter);  // BoundSql就是封装myBatis最终产生的sql类
             Configuration configuration = mappedStatement.getConfiguration();  // 获取节点的配置
             String sql = showSql(configuration, boundSql); // 获取到最终的sql语句
@@ -64,19 +56,16 @@ public class SqlLogInterceptor implements Interceptor {
 
     /*<br>    *如果参数是String，则添加单引号， 如果是日期，则转换为时间格式器并加单引号； 对参数是null和不是null的情况作了处理<br>　　*/
     private String getParameterValue(Object obj) {
-        String value = null;
-        if (obj instanceof String) {
+        String value;
+        if (obj == null) {
+            value = "null";
+        } else if (obj instanceof String) {
             value = "'" + obj.toString() + "'";
         } else if (obj instanceof Date) {
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
             value = "'" + formatter.format(new Date()) + "'";
         } else {
-            if (obj != null) {
-                value = obj.toString();
-            } else {
-                value = "";
-            }
-
+            value = obj.toString();
         }
         return value;
     }
