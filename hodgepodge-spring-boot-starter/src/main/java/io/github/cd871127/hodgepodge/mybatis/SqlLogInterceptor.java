@@ -49,12 +49,12 @@ public class SqlLogInterceptor implements Interceptor {
             log.debug(sql);
         } catch (Exception e) {
             log.warn("show sql parameter failed.");
-            log.warn("{}", e);
+//            log.warn("{}", e);
         }
         return invocation.proceed();  // 执行完上面的任务后，不改变原有的sql执行过程
     }
 
-    /*<br>    *如果参数是String，则添加单引号， 如果是日期，则转换为时间格式器并加单引号； 对参数是null和不是null的情况作了处理<br>　　*/
+    //如果参数是String，则添加单引号， 如果是日期，则转换为时间格式器并加单引号； 对参数是null和不是null的情况作了处理<br>　　*/
     private String getParameterValue(Object obj) {
         String value;
         if (obj == null) {
