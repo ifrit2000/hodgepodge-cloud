@@ -9,7 +9,6 @@ public class AssetDTO {
     private String userId;
     private String assetId;
     private String password;
-    private String passwordKeyId;
     private String phone;
     private String eMail;
     private String mainPage;

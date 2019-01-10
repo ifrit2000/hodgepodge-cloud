@@ -36,10 +36,11 @@ public class AssetController {
         return serverResponse;
     }
 
-    @DeleteMapping("{userId}/{assetId}")
-    ServerResponse<AssetDTO> removeAssetByUserId() {
-        return null;
+    @DeleteMapping({"{userId}", "{userId}/{assetId}"})
+    ServerResponse<PageInfo<AssetDTO>> removeAssetByUserId(@PathVariable("userId") String userId, @PathVariable(value = "assetId", required = false) String assetId) {
+        ServerResponse<PageInfo<AssetDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(assetService.removeAssetByUserId(userId, assetId));
+        return serverResponse;
     }
-
 
 }
