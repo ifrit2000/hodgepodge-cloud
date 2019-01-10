@@ -1,24 +1,28 @@
 import json
+import os
+from concurrent.futures import ThreadPoolExecutor
 
-from handler import HtmlResponseHandler, TopicHandler, PageHandler
-from http_request import Downloader
+from handler import TopicHandler, PageHandler
+from http_request import Downloader, HtmlResponseProcessor
 from log import LoggerObject
 
 
 class Spider(LoggerObject):
-    def __init__(self, config=None):
+    def __init__(self, config=None, config_file=None):
         super().__init__(name="spider")
-        self.__downloader = Downloader(HtmlResponseHandler)
-        if config is not None:
-            self.__config = json.loads(config)
+        self.__config = config
+        if config_file is not None:
+            file_config = json.loads(config_file)
+            file_config.update(self.__config)
+            self.__config = file_config
         self.__target = config.get("target")
-        downloader = Downloader(HtmlResponseHandler())
+        self.__base_url = config.get("baseUrl", "www.t66y.com")
+        self.__thread_num = int(config.get("threadNum", 1))
+        downloader = Downloader(HtmlResponseProcessor(), headers=config.get("headers"))
         if self.__target == "topic":
-            self.__thread_num = config.get("threadNum", 5)
             self.__handler = TopicHandler(downloader)
             self.__process = self.__process_topic
         elif self.__target == "page":
-            self.__thread_num = config.get("threadNum", 1)
             self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
             self.__handler = PageHandler(downloader)
             self.__process = self.__process_page
@@ -27,7 +31,12 @@ class Spider(LoggerObject):
         self.__process()
 
     def __process_page(self):
-        pass
+        self.logger.info("process page:")
+        with ThreadPoolExecutor(self.__thread_num) as executor:
+            for fid in self.__fid_list:
+                for pageNum in range(1, 2):
+                    url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, pageNum))
+                    executor.submit(self.__handler.handle, url)
 
     def __process_topic(self):
         pass

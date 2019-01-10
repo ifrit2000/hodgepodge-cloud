@@ -8,7 +8,7 @@ class Logger(object):
     def __init__(self, name, file, path='/tmp/log', level=logging.DEBUG):
         if not os.path.exists(path):
             os.mkdir(path)
-        log_format = "%(asctime)s - [%(process)d] %(levelname)s: %(message)s ---(%(funcName)s@%(module)s:%(lineno)d)"
+        log_format = "%(asctime)s - [%(process)d] %(levelname)s: %(message)s ---(%(funcName)s@%(module)s:%(lineno)d) By %(name)s"
         date_format = "%Y-%m-%d %H:%M:%S"
         logger = logging.getLogger(name)
         logger.setLevel(level)

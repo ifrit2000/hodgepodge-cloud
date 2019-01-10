@@ -26,3 +26,28 @@ class Downloader(LoggerObject):
     def post(self, url, fields=None, headers=None, body=None):
         self.logger.debug("POST %s" % url)
         return self.__request(url=url, method="POST", fields=fields, headers=headers, body=body)
+
+
+class ResponseProcessor(LoggerObject):
+
+    def __init__(self):
+        super().__init__("responseProcess")
+
+    def handle(self, response):
+        return self._handle(response)
+
+    def _handle(self, response):
+        pass
+
+
+class HtmlResponseProcessor(ResponseProcessor):
+
+    def _handle(self, response):
+        if response is None:
+            self.logger.error("response is None")
+            return None
+        if response.status != 200:
+            self.logger.error("response code: %s" % str(response.status))
+            return None
+        self.logger.debug("OK %s" % response.geturl())
+        return response.data.decode("gbk", "ignore")

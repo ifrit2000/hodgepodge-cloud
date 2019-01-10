@@ -11,20 +11,21 @@ class Handler(LoggerObject):
 
     def handle(self, url):
         html = self.__downloader.get(url)
-        self.__handle_html(html)
+        self.logger.debug("handle html of %s" % url)
+        return self._handle_html(html, url)
 
-    def __handle_html(self, html):
+    def _handle_html(self, html, url):
         pass
 
 
 class PageHandler(Handler):
 
-    def __handle_html(self, html):
+    def _handle_html(self, html, url):
         topic_list = list()
         soup = BeautifulSoup(html, "html.parser")
         table = soup.find(name="table", id="ajaxtable")
         if table is None:
-            self.logger.error("handle page error: cannot find table\n%s" % html)
+            self.logger.error("handle page error: cannot find table\n%s" % url)
             return topic_list
         # 判断是否首页
         try:
@@ -34,18 +35,18 @@ class PageHandler(Handler):
                 a = tr.find(name="h3").a
                 topic_list.append({"url": a['href'], "title": a.text})
         except Exception as e:
-            self.logger.error("handle page error:\n%s" % html)
+            self.logger.error("handle page error:\n%s" % url)
         return topic_list
 
 
 class TopicHandler(Handler):
 
-    def __handle_html(self, html):
+    def _handle_html(self, html, url):
         topic = dict()
         soup = BeautifulSoup(html, "html.parser")
         if soup.select(".tpc_content img") is None:
             topic["status"] = "1"
-            self.logger.error("handle topic error:\n%s" % html)
+            self.logger.error("handle topic error:\n%s" % url)
             return topic
         try:
             get_image = lambda tag: list(
@@ -62,18 +63,6 @@ class TopicHandler(Handler):
             if topic["torrent_links"] is None or len(topic["torrent_links"]) == 0:
                 topic["status"] = "3"  # torrent_error
         except Exception as e:
-            self.logger.error("handle topic error:\n%s" % html)
+            self.logger.error("handle topic error:\n%s" % url)
             topic["status"] = "1"
         return topic
-
-
-class HtmlResponseHandler(LoggerObject):
-
-    def handle(self, response):
-        if response is None:
-            self.logger.error("response is None")
-            return None
-        if response.status != 200:
-            self.logger.error("response code: %s" % str(response.status))
-            return None
-        return response.data.decode("gbk", "ignore")
