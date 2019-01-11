@@ -28,12 +28,14 @@ config_topic = {}
 config_page = \
     {
         "target": "page",
-        "threadNum": "1",
+        "threadNum": 1,
         "fidList": ["2"],
         "baseUrl": "www.t66y.com",
         "headers": headers,
         "mysqlConfig": mysql
     }
+
+i = 2
 
 
 class Test(object):
@@ -43,9 +45,9 @@ class Test(object):
     def get_page_range(self, first_page_num, last_page_num):
         if first_page_num == last_page_num:
             return first_page_num
-        middle_page_num = first_page_num + math.ceil(((last_page_num - first_page_num) + 1.0) / 2.0) - 1
+        middle_page_num = first_page_num + math.ceil(((last_page_num - first_page_num) + 1.0) / 5.0) - 1
+        # print(first_page_num, middle_page_num, last_page_num)
         if self.is_handle(middle_page_num):
-            # page deal
             return self.get_page_range(first_page_num, middle_page_num)
         else:
             return self.get_page_range(middle_page_num + 1, last_page_num)
@@ -53,8 +55,7 @@ class Test(object):
         # self.__page_list = list(range(0, math.floor(((last_page_num - first_page_num) + 1.0) / 4.0)))
 
     def is_handle(self, curpage):
-        print(curpage)
-        return curpage >= 4
+        return curpage in list(range(i, 101))
 
 
 if __name__ == '__main__':
@@ -63,7 +64,11 @@ if __name__ == '__main__':
     # print(res)
     # spider = Spider(config_page)
     # spider.run()
-    print(Test().get_page_range(1, 100))
+    # print(Test().get_page_range(1, 100))
+    for j in range(1, 101):
+        i = j
+        if (j != Test().get_page_range(1, 100)):
+            print("error")
     #
     # my = MySql(**mysql)
     # cache = Cache(my)
