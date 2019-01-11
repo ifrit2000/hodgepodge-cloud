@@ -10,7 +10,6 @@ import java.util.Map;
 
 @FeignClient(value = "service-cipher")
 public interface CipherClient {
-
     @RequestMapping(value = "/rsa/publicKey/{keyId}", method = RequestMethod.GET)
     ServerResponse<Map<String, String>> publicKey(@PathVariable(required = false) String keyId);
 
@@ -23,6 +22,6 @@ public interface CipherClient {
     @PatchMapping(value = "/cipher/keyPair/{keyId}")
     ServerResponse<String> persistentKeyPair(@PathVariable String keyId);
 
-    @DeleteMapping(value="/cipher/keyPair/{keyId}")
+    @DeleteMapping(value = "/cipher/keyPair/{keyId}")
     ServerResponse<Boolean> deleteKeyPair(@PathVariable String keyId);
 }
