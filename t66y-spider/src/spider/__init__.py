@@ -2,6 +2,8 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 
+from cache import Cache
+from datasource import MySql
 from handler import TopicHandler, PageHandler
 from http_request import Downloader, HtmlResponseProcessor
 from log import LoggerObject
@@ -15,6 +17,8 @@ class Spider(LoggerObject):
             file_config = json.loads(config_file)
             file_config.update(self.__config)
             self.__config = file_config
+        self.__mysql = MySql(**(config.get("mysqlConfig")))
+        self.__cache = Cache(self.__mysql)
         self.__target = config.get("target")
         self.__base_url = config.get("baseUrl", "www.t66y.com")
         self.__thread_num = int(config.get("threadNum", 1))

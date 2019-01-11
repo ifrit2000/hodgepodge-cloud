@@ -1,8 +1,6 @@
-from sys import getsizeof
-
 import pymysql
-import redis
 
+from cache import Cache
 from datasource import MySql
 
 headers = {
@@ -51,12 +49,14 @@ if __name__ == '__main__':
     # spider = Spider(config_page)
     # spider.run()
     my = MySql(**mysql)
-    a = my.find_all_url()
-    print(getsizeof(a))
-    pool = redis.ConnectionPool(host='172.28.0.2', port=6379, db=9)
-    r = redis.Redis(connection_pool=pool)
-    r.hset("urls", "fff", "aaaaa")
-    r.mset({"aa":2,"bb":"1"})
-    print(r.exists("aa","bb"))
-
-    print(r.get('aaa'))
+    cache = Cache(my)
+    print(cache.is_contain_url("htm_data/5/1807/3201529.html"))
+    # a = my.find_all_url()
+    # print(getsizeof(a))
+    # pool = redis.ConnectionPool(host='172.28.0.2', port=6379, db=9)
+    # r = redis.Redis(connection_pool=pool)
+    # r.hset("urls", "fff", "aaaaa")
+    # r.mset({"aa":2,"bb":"1"})
+    # print(r.exists("aa","bb"))
+    #
+    # print(r.get('aaa'))

@@ -2,13 +2,19 @@ from log import LoggerObject
 
 
 class Cache(LoggerObject):
-    def __init__(self):
-        super().__init__("Cache")
+    __urls = None
 
-    __urls = set()
+    def __init__(self, datasource):
+        super().__init__("Cache")
+        self.__init(datasource)
 
     @classmethod
-    def is_url_exist(cls, url):
+    def __init(cls, datasource):
+        if cls.__urls is None:
+            cls.__urls = datasource.find_all_url()
+
+    @classmethod
+    def is_contain_url(cls, url):
         return url in cls.__urls
 
     @classmethod

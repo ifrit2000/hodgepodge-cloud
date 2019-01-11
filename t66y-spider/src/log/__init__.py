@@ -34,6 +34,7 @@ class Logger(object):
 
 
 class LoggerObject(object):
+
     def __init__(self, name=None, file="spider.log"):
         if name is None:
             name = str(time.clock())

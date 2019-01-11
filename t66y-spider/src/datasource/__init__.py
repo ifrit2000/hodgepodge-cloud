@@ -14,7 +14,7 @@ class MySql(LoggerObject):
         return self.__connection
 
     def find_all_url(self):
-        urls = list()
+        urls = None
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute("select topic_url from TOPIC_INFO")
