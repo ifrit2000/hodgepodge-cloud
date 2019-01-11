@@ -2,6 +2,8 @@ import math
 
 import pymysql
 
+from spider import Spider
+
 headers = {
     "Connection": "keep-alive",
     "Cache-Control": "max-age=0",
@@ -29,7 +31,7 @@ config_page = \
     {
         "target": "page",
         "threadNum": 1,
-        "fidList": ["2"],
+        "fidList": ["2", "4", "5", "15", "25", "26", "27"],
         "baseUrl": "www.t66y.com",
         "headers": headers,
         "mysqlConfig": mysql
@@ -46,13 +48,10 @@ class Test(object):
         if first_page_num == last_page_num:
             return first_page_num
         middle_page_num = first_page_num + math.ceil(((last_page_num - first_page_num) + 1.0) / 5.0) - 1
-        # print(first_page_num, middle_page_num, last_page_num)
         if self.is_handle(middle_page_num):
             return self.get_page_range(first_page_num, middle_page_num)
         else:
             return self.get_page_range(middle_page_num + 1, last_page_num)
-
-        # self.__page_list = list(range(0, math.floor(((last_page_num - first_page_num) + 1.0) / 4.0)))
 
     def is_handle(self, curpage):
         return curpage in list(range(i, 101))
@@ -62,13 +61,13 @@ if __name__ == '__main__':
     # res = Downloader(HtmlResponseHandler(),proxy=True,proxy_url="http://127.0.0.1:1080").get("www.baidu.com")
     # res = Downloader(HtmlResponseHandler()).get("www.t66y.com")
     # print(res)
-    # spider = Spider(config_page)
-    # spider.run()
+    spider = Spider(config_page)
+    spider.run()
     # print(Test().get_page_range(1, 100))
-    for j in range(1, 101):
-        i = j
-        if (j != Test().get_page_range(1, 100)):
-            print("error")
+    # for j in range(1, 101):
+    #     i = j
+    #     if (j != Test().get_page_range(1, 100)):
+    #         print("error")
     #
     # my = MySql(**mysql)
     # cache = Cache(my)
