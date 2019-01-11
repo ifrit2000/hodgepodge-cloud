@@ -1,7 +1,6 @@
-import pymysql
+import math
 
-from cache import Cache
-from datasource import MySql
+import pymysql
 
 headers = {
     "Connection": "keep-alive",
@@ -37,9 +36,25 @@ config_page = \
     }
 
 
-def test(test1=None, test2=None):
-    print(test1)
-    print(test2)
+class Test(object):
+    def __init__(self):
+        self.__page_list = list(range(1, 101))
+
+    def get_page_range(self, first_page_num, last_page_num):
+        if first_page_num == last_page_num:
+            return first_page_num
+        middle_page_num = first_page_num + math.ceil(((last_page_num - first_page_num) + 1.0) / 2.0) - 1
+        if self.is_handle(middle_page_num):
+            # page deal
+            return self.get_page_range(first_page_num, middle_page_num)
+        else:
+            return self.get_page_range(middle_page_num + 1, last_page_num)
+
+        # self.__page_list = list(range(0, math.floor(((last_page_num - first_page_num) + 1.0) / 4.0)))
+
+    def is_handle(self, curpage):
+        print(curpage)
+        return curpage >= 4
 
 
 if __name__ == '__main__':
@@ -48,9 +63,11 @@ if __name__ == '__main__':
     # print(res)
     # spider = Spider(config_page)
     # spider.run()
-    my = MySql(**mysql)
-    cache = Cache(my)
-    print(cache.is_contain_url("htm_data/5/1807/3201529.html"))
+    print(Test().get_page_range(1, 100))
+    #
+    # my = MySql(**mysql)
+    # cache = Cache(my)
+    # print(cache.is_contain_url("htm_data/5/1807/3201529.html"))
     # a = my.find_all_url()
     # print(getsizeof(a))
     # pool = redis.ConnectionPool(host='172.28.0.2', port=6379, db=9)

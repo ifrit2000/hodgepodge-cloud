@@ -28,6 +28,7 @@ public interface AssetMapper {
                         "UPDATED_DATE");
                 FROM("ASSET_INFO");
                 WHERE("USER_ID=#{userId}");
+                WHERE("STATUS=0");
                 if (!StringUtils.isEmpty(paraMap.get("assetId"))) {
                     WHERE("ASSET_ID=#{assetId}");
                 }
@@ -48,7 +49,7 @@ public interface AssetMapper {
         public String removeAssetByUserId(Map<String, String> paraMap) {
             return new SQL() {{
                 UPDATE("ASSET_INFO");
-                SET("IS_VALID='0'");
+                SET("STATUS=1");
                 WHERE("USER_ID=#{userId}");
                 if (!StringUtils.isEmpty(paraMap.get("assetId"))) {
                     WHERE("ASSET_ID=#{assetId}");
