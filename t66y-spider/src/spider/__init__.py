@@ -106,7 +106,7 @@ class Spider(LoggerObject):
             topic_list = list()
             self.logger.info("handle %s topics", str(len(not_handle_topic_list)))
             for topic in not_handle_topic_list:
-                time.sleep(random.randint(25, 35) / 10.0)
+                time.sleep(random.randint(15, 25) / 10.0)
                 result = self.__handler.handle(os.path.join(self.__base_url, topic.get("url")))
                 topic.update(result)
                 topic_list.append(topic)
