@@ -22,7 +22,7 @@ class PageHandler(Handler):
 
     def _handle_html(self, html, url):
         topic_list = list()
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(html, "html5lib")
         table = soup.find(name="table", id="ajaxtable")
         if table is None:
             self.logger.error("handle page error: cannot find table\n%s" % url)
@@ -45,8 +45,10 @@ class TopicHandler(Handler):
     def _handle_html(self, html, url):
         topic = dict()
         topic["status"] = "1"
-        soup = BeautifulSoup(html, "html.parser")
-        if soup.select(".tpc_content img") is None:
+        soup = BeautifulSoup(html, "html5lib")
+        if len(soup.select(".t")) == 0:
+            print(soup.select(".tpc_content do_not_catch"))
+        if len(soup.select(".tpc_content")) == 0:
             topic["status"] = "4"
             self.logger.error("handle topic error:\n%s" % url)
             return topic
