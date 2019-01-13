@@ -1,5 +1,3 @@
-import math
-
 import pymysql
 
 from spider import Spider
@@ -12,10 +10,10 @@ headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-    # , "Cookie": "PHPSESSID=3q23r1ceckr5p1h84n2c023hg5"
+    , "Cookie": "PHPSESSID=te1osrejpcgj1u943mpupkqrl5"
 }
 
-mysql = {
+mysqlConfig = {
     "host": "172.28.0.4",
     "port": 3306,
     "user": "appdata",
@@ -24,6 +22,11 @@ mysql = {
     "charset": "utf8",
     "cursorclass": pymysql.cursors.DictCursor,
     "use_unicode": True
+}
+redisConfig = {
+    "host": "172.28.0.2",
+    "port": 6379,
+    "db": 10
 }
 
 config_topic = {}
@@ -34,50 +37,10 @@ config_page = \
         "fidList": ["2", "4", "5", "15", "25", "26", "27"],
         "baseUrl": "www.t66y.com",
         "headers": headers,
-        "mysqlConfig": mysql
+        "mysqlConfig": mysqlConfig,
+        "redisConfig": redisConfig
     }
 
-i = 2
-
-
-class Test(object):
-    def __init__(self):
-        self.__page_list = list(range(1, 101))
-
-    def get_page_range(self, first_page_num, last_page_num):
-        if first_page_num == last_page_num:
-            return first_page_num
-        middle_page_num = first_page_num + math.ceil(((last_page_num - first_page_num) + 1.0) / 5.0) - 1
-        if self.is_handle(middle_page_num):
-            return self.get_page_range(first_page_num, middle_page_num)
-        else:
-            return self.get_page_range(middle_page_num + 1, last_page_num)
-
-    def is_handle(self, curpage):
-        return curpage in list(range(i, 101))
-
-
 if __name__ == '__main__':
-    # res = Downloader(HtmlResponseHandler(),proxy=True,proxy_url="http://127.0.0.1:1080").get("www.baidu.com")
-    # res = Downloader(HtmlResponseHandler()).get("www.t66y.com")
-    # print(res)
     spider = Spider(config_page)
     spider.run()
-    # print(Test().get_page_range(1, 100))
-    # for j in range(1, 101):
-    #     i = j
-    #     if (j != Test().get_page_range(1, 100)):
-    #         print("error")
-    #
-    # my = MySql(**mysql)
-    # cache = Cache(my)
-    # print(cache.is_contain_url("htm_data/5/1807/3201529.html"))
-    # a = my.find_all_url()
-    # print(getsizeof(a))
-    # pool = redis.ConnectionPool(host='172.28.0.2', port=6379, db=9)
-    # r = redis.Redis(connection_pool=pool)
-    # r.hset("urls", "fff", "aaaaa")
-    # r.mset({"aa":2,"bb":"1"})
-    # print(r.exists("aa","bb"))
-    #
-    # print(r.get('aaa'))

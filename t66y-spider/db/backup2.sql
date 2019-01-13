@@ -1,0 +1,3 @@
+
+
+select utc_timestamp();

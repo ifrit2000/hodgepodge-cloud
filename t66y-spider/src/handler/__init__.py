@@ -33,7 +33,8 @@ class PageHandler(Handler):
             topic_start_flag = topic_start_flag[len(topic_start_flag) - 1]
             for tr in topic_start_flag.find_next_siblings(name="tr", attrs={"class": "tr3 t_one tac"}):
                 a = tr.find(name="h3").a
-                topic_list.append({"url": a['href'], "title": a.text})
+                title = a.text.replace("'", "\\\'").replace('"', '\\\"')
+                topic_list.append({"url": a['href'], "title": title})
         except Exception as e:
             self.logger.error("handle page error:\n%s" % url)
         return topic_list
@@ -43,9 +44,10 @@ class TopicHandler(Handler):
 
     def _handle_html(self, html, url):
         topic = dict()
+        topic["status"] = "1"
         soup = BeautifulSoup(html, "html.parser")
         if soup.select(".tpc_content img") is None:
-            topic["status"] = "1"
+            topic["status"] = "4"
             self.logger.error("handle topic error:\n%s" % url)
             return topic
         try:
@@ -64,5 +66,5 @@ class TopicHandler(Handler):
                 topic["status"] = "3"  # torrent_error
         except Exception as e:
             self.logger.error("handle topic error:\n%s" % url)
-            topic["status"] = "1"
+            topic["status"] = "4"
         return topic

@@ -2,11 +2,10 @@ import json
 import math
 import os
 import random
-import shelve
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from cache import Cache
+from cache import RedisCache
 from datasource import MySql
 from handler import TopicHandler, PageHandler
 from http_request import Downloader, HtmlResponseProcessor
@@ -34,11 +33,24 @@ class Spider(LoggerObject):
             self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
             self.__handler = PageHandler(downloader)
             self.__process = self.__process_page
-            self.__cache = Cache(self.__mysql)
+            self.__cache = RedisCache(self.__mysql, **config["redisConfig"])
             self.__handled_page = dict()
 
     def run(self):
         self.__process()
+        # count = 0
+        # count2 = 0
+        # for fid in ["2", "4", "5", "15", "25", "26", "27"]:
+        #     with shelve.open(fid) as db:
+        #
+        #         # self.__mysql.insert_topic_list(db[fid])
+        #         for topic in db[fid]:
+        #             count2 = count2 + 1
+        #             if self.__cache.is_contain_url(topic.get("url")):
+        #                 print(topic.get("url"))
+        #                 count = count + 1
+        # print(count)
+        # print(count2)
 
     def __get_page_range(self, first_page_num, last_page_num, fid):
         if first_page_num == last_page_num:
@@ -51,14 +63,14 @@ class Spider(LoggerObject):
 
     # 判断是否被处理
     def __is_handle(self, page_num, fid):
+        time.sleep(random.randint(15, 25) / 10.0)
         url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, page_num))
         topic_list = self.__handler.handle(url)
         handle_flag = True
         for topic in topic_list:
             if not self.__cache.is_contain_url(topic["url"]):
                 handle_flag = False
-        if not handle_flag:
-            self.__handled_page[page_num] = topic_list
+        self.__handled_page[page_num] = topic_list
         return handle_flag
 
     def __process_page(self):
@@ -76,20 +88,26 @@ class Spider(LoggerObject):
                         result.append(self.__handled_page.get(pageNum))
                     else:
                         url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, pageNum))
-                        tasks.append(executor.submit(self.__handler.handle, url))
                         time.sleep(random.randint(15, 25) / 10.0)
+                        tasks.append(executor.submit(self.__handler.handle, url))
+
                 for future in as_completed(tasks):
                     task_result = future.result()
                     result.append(task_result)
                 # filter all handled topic
                 all_topics = list()
+                url_list = set()
                 for topic_list in result:
                     for topic in topic_list:
                         if not self.__cache.is_contain_url(topic.get("url")):
                             all_topics.append(topic)
+                            url_list.add(topic.get("url"))
                 self.logger.info("fid %s get %s topics", fid, len(all_topics))
-                with shelve.open(fid) as db:
-                    db[fid] = all_topics
+                self.logger.info("write to db")
+                self.__mysql.insert_topic_list(all_topics)
+                self.__cache.add_urls(url_list)
+                # with shelve.open(fid) as db:
+                #     db[fid] = all_topics
 
     def __process_topic(self):
         pass
