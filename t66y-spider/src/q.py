@@ -13,8 +13,8 @@ def producer(message):
     with pika.BlockingConnection(pika.ConnectionParameters(host, credentials=credential)) as con:
         channel = con.channel()
         channel.exchange_declare(exchange=exchange, exchange_type='topic')
-        while True:
-            channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
+        # while True:
+        channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
 
 
 def callback(ch, method, properties, body):
@@ -33,7 +33,8 @@ def consumer():
 
 
 if __name__ == '__main__':
-    # producer("23423423")
+    producer("23423423")
+    # consumer()
     # topic = Topic()
     # topic.area = "123"
     # topic.images = ['234', '123412']
@@ -41,6 +42,6 @@ if __name__ == '__main__':
     # a = json.dumps(topic, default=lambda obj: obj.to_dict())
     # print(a)
 
-    topic = Topic.from_json(
-        '{"title": 111, "url": "1", "area": "123", "images": ["234", "123412"], "torrent_links": []}')
-    print(topic.to_dict())
+    # topic = Topic.from_json(
+    #     '{"title": 111, "url": "1", "area": "123", "images": ["234", "123412"], "torrent_links": []}')
+    # print(topic.to_dict())

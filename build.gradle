@@ -20,8 +20,7 @@ buildscript {
 //需要redis服务名
 String[] redisProjects = ['service-safe-box', 'service-auth', 'service-cipher']
 String[] consulProjects = ['service-safe-box', 'service-auth',
-                           'service-cipher', 'service-test',
-                           'service-gateway']
+                           'service-cipher', 'service-gateway']
 String[] feignProjects = ['service-cipher', 'service-auth','service-safe-box']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-auth', 'service-cipher']
@@ -151,7 +150,8 @@ configure(subprojects.findAll { consulProjects.contains(it.name) }) {
 
 configure(subprojects.findAll { testProjects.contains(it.name) }) {
     dependencies {
-//        compile project(":hodgepodge-spring-boot-starter")
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     }
 }
 

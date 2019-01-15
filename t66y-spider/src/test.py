@@ -1,18 +1,11 @@
-import tesserocr
+import urllib3
 
-from PIL import Image
+from http_request import FileResponseProcessor
 
-
-for threshold in range(256):
-    # image = Image.open("codeimg.php")
-    image = Image.open("12")
-    image = image.convert("L")
-    table = []
-    for i in range(0, 256):
-        if i < threshold:
-            table.append(0)
-        else:
-            table.append(1)
-    image = image.point(table, '1')
-    result = tesserocr.image_to_text(image)
-    print(result, threshold)
+if __name__ == '__main__':
+    http = urllib3.PoolManager()
+    response = http.request("get",
+                            "http://n.sinaimg.cn/sports/2_img/upload/69e00db4/213/w2048h1365/20190114/t0_P-hrpcmqw7448431.jpg")
+    processor = FileResponseProcessor()
+    image = processor.handle(response)
+    print(len(image) / 1024/1024)

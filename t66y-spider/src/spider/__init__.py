@@ -111,3 +111,10 @@ class Spider(LoggerObject):
                 topic.update(result)
                 topic_list.append(topic)
             self.__mysql.update_topic_list(topic_list)
+
+    def __process_image(self):
+
+        pass
+
+    def __process_torrent(self):
+        pass
