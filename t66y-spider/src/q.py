@@ -1,7 +1,5 @@
 import pika
 
-from spider_ori.parser import Topic
-
 host = '172.28.0.6'
 credential = pika.PlainCredentials('app', 'app')
 routing_key = "test.message"
@@ -32,8 +30,15 @@ def consumer():
         channel.start_consuming()
 
 
+def test(**kw):
+    print(kw["name"])
+
+
 if __name__ == '__main__':
-    producer("23423423")
+    # producer("23423423")
+
+    test(**{"name": "123", "age": 12})
+
     # consumer()
     # topic = Topic()
     # topic.area = "123"
