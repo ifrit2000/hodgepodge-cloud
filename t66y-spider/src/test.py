@@ -1,11 +1,42 @@
-import urllib3
+# -*- coding: utf-8 -*-
 
-from http_request import FileResponseProcessor
+# Form implementation generated from reading ui file 'dialog.ui'
+#
+# Created by: PyQt5 UI code generator 5.9.2
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import pyqtSlot
+
+
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(1175, 640)
+        self.pushButton = QtWidgets.QPushButton(Dialog)
+        self.pushButton.setGeometry(QtCore.QRect(260, 420, 80, 25))
+        self.pushButton.setObjectName("pushButton")
+
+        self.retranslateUi(Dialog)
+        # self.pushButton.clicked.connect(Dialog.close)
+        self.pushButton.clicked.connect(slot=self.test)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.pushButton.setText(_translate("Dialog", "PushButton"))
+
+    def test(self):
+        print("123123")
 
 if __name__ == '__main__':
-    http = urllib3.PoolManager()
-    response = http.request("get",
-                            "http://n.sinaimg.cn/sports/2_img/upload/69e00db4/213/w2048h1365/20190114/t0_P-hrpcmqw7448431.jpg")
-    processor = FileResponseProcessor()
-    image = processor.handle(response)
-    print(len(image) / 1024/1024)
+    import sys
+
+    app = QtWidgets.QApplication(sys.argv)
+    formObj = QtWidgets.QDialog()  # 注意，这里和我们一开始创建窗体时使用的界面类型相同
+    ui = Ui_Dialog()
+    ui.setupUi(formObj)
+    formObj.show()
+    sys.exit(app.exec_())
