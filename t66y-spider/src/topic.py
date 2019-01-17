@@ -10,7 +10,8 @@ headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-    , "Cookie": "PHPSESSID=te1osrejpcgj1u943mpupkqrl5"
+    , "Cookie": "PHPSESSID=v2vvf8cuacn11kj1vpqep0v1u6"
+    # , "Cookie": "PHPSESSID=0mhve2301bvbbbm1naqq61f9a7"
 }
 
 mysqlConfig = {
@@ -27,11 +28,15 @@ mysqlConfig = {
 config_topic = \
     {
         "target": "topic",
-        "threadNum": 1,
+        "threadNum": 3,
+        # "baseUrl": "hs.dety.men",
         "baseUrl": "www.t66y.com",
         "headers": headers,
         "mysqlConfig": mysqlConfig,
-        "batchCount": 200
+        "batchCount": 10,
+        "fidList": ["27"]
+        # "fidList": ["4", "2", "5", "15"]
+        # "fidList": ["26", "27", "25"]
     }
 
 if __name__ == '__main__':

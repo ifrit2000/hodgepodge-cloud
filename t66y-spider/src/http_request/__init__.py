@@ -4,6 +4,8 @@ import urllib3
 
 from log import LoggerObject
 
+urllib3.disable_warnings()
+
 
 class Downloader(LoggerObject):
     def __init__(self, response_handler, num_pools=10, **kw):
