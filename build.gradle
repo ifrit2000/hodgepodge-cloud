@@ -18,13 +18,14 @@ buildscript {
 }
 
 //需要redis服务名
-String[] redisProjects = ['service-safe-box', 'service-auth', 'service-cipher']
+String[] redisProjects = ['service-safe-box', 'service-auth', 'service-cipher','service-t66y']
 String[] consulProjects = ['service-safe-box', 'service-auth',
-                           'service-cipher', 'service-gateway']
+                           'service-cipher', 'service-gateway',
+                           'service-t66y' ]
 String[] feignProjects = ['service-cipher', 'service-auth','service-safe-box']
 //需要mysql服务名
-String[] mysqlProjects = ['service-safe-box', 'service-auth', 'service-cipher']
-String[] webProjects = ['service-cipher', 'service-auth','service-safe-box']
+String[] mysqlProjects = ['service-safe-box', 'service-auth', 'service-cipher','service-t66y']
+String[] webProjects = ['service-cipher', 'service-auth','service-safe-box','service-t66y']
 String[] testProjects = ['service-test']
 
 //所有子项目配置
