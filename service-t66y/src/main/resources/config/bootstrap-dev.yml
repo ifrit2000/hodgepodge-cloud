@@ -1,7 +1,7 @@
 spring:
   cloud:
     consul:
-      host: 172.28.0.199
+      host: 172.28.0.3
       port: 8500
 logging:
   config: classpath:config/logback-spring.xml
