@@ -7,6 +7,7 @@ import io.github.cd871127.hodgepodge.cloud.t66y.mapper.T66yMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class T66yService {
@@ -21,5 +22,9 @@ public class T66yService {
 
     public TopicDTO findTopic(String topicUrl) {
         return null;
+    }
+
+    public List<TopicDTO> findTopicTitle() {
+        return t66yMapper.findTopicTitle();
     }
 }

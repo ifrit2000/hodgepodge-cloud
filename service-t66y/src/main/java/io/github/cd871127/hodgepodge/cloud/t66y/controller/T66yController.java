@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
 
@@ -29,9 +32,48 @@ public class T66yController {
         return serverResponse;
     }
 
+    @GetMapping("topic/title")
+    public ServerResponse<List<TopicDTO>> findTopicTitle() {
+        ServerResponse<List<TopicDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(t66yService.findTopicTitle());
+        return serverResponse;
+    }
+
     @GetMapping("topic")
     public ServerResponse<TopicDTO> findTopic() {
         return null;
+    }
+
+    @GetMapping("fid")
+    public ServerResponse<Map<String, String>> findFid() {
+        ServerResponse<Map<String, String>> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        Map<String, String> map = new HashMap<>();
+        map.put("2", "亞洲無碼原創區");
+        map.put("4", "歐美原創區");
+        map.put("5", "動漫原創區");
+        map.put("15", "亞洲有碼原創區");
+        map.put("25", "國產原創區");
+        map.put("26", "中字原創區");
+        map.put("27", "轉帖交流區");
+        serverResponse.setData(map);
+        return serverResponse;
+    }
+
+    @GetMapping("status")
+    public ServerResponse<Map<String, String>> status() {
+        ServerResponse<Map<String, String>> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        Map<String, String> map = new HashMap<>();
+        map.put("0", "处理完成");
+        map.put("1", "URL待处理");
+        map.put("2", "图片URL异常");
+        map.put("3", "种子URL异常");
+        map.put("4", "全部URL异常");
+        map.put("5", "文件待处理");
+        map.put("6", "图片文件异常");
+        map.put("7", "种子文件异常");
+        map.put("8", "全部文件异常");
+        serverResponse.setData(map);
+        return serverResponse;
     }
 
 }

@@ -34,6 +34,9 @@ public interface T66yMapper {
     @Select("select TOPIC_URL,TORRENT_HASH,TORRENT_STATUS,TORRENT_URL from TORRENT_INFO where TOPIC_URL=#{topicUrl}")
     List<TorrentDTO> findTorrentsByTopicUrl(@Param("topicUrl") String topicUrl);
 
+    @Select("select TOPIC_URL,TOPIC_TITLE from TOPIC_INFO")
+    List<TopicDTO> findTopicTitle();
+
     class T66ySqlProvider {
         public String findTopics(Map<String, String> paraMap) {
             return new SQL() {{
