@@ -1,7 +1,5 @@
 import pika
 
-from spider_ori.parser import Topic
-
 host = '172.28.0.6'
 credential = pika.PlainCredentials('app', 'app')
 routing_key = "test.message"
@@ -13,8 +11,8 @@ def producer(message):
     with pika.BlockingConnection(pika.ConnectionParameters(host, credentials=credential)) as con:
         channel = con.channel()
         channel.exchange_declare(exchange=exchange, exchange_type='topic')
-        while True:
-            channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
+        # while True:
+        channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
 
 
 def callback(ch, method, properties, body):
@@ -32,8 +30,16 @@ def consumer():
         channel.start_consuming()
 
 
+def test(**kw):
+    print(kw["name"])
+
+
 if __name__ == '__main__':
     # producer("23423423")
+
+    test(**{"name": "123", "age": 12})
+
+    # consumer()
     # topic = Topic()
     # topic.area = "123"
     # topic.images = ['234', '123412']
@@ -41,6 +47,6 @@ if __name__ == '__main__':
     # a = json.dumps(topic, default=lambda obj: obj.to_dict())
     # print(a)
 
-    topic = Topic.from_json(
-        '{"title": 111, "url": "1", "area": "123", "images": ["234", "123412"], "torrent_links": []}')
-    print(topic.to_dict())
+    # topic = Topic.from_json(
+    #     '{"title": 111, "url": "1", "area": "123", "images": ["234", "123412"], "torrent_links": []}')
+    # print(topic.to_dict())

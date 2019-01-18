@@ -30,6 +30,7 @@ class Spider(LoggerObject):
             self.__handler = TopicHandler(downloader)
             self.__process = self.__process_topic
             self.__batch_count = config.get("batchCount", 50)
+            self.__fid_list = config.get("fidList", None)
         elif self.__target == "page":
             self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
             self.__handler = PageHandler(downloader)
@@ -38,7 +39,9 @@ class Spider(LoggerObject):
             self.__handled_page = dict()
 
     def run(self):
+        self.logger.info("start")
         self.__process()
+        self.logger.info("finished")
 
     def __get_page_range(self, first_page_num, last_page_num, fid):
         if first_page_num == last_page_num:
@@ -49,7 +52,7 @@ class Spider(LoggerObject):
         else:
             return self.__get_page_range(middle_page_num + 1, last_page_num, fid)
 
-    # 判断是否被处理
+    #
     def __is_handle(self, page_num, fid):
         time.sleep(random.randint(15, 25) / 10.0)
         url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, page_num))
@@ -76,7 +79,7 @@ class Spider(LoggerObject):
                         result.append(self.__handled_page.get(pageNum))
                     else:
                         url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, pageNum))
-                        time.sleep(random.randint(25, 35) / 10.0)
+                        time.sleep(random.randint(18, 25) / 10.0)
                         tasks.append(executor.submit(self.__handler.handle, url))
 
                 for future in as_completed(tasks):
@@ -100,14 +103,33 @@ class Spider(LoggerObject):
 
     def __process_topic(self):
         while True:
-            not_handle_topic_list = self.__mysql.get_topic_by_status('0', self.__batch_count)
+            not_handle_topic_list = self.__mysql.get_topic_by_status('0', self.__batch_count, self.__fid_list)
             if len(not_handle_topic_list) == 0:
                 break
             topic_list = list()
+            all_task = list()
+            topic_dict = dict()
+            for t in not_handle_topic_list:
+                topic_dict[t.get("url")] = t
+
             self.logger.info("handle %s topics", str(len(not_handle_topic_list)))
-            for topic in not_handle_topic_list:
-                time.sleep(random.randint(15, 25) / 10.0)
-                result = self.__handler.handle(os.path.join(self.__base_url, topic.get("url")))
-                topic.update(result)
-                topic_list.append(topic)
+            with ThreadPoolExecutor(self.__thread_num) as executor:
+                for topic in not_handle_topic_list:
+                    time.sleep(random.randint(18, 25) / 10.0)
+                    task = executor.submit(self.__handler.handle, os.path.join(self.__base_url, topic.get("url")))
+                    all_task.append(task)
+                for future in as_completed(all_task):
+                    result = future.result()
+                    url = result.get("url").replace(self.__base_url + "/", "")
+                    topic = topic_dict[url]
+                    topic.update(result)
+                    topic["url"] = url
+                    topic_list.append(topic)
             self.__mysql.update_topic_list(topic_list)
+
+    def __process_image(self):
+
+        pass
+
+    def __process_torrent(self):
+        pass

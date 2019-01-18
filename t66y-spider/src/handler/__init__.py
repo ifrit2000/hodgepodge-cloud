@@ -44,6 +44,7 @@ class TopicHandler(Handler):
 
     def _handle_html(self, html, url):
         topic = dict()
+        topic["url"] = url
         topic["status"] = "1"
         soup = BeautifulSoup(html, "html5lib")
         if len(soup.select(".t")) == 0:

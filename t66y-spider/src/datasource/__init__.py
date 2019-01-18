@@ -63,7 +63,8 @@ class MySql(LoggerObject):
                     torrent_value = ""
                     for torrent_link in topic.get("torrent_links", list()):
                         torrent_hash = torrent_link[torrent_link.find("hash=") + len("hash="):]
-                        torrent_value = torrent_value + "('%s','%s','%s')," % (topic.get("url"), torrent_link, torrent_hash)
+                        torrent_value = torrent_value + "('%s','%s','%s')," % (
+                            topic.get("url"), torrent_link, torrent_hash)
                     if torrent_value != "":
                         sql = (torrent_sql_template % torrent_value).rstrip(",")
                         cursor.execute(sql)
@@ -73,13 +74,19 @@ class MySql(LoggerObject):
             self.connection.rollback()
         self.logger.info("update %s topics success" % str(len(topic_list)))
 
-    def get_topic_by_status(self, status, num):
+    def get_topic_by_status(self, status, num, fid_list=None):
         if isinstance(num, int):
             num = str(num)
+        fid_segment = ''
+        if fid_list is not None:
+            if isinstance(fid_list, list) or isinstance(fid_list, tuple):
+                fid_segment = "TOPIC_FID in ('%s') and" % "','".join(fid_list)
+            if isinstance(fid_list, str):
+                fid_segment = "TOPIC_FID = '%s' and" % fid_list
         with self.connection.cursor() as cursor:
             cursor.execute(
-                "select topic_url url, topic_status status from TOPIC_INFO where TOPIC_STATUS='%s' limit %s" % (
-                    status, num))
+                "select topic_url url, topic_status status from TOPIC_INFO where %s TOPIC_STATUS='%s' limit %s" % (
+                    fid_segment, status, num))
             result = cursor.fetchall()
         return result
 

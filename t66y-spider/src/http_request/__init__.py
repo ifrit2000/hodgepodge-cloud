@@ -1,6 +1,10 @@
+import base64
+
 import urllib3
 
 from log import LoggerObject
+
+urllib3.disable_warnings()
 
 
 class Downloader(LoggerObject):
@@ -34,6 +38,12 @@ class ResponseProcessor(LoggerObject):
         super().__init__("responseProcess")
 
     def handle(self, response):
+        if response is None:
+            self.logger.error("%s response is None" % response.geturl())
+            return None
+        if response.status != 200:
+            self.logger.error("%s response code: %s" % (response.geturl(), str(response.status)))
+            return None
         return self._handle(response)
 
     def _handle(self, response):
@@ -43,11 +53,10 @@ class ResponseProcessor(LoggerObject):
 class HtmlResponseProcessor(ResponseProcessor):
 
     def _handle(self, response):
-        if response is None:
-            self.logger.error("response is None")
-            return None
-        if response.status != 200:
-            self.logger.error("response code: %s" % str(response.status))
-            return None
-        self.logger.debug("OK %s" % response.geturl())
         return response.data.decode("gbk", "ignore")
+
+
+class FileResponseProcessor(ResponseProcessor):
+
+    def _handle(self, response):
+        return base64.b64encode(response.data)
