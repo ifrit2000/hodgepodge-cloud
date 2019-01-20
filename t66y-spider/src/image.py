@@ -33,11 +33,12 @@ config_image = \
     {
         "target": "image",
         "threadNum": 1,
-        "fidList": ["2", "4", "5", "15", "25", "26", "27"],
+        # "fidList": ["2", "4", "5", "15", "25", "26", "27"],
+        "fidList": ["26"],
         "headers": headers,
         "mysqlConfig": mysqlConfig,
         "redisConfig": redisConfig,
-        "filePath": "/tmp/sp"
+        "filePath": "/media/anthony/新加卷/t66y"
     }
 
 if __name__ == '__main__':

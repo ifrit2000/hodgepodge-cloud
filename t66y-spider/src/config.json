@@ -1,0 +1,28 @@
+{
+  "threadNum": 5,
+  "fidList": [
+    "2",
+    "4",
+    "5",
+    "15",
+    "25",
+    "26",
+    "27"
+  ],
+  "filePath": "/media/anthony/新加卷/t66y",
+  "baseUrl": "www.t66y.com",
+  "batchCount": 15,
+  "mysqlConfig": {
+    "host": "172.28.0.4",
+    "port": 3306,
+    "user": "appdata",
+    "password": "123456",
+    "db": "t66y",
+    "charset": "utf8"
+  },
+  "redisConfig": {
+    "host": "172.28.0.2",
+    "port": 6379,
+    "db": 10
+  }
+}

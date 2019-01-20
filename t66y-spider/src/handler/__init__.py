@@ -65,6 +65,7 @@ class TopicHandler(Handler):
                         ".jpeg") or image[tag].endswith(".png")),
                            soup.select(".tpc_content img"))))
             topic["images"] = list(set(get_image("data-src")) | set(get_image("src")))
+            topic["images"] = list(filter(lambda image: image != 'http://kk.51688.cc/ya/cucu.jpg', topic["images"]))
             topic["torrent_links"] = list(
                 map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
             if topic["images"] is None or len(topic["images"]) == 0:

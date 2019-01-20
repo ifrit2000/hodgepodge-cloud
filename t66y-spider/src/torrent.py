@@ -32,7 +32,7 @@ config_topic = {}
 config_image = \
     {
         "target": "torrent",
-        "threadNum": 1,
+        "threadNum": 3,
         "fidList": ["2", "4", "5", "15", "25", "26", "27"],
         "headers": headers,
         "mysqlConfig": mysqlConfig,

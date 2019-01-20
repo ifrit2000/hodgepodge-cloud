@@ -2,6 +2,7 @@ import json
 import math
 import os
 import random
+import signal
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -16,6 +17,7 @@ class Spider(LoggerObject):
 
     def __init__(self, config=None, config_file=None):
         super().__init__(name="spider")
+        self.__flag = True
         self.__config = config
         if config_file is not None:
             file_config = json.loads(config_file)
@@ -24,6 +26,7 @@ class Spider(LoggerObject):
         self.__mysql = MySql(**(config.get("mysqlConfig")))
         self.__target = config.get("target")
         self.__thread_num = int(config.get("threadNum", 1))
+        self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
         downloader = Downloader(headers=config.get("headers"))
         if self.__target == "topic" or self.__target == "page":
             self.__base_url = config.get("baseUrl", "www.t66y.com")
@@ -31,10 +34,8 @@ class Spider(LoggerObject):
             if self.__target == "topic":
                 self.__handler = TopicHandler(downloader)
                 self.__process = self.__process_topic
-                self.__batch_count = config.get("batchCount", 50)
-                self.__fid_list = config.get("fidList", None)
+                self.__batch_count = config.get("batchCount", 15)
             elif self.__target == "page":
-                self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
                 self.__handler = PageHandler(downloader)
                 self.__process = self.__process_page
                 self.__cache = RedisCache(self.__mysql, **config["redisConfig"])
@@ -42,7 +43,7 @@ class Spider(LoggerObject):
         elif self.__target == "image" or self.__target == "torrent":
             self.__base_file_path = config.get("filePath", "/tmp")
             self.__process = self.__process_file
-
+            self.__batch_count = config.get("batchCount", 15)
             if self.__target == "image":
                 downloader.response_processor = FileResponseProcessor()
                 self.__handler = ImageHandler(downloader)
@@ -50,7 +51,12 @@ class Spider(LoggerObject):
                 downloader.response_processor = HtmlResponseProcessor(charset="utf-8")
                 self.__handler = TorrentHandler(downloader)
 
+    def __interrupt(self, signum, frame):
+        self.__flag = False
+        self.logger.info("用户中断，等待剩余线程完成任务")
+
     def run(self):
+        signal.signal(signal.SIGINT, self.__interrupt)
         self.logger.info("start")
         self.__process()
         self.logger.info("finished")
@@ -108,11 +114,13 @@ class Spider(LoggerObject):
                 self.logger.info("write to db")
                 self.__mysql.insert_topic_list(all_topics)
                 self.__cache.add_urls(url_list)
+                if not self.__flag:
+                    break
                 # with shelve.open(fid) as db:
                 #     db[fid] = all_topics
 
     def __process_topic(self):
-        while True:
+        while True and self.__flag:
             not_handle_topic_list = self.__mysql.get_topic_by_status('0', self.__batch_count, self.__fid_list)
             if len(not_handle_topic_list) == 0:
                 break
@@ -137,14 +145,15 @@ class Spider(LoggerObject):
             self.__mysql.update_topic_list(topic_list)
 
     def __process_file(self):
-        while True:
-            file_urls = self.__mysql.get_file_url(num=3, target=self.__target.upper(), fid_list=["2"])
+        while True and self.__flag:
+            file_urls = self.__mysql.get_file_url(num=self.__batch_count, target=self.__target.upper(),
+                                                  fid_list=self.__fid_list)
             if len(file_urls) == 0:
                 break
             with ThreadPoolExecutor(self.__thread_num) as executor:
                 task_list = list()
                 for file_url in file_urls:
-                    time.sleep(random.randint(18, 25) / 10.0)
+                    time.sleep(random.randint(5, 6) / 10.0)
                     task = executor.submit(self.__start_process_file, file_url.get("topicUrl"), file_url.get("fileUrl"))
                     task_list.append(task)
                 for future in as_completed(task_list):

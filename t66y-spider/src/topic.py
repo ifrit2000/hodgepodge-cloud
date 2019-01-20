@@ -1,3 +1,5 @@
+import json
+
 import pymysql
 
 from spider import Spider
@@ -34,9 +36,6 @@ config_topic = \
         "headers": headers,
         "mysqlConfig": mysqlConfig,
         "batchCount": 10,
-        # "fidList": ["27"]
-        # "fidList": ["4", "2", "5", "15"]
-        # "fidList": ["26", "27", "25"]
         "fidList": ["26", "27", "25", "4", "2", "5", "15"]
     }
 

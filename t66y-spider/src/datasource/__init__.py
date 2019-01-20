@@ -16,6 +16,7 @@ class MySql(LoggerObject):
     def find_all_url(self):
         urls = None
         try:
+            self.connection.ping(reconnect=True)
             with self.connection.cursor() as cursor:
                 cursor.execute("select TOPIC_URL from TOPIC_INFO")
                 urls = [row["TOPIC_URL"] for row in cursor.fetchall()]
@@ -29,6 +30,7 @@ class MySql(LoggerObject):
         sql_template = """insert into t66y.TOPIC_INFO(TOPIC_URL, TOPIC_FID, TOPIC_TITLE) 
         VALUES %s"""
         try:
+            self.connection.ping(reconnect=True)
             with self.connection.cursor() as cursor:
                 topic_values = ""
                 for topic in topic_list:
@@ -49,6 +51,7 @@ class MySql(LoggerObject):
         VALUE %s"""
         sql = ""
         try:
+            self.connection.ping(reconnect=True)
             with self.__connection.cursor() as cursor:
                 for topic in topic_list:
                     cursor.execute("update TOPIC_INFO set TOPIC_STATUS='%s' where TOPIC_URL='%s'"
@@ -88,6 +91,7 @@ class MySql(LoggerObject):
         if isinstance(num, int):
             num = str(num)
         fid_segment = self.__build_fid_segment(fid_list)
+        self.connection.ping(reconnect=True)
         with self.connection.cursor() as cursor:
             cursor.execute(
                 "select topic_url url, topic_status status from TOPIC_INFO where %s TOPIC_STATUS='%s' limit %s" % (
@@ -107,6 +111,7 @@ class MySql(LoggerObject):
                     where %s ti.TOPIC_STATUS = '1'
                       and b.%s_STATUS = '0' limit %s
             """
+        self.connection.ping(reconnect=True)
         with self.connection.cursor() as cursor:
             cursor.execute(sql % (target, target, fid_segment, target, num))
             result = cursor.fetchall()
@@ -118,6 +123,7 @@ class MySql(LoggerObject):
             where TOPIC_URL='%s' and %s_URL='%s'
         """ % (target, target, file_status, file_path, file_id, topic_url, target, file_url)
         try:
+            self.connection.ping(reconnect=True)
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
                 self.connection.commit()

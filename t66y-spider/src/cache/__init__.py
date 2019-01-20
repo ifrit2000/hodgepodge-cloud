@@ -43,6 +43,7 @@ class RedisCache(Cache):
 
     def __init(self, datasource, **kw):
         self.__redis = redis.Redis(host=kw.get("host"), port=kw.get("port"), db=kw.get("db"))
+        self.clear_cache()
         self.add_urls(datasource.find_all_url())
 
     def is_contain_url(self, url):
@@ -51,6 +52,9 @@ class RedisCache(Cache):
     def add_urls(self, urls):
         if urls is not None and len(urls) > 0:
             self.__redis.sadd(self.__cache_key, *urls)
+
+    def clear_cache(self):
+        self.__redis.delete(self.__cache_key)
 
 
 if __name__ == '__main__':
@@ -66,5 +70,6 @@ if __name__ == '__main__':
     }
     mysql = MySql(**mysqlConfig)
     redis = RedisCache(mysql, host="172.28.0.2", port=6379, db=10)
-    print(redis.is_contain_url("htm_data/4/1812/3373960.html"))
-    redis.add_urls([])
+
+    # print(redis.is_contain_url("htm_data/4/1812/3373960.html"))
+    # redis.add_urls([])
