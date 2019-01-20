@@ -1,5 +1,4 @@
 import hashlib
-import os
 from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup
@@ -79,21 +78,19 @@ class TopicHandler(Handler):
 
 
 class FileHandler(Handler):
-    def __init__(self, downloader, filepath):
+    def __init__(self, downloader):
         super().__init__(downloader)
-        self.__filepath = filepath
 
     def _handle_file(self, data, url):
         try:
             sha512 = hashlib.sha512()
             sha512.update(data)
             file_id = sha512.hexdigest()
-            with open(os.path.join(self.__filepath, file_id), 'wb') as file:
-                file.write(data)
-            return True, self.__filepath, file_id
+
+            return file_id, data
         except Exception as e:
             self.logger.error("get file failed:%s", url)
-            return False, None, None
+            return None, None
 
 
 class ImageHandler(FileHandler):
@@ -103,8 +100,8 @@ class ImageHandler(FileHandler):
 
 
 class TorrentHandler(FileHandler):
-    def __init__(self, downloader, filepath):
-        super().__init__(downloader, filepath)
+    def __init__(self, downloader):
+        super().__init__(downloader)
         self.__response_processor = FileResponseProcessor()
 
     def _handle(self, data, url):

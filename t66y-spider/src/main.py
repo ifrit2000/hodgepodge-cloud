@@ -1,8 +1,4 @@
-import shelve
-
-import urllib3
-
-from spider import Daemon, task
+from spider import task
 
 if __name__ == '__main__':
     fid_dict = {

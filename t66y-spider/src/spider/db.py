@@ -1,4 +1,3 @@
-
 class MySql(object):
 
     def __init__(self, connection=None):

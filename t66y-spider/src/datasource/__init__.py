@@ -116,13 +116,13 @@ class MySql(LoggerObject):
         sql = """
             update %s_INFO set %s_STATUS='%s' ,FILE_PATH='%s',FILE_ID='%s'
             where TOPIC_URL='%s' and %s_URL='%s'
-        """
+        """ % (target, target, file_status, file_path, file_id, topic_url, target, file_url)
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(sql % (target, target, file_status, file_path, file_id, topic_url, target, file_url))
+                cursor.execute(sql)
                 self.connection.commit()
         except Exception as e:
-            self.logger.info(sql % (target, target, file_status, file_path, file_id, topic_url, target, file_url))
+            self.logger.info(sql)
             self.logger.error("file url write db failed: %s", file_url)
             self.connection.rollback()
 

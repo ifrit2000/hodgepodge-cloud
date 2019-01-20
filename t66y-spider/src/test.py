@@ -7,7 +7,6 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import pyqtSlot
 
 
 class Ui_Dialog(object):
@@ -30,6 +29,7 @@ class Ui_Dialog(object):
 
     def test(self):
         print("123123")
+
 
 if __name__ == '__main__':
     import sys

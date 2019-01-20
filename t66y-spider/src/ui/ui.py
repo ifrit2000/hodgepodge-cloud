@@ -6,7 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -454,4 +455,3 @@ class Ui_MainWindow(object):
         self.label_28.setText(_translate("MainWindow", "Port:"))
         self.label_30.setText(_translate("MainWindow", "Host:"))
         self.label_32.setText(_translate("MainWindow", "database:"))
-

@@ -40,16 +40,15 @@ class Spider(LoggerObject):
                 self.__cache = RedisCache(self.__mysql, **config["redisConfig"])
                 self.__handled_page = dict()
         elif self.__target == "image" or self.__target == "torrent":
-            self.file_path = os.path.join(config.get("filePath", "/tmp"), self.__target)
+            self.__base_file_path = config.get("filePath", "/tmp")
             self.__process = self.__process_file
-            if not os.path.exists(self.file_path):
-                os.makedirs(self.file_path)
+
             if self.__target == "image":
                 downloader.response_processor = FileResponseProcessor()
-                self.__handler = ImageHandler(downloader, self.file_path)
+                self.__handler = ImageHandler(downloader)
             if self.__target == "torrent":
                 downloader.response_processor = HtmlResponseProcessor(charset="utf-8")
-                self.__handler = TorrentHandler(downloader, self.file_path)
+                self.__handler = TorrentHandler(downloader)
 
     def run(self):
         self.logger.info("start")
@@ -152,10 +151,20 @@ class Spider(LoggerObject):
                     pass
 
     def __start_process_file(self, topic_url, file_url):
-        result, file_path, file_id = self.__handler.handle(file_url)
-        if result:
-            result = "1"
+        file_id, data = self.__handler.handle(file_url)
+        if file_id is not None and data is not None:
+            try:
+                dir_name = os.path.split(os.path.split(topic_url)[0])[1]
+                file_path = os.path.join(self.__base_file_path, dir_name, self.__target)
+                if not os.path.exists(file_path):
+                    os.makedirs(file_path)
+                with open(os.path.join(file_path, file_id), 'wb') as file:
+                    file.write(data)
+                self.__mysql.write_back_file_info(target=self.__target.upper(), topic_url=topic_url,
+                                                  file_url=file_url, file_path=file_path, file_id=file_id,
+                                                  file_status="1")
+            except Exception as e:
+                self.logger.error("error download file: %s", file_url)
+                self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, "-", "-", "2")
         else:
-            result = "2"
-        self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, file_path, file_id, result)
-        self.logger.debug("file download ok: %s", file_url)
+            self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, "-", "-", "2")
