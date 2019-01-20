@@ -145,7 +145,7 @@ def check_config(_config):
     return _error_list
 
 
-if __name__ == '__main__':
+def run():
     short_opts = "hc:t:"
     long_opts = ["help", "target=", "thread-num=", "base-url=", "fid-list=",
                  "redis-host=", "redis-port=", "redis-db=", "mysql-host=",
@@ -167,3 +167,7 @@ if __name__ == '__main__':
     print(config)
     spider = Spider(config)
     spider.run()
+
+
+if __name__ == '__main__':
+    run()

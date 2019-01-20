@@ -36,15 +36,24 @@ class MemCache(Cache):
 
 
 class RedisCache(Cache):
-    def __init__(self, datasource, **kw):
+    def __init__(self, datasource, cache_type="url", **kw):
         super().__init__()
+        self.__cache_type = cache_type
         self.__cache_key = "T66Y.URLS"
+        self.__cache_key_image = "T66Y.IMAGE_FLAG"
+        self.__cache_key_torrent = "T66Y.TORRENT_FLAG"
         self.__init(datasource, **kw)
 
     def __init(self, datasource, **kw):
         self.__redis = redis.Redis(host=kw.get("host"), port=kw.get("port"), db=kw.get("db"))
         self.clear_cache()
-        self.add_urls(datasource.find_all_url())
+        self.logger.info("cache %s" % self.__cache_type)
+        if self.__cache_type == 'url':
+            self.add_urls(datasource.find_all_url())
+        elif self.__cache_type == 'image':
+            self.add_file_flags(datasource.find_all_downloaded_file(self.__cache_type))
+        elif self.__cache_type == 'torrent':
+            self.add_file_flags(datasource.find_all_downloaded_file(self.__cache_type))
 
     def is_contain_url(self, url):
         return self.__redis.sismember(self.__cache_key, url)
@@ -53,8 +62,24 @@ class RedisCache(Cache):
         if urls is not None and len(urls) > 0:
             self.__redis.sadd(self.__cache_key, *urls)
 
+    def add_file_flags(self, file_flags):
+        if file_flags is not None and len(file_flags) > 0:
+            if self.__cache_type == 'image':
+                self.__redis.sadd(self.__cache_key_image, *file_flags)
+            if self.__cache_type == 'torrent':
+                self.__redis.sadd(self.__cache_key_torrent, *file_flags)
+
+    def is_contain_file_flag(self, file_flag):
+        if self.__cache_type == 'image':
+            return self.__redis.sismember(self.__cache_key_image, file_flag)
+        if self.__cache_type == 'torrent':
+            return self.__redis.sismember(self.__cache_key_torrent, file_flag)
+
     def clear_cache(self):
         self.__redis.delete(self.__cache_key)
+        self.__redis.delete(self.__cache_key_torrent)
+        self.__redis.delete(self.__cache_key_image)
+        self.logger.info("clear cache")
 
 
 if __name__ == '__main__':

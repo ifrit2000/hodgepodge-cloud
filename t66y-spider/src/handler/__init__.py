@@ -65,7 +65,18 @@ class TopicHandler(Handler):
                         ".jpeg") or image[tag].endswith(".png")),
                            soup.select(".tpc_content img"))))
             topic["images"] = list(set(get_image("data-src")) | set(get_image("src")))
-            topic["images"] = list(filter(lambda image: image != 'http://kk.51688.cc/ya/cucu.jpg', topic["images"]))
+            topic["images"] = list(
+                filter(lambda image: image not in ('http://kk.51688.cc/ya/cucu.jpg',
+                                                   'http://kk.51688.cc/ya/girl2.jpg',
+                                                   'http://kk.51688.cc/ya/qq944.png',
+                                                   'http://oi63.tinypic.com/29zo0zr.jpg',
+                                                   'http://oi67.tinypic.com/5p3k7q.jpg',
+                                                   'http://www.x6img.com/u/20180501/2151297.jpg',
+                                                   'http://www.xoimg.club/u/20180616/12143952.jpg',
+                                                   'http://www.xoimg.club/u/20180616/18595277.jpg',
+                                                   'https://cbu01.alicdn.com/img/ibank/2018/748/442/9460244847_1746120392.jpg',
+                                                   'https://www.touimg.com/u/20181216/22275764.png'),
+                       topic["images"]))
             topic["torrent_links"] = list(
                 map(lambda a: a.text, filter(lambda a: "hash=" in a.text, soup.select(".tpc_content a"))))
             if topic["images"] is None or len(topic["images"]) == 0:

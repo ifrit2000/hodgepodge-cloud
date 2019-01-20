@@ -44,6 +44,7 @@ class Spider(LoggerObject):
             self.__base_file_path = config.get("filePath", "/tmp")
             self.__process = self.__process_file
             self.__batch_count = config.get("batchCount", 15)
+            self.__cache = RedisCache(self.__mysql, self.__target, **config["redisConfig"])
             if self.__target == "image":
                 downloader.response_processor = FileResponseProcessor()
                 self.__handler = ImageHandler(downloader)
@@ -154,24 +155,34 @@ class Spider(LoggerObject):
                 task_list = list()
                 for file_url in file_urls:
                     time.sleep(random.randint(5, 6) / 10.0)
-                    task = executor.submit(self.__start_process_file, file_url.get("topicUrl"), file_url.get("fileUrl"))
+                    task = executor.submit(self.__start_process_file, file_url.get("topicUrl"), file_url.get("fileUrl"),
+                                           file_url.get("fileFlag"))
                     task_list.append(task)
                 for future in as_completed(task_list):
                     pass
 
-    def __start_process_file(self, topic_url, file_url):
+    def __start_process_file(self, topic_url, file_url, file_flag):
+        if self.__cache.is_contain_file_flag(file_flag):
+            # exist file
+            _id, path = self.__mysql.get_file_id_and_path_by_flag(file_flag, self.__target)
+            self.__mysql.write_back_file_info(target=self.__target.upper(), topic_url=topic_url,
+                                              file_url=file_url, file_path=path, file_id=_id,
+                                              file_status="1")
+            return
         file_id, data = self.__handler.handle(file_url)
+        dir_name = os.path.split(os.path.split(topic_url)[0])[1]
+        file_path = os.path.join(dir_name, self.__target)
         if file_id is not None and data is not None:
             try:
-                dir_name = os.path.split(os.path.split(topic_url)[0])[1]
-                file_path = os.path.join(self.__base_file_path, dir_name, self.__target)
-                if not os.path.exists(file_path):
-                    os.makedirs(file_path)
-                with open(os.path.join(file_path, file_id), 'wb') as file:
+                full_file_path = os.path.join(self.__base_file_path, file_path)
+                if not os.path.exists(full_file_path):
+                    os.makedirs(full_file_path)
+                with open(os.path.join(full_file_path, file_id), 'wb') as file:
                     file.write(data)
                 self.__mysql.write_back_file_info(target=self.__target.upper(), topic_url=topic_url,
                                                   file_url=file_url, file_path=file_path, file_id=file_id,
                                                   file_status="1")
+                self.__cache.add_file_flags((file_flag,))
             except Exception as e:
                 self.logger.error("error download file: %s", file_url)
                 self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, "-", "-", "2")
