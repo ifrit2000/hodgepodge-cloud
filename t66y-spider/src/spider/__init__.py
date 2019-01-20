@@ -7,12 +7,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from cache import RedisCache
 from datasource import MySql
-from handler import TopicHandler, PageHandler
-from http_request import Downloader, HtmlResponseProcessor
+from handler import TopicHandler, PageHandler, ImageHandler, TorrentHandler
+from http_request import HtmlResponseProcessor, FileResponseProcessor, Downloader
 from log import LoggerObject
 
 
 class Spider(LoggerObject):
+
     def __init__(self, config=None, config_file=None):
         super().__init__(name="spider")
         self.__config = config
@@ -21,22 +22,34 @@ class Spider(LoggerObject):
             file_config.update(self.__config)
             self.__config = file_config
         self.__mysql = MySql(**(config.get("mysqlConfig")))
-
         self.__target = config.get("target")
-        self.__base_url = config.get("baseUrl", "www.t66y.com")
         self.__thread_num = int(config.get("threadNum", 1))
-        downloader = Downloader(HtmlResponseProcessor(), headers=config.get("headers"))
-        if self.__target == "topic":
-            self.__handler = TopicHandler(downloader)
-            self.__process = self.__process_topic
-            self.__batch_count = config.get("batchCount", 50)
-            self.__fid_list = config.get("fidList", None)
-        elif self.__target == "page":
-            self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
-            self.__handler = PageHandler(downloader)
-            self.__process = self.__process_page
-            self.__cache = RedisCache(self.__mysql, **config["redisConfig"])
-            self.__handled_page = dict()
+        downloader = Downloader(headers=config.get("headers"))
+        if self.__target == "topic" or self.__target == "page":
+            self.__base_url = config.get("baseUrl", "www.t66y.com")
+            downloader.response_processor = HtmlResponseProcessor()
+            if self.__target == "topic":
+                self.__handler = TopicHandler(downloader)
+                self.__process = self.__process_topic
+                self.__batch_count = config.get("batchCount", 50)
+                self.__fid_list = config.get("fidList", None)
+            elif self.__target == "page":
+                self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
+                self.__handler = PageHandler(downloader)
+                self.__process = self.__process_page
+                self.__cache = RedisCache(self.__mysql, **config["redisConfig"])
+                self.__handled_page = dict()
+        elif self.__target == "image" or self.__target == "torrent":
+            self.file_path = os.path.join(config.get("filePath", "/tmp"), self.__target)
+            self.__process = self.__process_file
+            if not os.path.exists(self.file_path):
+                os.makedirs(self.file_path)
+            if self.__target == "image":
+                downloader.response_processor = FileResponseProcessor()
+                self.__handler = ImageHandler(downloader, self.file_path)
+            if self.__target == "torrent":
+                downloader.response_processor = HtmlResponseProcessor(charset="utf-8")
+                self.__handler = TorrentHandler(downloader, self.file_path)
 
     def run(self):
         self.logger.info("start")
@@ -52,7 +65,6 @@ class Spider(LoggerObject):
         else:
             return self.__get_page_range(middle_page_num + 1, last_page_num, fid)
 
-    #
     def __is_handle(self, page_num, fid):
         time.sleep(random.randint(15, 25) / 10.0)
         url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, page_num))
@@ -81,7 +93,6 @@ class Spider(LoggerObject):
                         url = os.path.join(self.__base_url, "thread0806.php?fid=%s&page=%s" % (fid, pageNum))
                         time.sleep(random.randint(18, 25) / 10.0)
                         tasks.append(executor.submit(self.__handler.handle, url))
-
                 for future in as_completed(tasks):
                     task_result = future.result()
                     result.append(task_result)
@@ -111,7 +122,6 @@ class Spider(LoggerObject):
             topic_dict = dict()
             for t in not_handle_topic_list:
                 topic_dict[t.get("url")] = t
-
             self.logger.info("handle %s topics", str(len(not_handle_topic_list)))
             with ThreadPoolExecutor(self.__thread_num) as executor:
                 for topic in not_handle_topic_list:
@@ -127,9 +137,25 @@ class Spider(LoggerObject):
                     topic_list.append(topic)
             self.__mysql.update_topic_list(topic_list)
 
-    def __process_image(self):
+    def __process_file(self):
+        while True:
+            file_urls = self.__mysql.get_file_url(num=3, target=self.__target.upper(), fid_list=["2"])
+            if len(file_urls) == 0:
+                break
+            with ThreadPoolExecutor(self.__thread_num) as executor:
+                task_list = list()
+                for file_url in file_urls:
+                    time.sleep(random.randint(18, 25) / 10.0)
+                    task = executor.submit(self.__start_process_file, file_url.get("topicUrl"), file_url.get("fileUrl"))
+                    task_list.append(task)
+                for future in as_completed(task_list):
+                    pass
 
-        pass
-
-    def __process_torrent(self):
-        pass
+    def __start_process_file(self, topic_url, file_url):
+        result, file_path, file_id = self.__handler.handle(file_url)
+        if result:
+            result = "1"
+        else:
+            result = "2"
+        self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, file_path, file_id, result)
+        self.logger.debug("file download ok: %s", file_url)

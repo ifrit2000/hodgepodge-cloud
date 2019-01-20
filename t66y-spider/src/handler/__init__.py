@@ -1,5 +1,10 @@
+import hashlib
+import os
+from urllib.parse import urlsplit
+
 from bs4 import BeautifulSoup
 
+from http_request import FileResponseProcessor
 from log import LoggerObject
 
 
@@ -7,20 +12,20 @@ class Handler(LoggerObject):
 
     def __init__(self, downloader):
         super().__init__("handler")
-        self.__downloader = downloader
+        self._downloader = downloader
 
     def handle(self, url):
-        html = self.__downloader.get(url)
+        html = self._downloader.get(url)
         self.logger.debug("handle html of %s" % url)
-        return self._handle_html(html, url)
+        return self._handle(html, url)
 
-    def _handle_html(self, html, url):
+    def _handle(self, html, url):
         pass
 
 
 class PageHandler(Handler):
 
-    def _handle_html(self, html, url):
+    def _handle(self, html, url):
         topic_list = list()
         soup = BeautifulSoup(html, "html5lib")
         table = soup.find(name="table", id="ajaxtable")
@@ -42,7 +47,7 @@ class PageHandler(Handler):
 
 class TopicHandler(Handler):
 
-    def _handle_html(self, html, url):
+    def _handle(self, html, url):
         topic = dict()
         topic["url"] = url
         topic["status"] = "1"
@@ -71,3 +76,61 @@ class TopicHandler(Handler):
             self.logger.error("handle topic error:\n%s" % url)
             topic["status"] = "4"
         return topic
+
+
+class FileHandler(Handler):
+    def __init__(self, downloader, filepath):
+        super().__init__(downloader)
+        self.__filepath = filepath
+
+    def _handle_file(self, data, url):
+        try:
+            sha512 = hashlib.sha512()
+            sha512.update(data)
+            file_id = sha512.hexdigest()
+            with open(os.path.join(self.__filepath, file_id), 'wb') as file:
+                file.write(data)
+            return True, self.__filepath, file_id
+        except Exception as e:
+            self.logger.error("get file failed:%s", url)
+            return False, None, None
+
+
+class ImageHandler(FileHandler):
+
+    def _handle(self, data, url):
+        return self._handle_file(data, url)
+
+
+class TorrentHandler(FileHandler):
+    def __init__(self, downloader, filepath):
+        super().__init__(downloader, filepath)
+        self.__response_processor = FileResponseProcessor()
+
+    def _handle(self, data, url):
+        # self.__downloader.get(url)
+        file_data = None
+        if "rmdown" in url:
+            file_data = self.__handle_rmdown(data, url)
+        if "xhh8" in url:
+            file_data = self.__handle_xhh8(data, url)
+        if file_data is None:
+            return False
+        return self._handle_file(file_data, url)
+
+    def __handle_rmdown(self, html, url):
+        self.logger.debug("handle rmdown")
+        soup = BeautifulSoup(html, "html5lib")
+        param = dict()
+        for item in map(lambda input_field: {input_field["name"]: input_field["value"]}, soup.form.find_all("input")):
+            param.update(item)
+        return self._downloader.get(urlsplit(url).netloc + "/" + soup.form.get("action"), fields=param,
+                                    response_processor=self.__response_processor)
+
+    def __handle_xhh8(self, html, url):
+        self.logger.debug("handle xhh8")
+        soup = BeautifulSoup(html, "html5lib")
+        param = dict()
+        for item in map(lambda input_field: {input_field["name"]: input_field["value"]}, soup.form.find_all("input")):
+            param.update(item)
+        return self._downloader.post(url, fields=param, response_processor=self.__response_processor)

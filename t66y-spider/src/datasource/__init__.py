@@ -74,21 +74,57 @@ class MySql(LoggerObject):
             self.connection.rollback()
         self.logger.info("update %s topics success" % str(len(topic_list)))
 
-    def get_topic_by_status(self, status, num, fid_list=None):
-        if isinstance(num, int):
-            num = str(num)
+    @staticmethod
+    def __build_fid_segment(fid_list):
         fid_segment = ''
         if fid_list is not None:
             if isinstance(fid_list, list) or isinstance(fid_list, tuple):
                 fid_segment = "TOPIC_FID in ('%s') and" % "','".join(fid_list)
             if isinstance(fid_list, str):
                 fid_segment = "TOPIC_FID = '%s' and" % fid_list
+        return fid_segment
+
+    def get_topic_by_status(self, status, num, fid_list=None):
+        if isinstance(num, int):
+            num = str(num)
+        fid_segment = self.__build_fid_segment(fid_list)
         with self.connection.cursor() as cursor:
             cursor.execute(
                 "select topic_url url, topic_status status from TOPIC_INFO where %s TOPIC_STATUS='%s' limit %s" % (
                     fid_segment, status, num))
             result = cursor.fetchall()
         return result
+
+    def get_file_url(self, num, target, fid_list=None):
+        if isinstance(num, int):
+            num = str(num)
+        fid_segment = self.__build_fid_segment(fid_list)
+        sql = """
+            select ti.TOPIC_URL topicUrl,b.%s_URL fileUrl
+                from TOPIC_INFO ti
+                left join %s_INFO b
+                 on (ti.TOPIC_URL = b.TOPIC_URL)
+                    where %s ti.TOPIC_STATUS = '1'
+                      and b.%s_STATUS = '0' limit %s
+            """
+        with self.connection.cursor() as cursor:
+            cursor.execute(sql % (target, target, fid_segment, target, num))
+            result = cursor.fetchall()
+        return result
+
+    def write_back_file_info(self, target, topic_url, file_url, file_path, file_id, file_status):
+        sql = """
+            update %s_INFO set %s_STATUS='%s' ,FILE_PATH='%s',FILE_ID='%s'
+            where TOPIC_URL='%s' and %s_URL='%s'
+        """
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql % (target, target, file_status, file_path, file_id, topic_url, target, file_url))
+                self.connection.commit()
+        except Exception as e:
+            self.logger.info(sql % (target, target, file_status, file_path, file_id, topic_url, target, file_url))
+            self.logger.error("file url write db failed: %s", file_url)
+            self.connection.rollback()
 
 
 class Redis(LoggerObject):

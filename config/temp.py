@@ -8,7 +8,7 @@ import json
 import urllib3
 
 
-def deregister(consul_host='172.28.0.3', consul_port='8500',node="26c355de9d7c"):
+def deregister(consul_host='172.28.0.3', consul_port='8500',node="3adb1371e245"):
     service_info_url = '%s:%s/v1/health/node/%s' % (consul_host, consul_port,node)
     http = urllib3.PoolManager()
     r = http.request('get', service_info_url)

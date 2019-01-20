@@ -14,4 +14,7 @@ public class TopicDTO {
     private List<TorrentDTO> torrentDTOList;
     private List<ImageDTO> imageDTOList;
 
+    public String getKey() {
+        return this.topicUrl;
+    }
 }

@@ -10,8 +10,6 @@ headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-    , "Cookie": "PHPSESSID=v2vvf8cuacn11kj1vpqep0v1u6"
-    # , "Cookie": "PHPSESSID=0mhve2301bvbbbm1naqq61f9a7"
 }
 
 mysqlConfig = {
@@ -24,22 +22,24 @@ mysqlConfig = {
     "cursorclass": pymysql.cursors.DictCursor,
     "use_unicode": True
 }
+redisConfig = {
+    "host": "172.28.0.2",
+    "port": 6379,
+    "db": 10
+}
 
-config_topic = \
+config_topic = {}
+config_image = \
     {
-        "target": "topic",
-        "threadNum": 3,
-        # "baseUrl": "hs.dety.men",
-        "baseUrl": "www.t66y.com",
+        "target": "torrent",
+        "threadNum": 1,
+        "fidList": ["2", "4", "5", "15", "25", "26", "27"],
         "headers": headers,
         "mysqlConfig": mysqlConfig,
-        "batchCount": 10,
-        # "fidList": ["27"]
-        # "fidList": ["4", "2", "5", "15"]
-        # "fidList": ["26", "27", "25"]
-        "fidList": ["26", "27", "25", "4", "2", "5", "15"]
+        "redisConfig": redisConfig,
+        "filePath": "/tmp/sp"
     }
 
 if __name__ == '__main__':
-    spider = Spider(config_topic)
+    spider = Spider(config_image)
     spider.run()
