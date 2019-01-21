@@ -15,7 +15,7 @@ class Downloader(LoggerObject):
             self.logger.info("user proxy: %s" % kw.get("proxy_url"))
             self.__pool = urllib3.ProxyManager(num_pools=num_pools, proxy_url=kw["proxy_url"])
         else:
-            self.__pool = urllib3.PoolManager(num_pools=num_pools, timeout=20, retries=1)
+            self.__pool = urllib3.PoolManager(num_pools=num_pools, timeout=18, retries=3)
         self.__headers = kw.get("headers", None)
         self.__response_processor = response_processor
         self.__headers_cache = dict()
