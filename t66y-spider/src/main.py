@@ -4,8 +4,6 @@ import sys
 
 import pymysql
 
-from spider import Spider
-
 fid_dict = {
     "2": "亞洲無碼原創區",
     "15": "亞洲有碼原創區",
@@ -18,7 +16,27 @@ fid_dict = {
 
 
 def usage():
-    print("usage: not finish")
+    print("usage: python package [OPTIONS]")
+    print("Options:")
+    print(" -t, --target")
+    print(" -c, --config")
+    print("     --thread-num")
+    print("     --base-url")
+    print("     --fid-list")
+    print("     --batch-count")
+    print("     --file-path")
+    print(" -s, --t66y-session-id")
+    print("     --config-file")
+    print("     --redis-host")
+    print("     --redis-port")
+    print("     --redis-db")
+    print("     --mysql-host")
+    print("     --mysql-port")
+    print("     --mysql-user")
+    print("     --mysql-password")
+    print("     --mysql-db")
+    print("     --mysql-charset")
+
     sys.exit(0)
 
 
@@ -90,7 +108,7 @@ def get_config(_opts):
             _cmd_config["batchCount"] = value
         if opt == '--file-path':
             _cmd_config["filePath"] = value
-        if opt == '--t66y-session-id':
+        if opt == '--t66y-session-id' or opt == '-s':
             _t66y_session_id = "PHPSESSID=" + value
     _default_config.update(_cmd_config)
     _default_mysql_config.update(_cmd_mysql_config)
@@ -146,7 +164,7 @@ def check_config(_config):
 
 
 def run():
-    short_opts = "hc:t:"
+    short_opts = "hc:t:s"
     long_opts = ["help", "target=", "thread-num=", "base-url=", "fid-list=",
                  "redis-host=", "redis-port=", "redis-db=", "mysql-host=",
                  "mysql-port=", "mysql-user=", "mysql-password=", "mysql-db=",
@@ -165,8 +183,8 @@ def run():
             print(err)
         usage()
     print(config)
-    spider = Spider(config)
-    spider.run()
+    # spider = Spider(config)
+    # spider.run()
 
 
 if __name__ == '__main__':
