@@ -4,6 +4,8 @@ import sys
 
 import pymysql
 
+from spider import Spider
+
 fid_dict = {
     "2": "亞洲無碼原創區",
     "15": "亞洲有碼原創區",
@@ -113,10 +115,10 @@ def get_config(_opts):
     _default_config.update(_cmd_config)
     _default_mysql_config.update(_cmd_mysql_config)
     _default_redis_config.update(_cmd_redis_config)
+
     if _file_config is not None:
         _file_mysql_config = _file_config.get("mysqlConfig", dict())
         _file_redis_config = _file_config.get("redisConfig", dict())
-
         _file_config.update(_cmd_config)
         _file_mysql_config.update(_cmd_mysql_config)
         _file_redis_config.update(_cmd_redis_config)
@@ -182,9 +184,8 @@ def run():
         for err in error_list:
             print(err)
         usage()
-    print(config)
-    # spider = Spider(config)
-    # spider.run()
+    spider = Spider(config)
+    spider.run()
 
 
 if __name__ == '__main__':

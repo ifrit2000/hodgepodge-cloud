@@ -9,9 +9,9 @@
     "26",
     "27"
   ],
-  "filePath": "/media/anthony/新加卷/t66y",
+  "filePath": "/media/anthony/新加卷1/t66y",
   "baseUrl": "www.t66y.com",
-  "batchCount": 15,
+  "batchCount": 10,
   "mysqlConfig": {
     "host": "172.28.0.4",
     "port": 3306,

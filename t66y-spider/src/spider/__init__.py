@@ -27,7 +27,7 @@ class Spider(LoggerObject):
         self.__target = config.get("target")
         self.__thread_num = int(config.get("threadNum", 1))
         self.__fid_list = config.get("fidList", ["2", "4", "5", "15", "25", "26", "27"])
-        downloader = Downloader(headers=config.get("headers"))
+        downloader = Downloader(headers=config.get("headers"), proxy_url=config.get("proxy_url"))
         if self.__target == "topic" or self.__target == "page":
             self.__base_url = config.get("baseUrl", "www.t66y.com")
             downloader.response_processor = HtmlResponseProcessor()
@@ -146,6 +146,7 @@ class Spider(LoggerObject):
             self.__mysql.update_topic_list(topic_list)
 
     def __process_file(self):
+        count = 0
         while True and self.__flag:
             file_urls = self.__mysql.get_file_url(num=self.__batch_count, target=self.__target.upper(),
                                                   fid_list=self.__fid_list)
@@ -153,17 +154,21 @@ class Spider(LoggerObject):
                 break
             with ThreadPoolExecutor(self.__thread_num) as executor:
                 task_list = list()
+                count = 0
                 for file_url in file_urls:
-                    time.sleep(random.randint(5, 6) / 10.0)
+                    time.sleep(random.randint(8, 10) / 10.0)
                     task = executor.submit(self.__start_process_file, file_url.get("topicUrl"), file_url.get("fileUrl"),
                                            file_url.get("fileFlag"))
                     task_list.append(task)
                 for future in as_completed(task_list):
                     pass
+            count = count + 1
+            self.logger.info("Finish %d round" % count)
 
     def __start_process_file(self, topic_url, file_url, file_flag):
         if self.__cache.is_contain_file_flag(file_flag):
             # exist file
+            self.logger.debug("exist %s", file_url)
             _id, path = self.__mysql.get_file_id_and_path_by_flag(file_flag, self.__target)
             self.__mysql.write_back_file_info(target=self.__target.upper(), topic_url=topic_url,
                                               file_url=file_url, file_path=path, file_id=_id,
@@ -188,3 +193,4 @@ class Spider(LoggerObject):
                 self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, "-", "-", "2")
         else:
             self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, "-", "-", "2")
+        return
