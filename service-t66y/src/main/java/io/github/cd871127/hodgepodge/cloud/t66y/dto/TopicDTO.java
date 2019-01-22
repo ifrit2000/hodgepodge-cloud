@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class TopicDTO {
+    Integer topicId;
     private String topicUrl;
     private String topicFid;
     private String topicTitle;

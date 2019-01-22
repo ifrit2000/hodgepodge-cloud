@@ -14,18 +14,19 @@ public class T66yService {
     @Resource
     private T66yMapper t66yMapper;
 
-    public PageInfo<TopicDTO> findTopics(Integer pageNum, Integer pageSize, String topicUrl, String topicStatus,
+    public PageInfo<TopicDTO> findTopics(Integer pageNum, Integer pageSize, Integer topicId, String topicStatus,
                                          String topicFid, String keyWord) {
         PageHelper.startPage(pageNum, pageSize, true, true, true);
-        return new PageInfo<>(t66yMapper.findTopics(topicUrl, topicStatus, topicFid, keyWord));
+        return new PageInfo<>(t66yMapper.findTopics(topicId, topicStatus, topicFid, keyWord));
     }
 
-    public TopicDTO findTopic(String topicUrl) {
-        return null;
+    public TopicDTO findTopic(Integer topicId) {
+        return t66yMapper.findTopic(topicId);
     }
 
     public List<TopicDTO> findTopicTitle() {
         return t66yMapper.findTopicTitle();
     }
+
 
 }

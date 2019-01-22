@@ -10,13 +10,15 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.ibatis.type.JdbcType.INTEGER;
 import static org.apache.ibatis.type.JdbcType.VARCHAR;
 
 
 @Mapper
 public interface T66yMapper {
 
-    @Results({
+    @Results(id = "topicDTOMap", value = {
+            @Result(column = "ID", property = "topicId", jdbcType = INTEGER),
             @Result(column = "TOPIC_URL", property = "topicUrl", jdbcType = VARCHAR),
             @Result(column = "TOPIC_FID", property = "topicFid", jdbcType = VARCHAR),
             @Result(column = "TOPIC_TITLE", property = "topicTitle", jdbcType = VARCHAR),
@@ -25,25 +27,30 @@ public interface T66yMapper {
             @Result(column = "TOPIC_URL", property = "imageDTOList", many = @Many(select = "findImagesByTopicUrl"))
     })
     @SelectProvider(type = T66ySqlProvider.class, method = "findTopics")
-    List<TopicDTO> findTopics(@Param("topicUrl") String topicUrl, @Param("topicStatus") String topicStatus,
+    List<TopicDTO> findTopics(@Param("topicId") Integer topicId, @Param("topicStatus") String topicStatus,
                               @Param("topicFid") String topicFid, @Param("keyWord") String keyWord);
 
-    @Select("select TOPIC_URL,IMAGE_URL,IMAGE_STATUS from IMAGE_INFO where TOPIC_URL=#{topicUrl}")
+    @Select("select IMAGE_URL,IMAGE_STATUS,FILE_ID,FILE_PATH from IMAGE_INFO where TOPIC_URL=#{topicUrl}")
     List<ImageDTO> findImagesByTopicUrl(@Param("topicUrl") String topicUrl);
 
-    @Select("select TOPIC_URL,TORRENT_HASH,TORRENT_STATUS,TORRENT_URL from TORRENT_INFO where TOPIC_URL=#{topicUrl}")
+    @Select("select TORRENT_HASH,TORRENT_STATUS,TORRENT_URL,FILE_ID,FILE_PATH from TORRENT_INFO where TOPIC_URL=#{topicUrl}")
     List<TorrentDTO> findTorrentsByTopicUrl(@Param("topicUrl") String topicUrl);
 
     @Select("select TOPIC_URL,TOPIC_TITLE from TOPIC_INFO")
     List<TopicDTO> findTopicTitle();
 
+    @ResultMap("topicDTOMap")
+    @SelectProvider(type = T66ySqlProvider.class, method = "findTopic")
+    TopicDTO findTopic(@Param("topicId") Integer topicId);
+
+
     class T66ySqlProvider {
         public String findTopics(Map<String, String> paraMap) {
             return new SQL() {{
-                SELECT("TOPIC_URL", "TOPIC_FID", "TOPIC_TITLE", "TOPIC_STATUS");
+                SELECT("ID,TOPIC_URL", "TOPIC_FID", "TOPIC_TITLE", "TOPIC_STATUS");
                 FROM("TOPIC_INFO");
-                if (!StringUtils.isEmpty(paraMap.get("topicUrl"))) {
-                    WHERE("TOPIC_URL=#{topicUrl}");
+                if (paraMap.get("topicId") != null) {
+                    WHERE("ID=#{topicId}");
                 }
                 if (!StringUtils.isEmpty(paraMap.get("topicStatus"))) {
                     WHERE("TOPIC_STATUS=#{topicStatus}");
@@ -57,5 +64,14 @@ public interface T66yMapper {
                 }
             }}.toString();
         }
+
+        public String findTopic(Map<String, String> paraMap) {
+            return new SQL() {{
+                SELECT("ID,TOPIC_URL", "TOPIC_FID", "TOPIC_TITLE", "TOPIC_STATUS");
+                FROM("TOPIC_INFO");
+                WHERE("ID=#{topicId}");
+            }}.toString();
+        }
+
     }
 }

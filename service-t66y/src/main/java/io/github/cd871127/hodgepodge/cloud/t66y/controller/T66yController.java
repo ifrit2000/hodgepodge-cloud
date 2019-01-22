@@ -25,10 +25,10 @@ public class T66yController {
 
     @GetMapping("topic/list")
     public ServerResponse<PageInfo<TopicDTO>> findTopics(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "0") Integer pageSize,
-                                                         @RequestParam(required = false) String topicUrl, @RequestParam(required = false) String topicStatus,
+                                                         @RequestParam(required = false) Integer topicId, @RequestParam(required = false) String topicStatus,
                                                          @RequestParam(required = false) String topicFid, @RequestParam(required = false) String keyWord) {
         ServerResponse<PageInfo<TopicDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        serverResponse.setData(t66yService.findTopics(pageNum, pageSize, topicUrl, topicStatus, topicFid, keyWord));
+        serverResponse.setData(t66yService.findTopics(pageNum, pageSize, topicId, topicStatus, topicFid, keyWord));
         return serverResponse;
     }
 
@@ -40,8 +40,10 @@ public class T66yController {
     }
 
     @GetMapping("topic")
-    public ServerResponse<TopicDTO> findTopic() {
-        return null;
+    public ServerResponse<TopicDTO> findTopic(@RequestParam Integer topicId) {
+        ServerResponse<TopicDTO> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        serverResponse.setData(t66yService.findTopic(topicId));
+        return serverResponse;
     }
 
     @GetMapping("fid")
