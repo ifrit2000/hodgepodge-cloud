@@ -92,10 +92,7 @@ public class T66yController {
         String filePath = t66yService.getFileById(fileId);
         Path paths = Paths.get(filePath);
         byte[] bytes = Files.readAllBytes(paths);
-//        byte[] bytes = Files.readAllBytes(Paths.get(filePath));
-
-//        System.out.println(bytes.length);
-        serverResponse.setData(Base64.getEncoder().encodeToString(bytes));
+        serverResponse.setData("data:image;base64" + Base64.getEncoder().encodeToString(bytes));
         return serverResponse;
     }
 

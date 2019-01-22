@@ -9,12 +9,12 @@ CHAR_SET = 'utf-8'
 
 
 def build_http_request():
-    return urllib3.PoolManager().connection_from_host(host="172.28.0.51", port=8080)
+    return urllib3.PoolManager().connection_from_host(host="172.28.0.51", port=80)
 
 
 def get_public_key(expire=300):
     response = build_http_request().request("get", '/service-cipher/rsa/publicKey?expire=' + str(expire))
-    result = json.loads(response.data.decode())['data']
+    result = json.loads(response.data.decode("utf-8"))['data']
     return result['keyId'], result['publicKey']
 
 
@@ -32,11 +32,10 @@ def decode(key_id, data):
     return base64.b64decode(result).decode()
 
 
-if __name__ == "__main__":
-    key_id, public_key = get_public_key()
-    data = 'JS排序:localeCompare() 方法实现中文排序、sort方法实现..._博客园'
-    encode_data = encode(public_key, data)
-    print(encode_data)
-    decode_data = decode(key_id, encode_data)
-    print(decode_data)
-    print(decode_data == data)
+# if __name__ == "__main__":
+#     key_id, public_key = get_public_key()
+#     encode_data = encode(public_key, data)
+#     print(encode_data)
+#     decode_data = decode(key_id, encode_data)
+#     print(decode_data)
+#     print(decode_data == data)
