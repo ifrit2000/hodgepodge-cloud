@@ -61,6 +61,14 @@ public class T66yController {
         return serverResponse;
     }
 
+    /**
+     * 文件未下载 灰色
+     * 部分文件下载了 蓝色
+     * 有一个文件异常就是黄色
+     * 所有文件异常就是红色
+     *
+     * @return ServerResponse
+     */
     @GetMapping("status")
     public ServerResponse<Map<String, String>> status() {
         ServerResponse<Map<String, String>> serverResponse = new ServerResponse<>(SUCCESSFUL);
