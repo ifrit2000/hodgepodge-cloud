@@ -1,5 +1,3 @@
-from threading import Lock
-
 import pymysql
 import redis
 
@@ -10,7 +8,6 @@ class MySql(LoggerObject):
     def __init__(self, **kw):
         super().__init__("mysql")
         self.__connection = pymysql.connect(**kw)
-        self.__lock = Lock()
         self.__kw = kw
 
     @property
@@ -123,6 +120,7 @@ class MySql(LoggerObject):
         if target.upper() == 'TORRENT':
             file_flag = ",TORRENT_HASH fileFlag"
         self.connection.ping(reconnect=True)
+        self.connection.commit()
         with self.connection.cursor() as cursor:
             cursor.execute(sql % (target, file_flag, target, fid_segment, target, num))
             result = cursor.fetchall()
@@ -158,6 +156,7 @@ class MySql(LoggerObject):
         file_flag = None
         try:
             self.connection.ping(reconnect=True)
+            self.connection.commit()
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
                 file_flag = [row["file_flag"] for row in cursor.fetchall()]

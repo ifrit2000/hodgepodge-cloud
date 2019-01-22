@@ -98,7 +98,6 @@ class FileHandler(Handler):
             sha512 = hashlib.sha512()
             sha512.update(data)
             file_id = sha512.hexdigest()
-
             return file_id, data
         except Exception as e:
             self.logger.error("get file failed:%s", url)
