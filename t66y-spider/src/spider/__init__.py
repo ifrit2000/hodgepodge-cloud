@@ -3,6 +3,7 @@ import math
 import os
 import random
 import signal
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -188,6 +189,9 @@ class Spider(LoggerObject):
                                                   file_url=file_url, file_path=file_path, file_id=file_id,
                                                   file_status="1")
                 self.__cache.add_file_flags((file_flag,))
+            except PermissionError as pe:
+                self.logger.error("permission err %s" % self.__base_file_path)
+                sys.exit(-1)
             except Exception as e:
                 self.logger.error("error download file: %s", file_url)
                 self.__mysql.write_back_file_info(self.__target.upper(), topic_url, file_url, "-", "-", "2")

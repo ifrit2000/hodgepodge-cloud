@@ -61,8 +61,8 @@ public interface T66yMapper {
      * @param topicUrl
      * @return
      */
-    @Select("select IMAGE_URL,IMAGE_STATUS,FILE_ID,FILE_PATH from IMAGE_INFO where TOPIC_URL=#{topicUrl}")
-    List<ImageDTO> findImagesByTopicUrl(@Param("topicUrl") String topicUrl);
+    @SelectProvider(type = T66ySqlProvider.class, method = "findImage")
+    List<ImageDTO> findImage(@Param("topicUrl") String topicUrl, @Param("fileId") String fileId);
 
     /**
      * 主题关联的种子信息
@@ -70,9 +70,12 @@ public interface T66yMapper {
      * @param topicUrl
      * @return
      */
-    @Select("select TORRENT_HASH,TORRENT_STATUS,TORRENT_URL,FILE_ID,FILE_PATH from TORRENT_INFO where TOPIC_URL=#{topicUrl}")
-    List<TorrentDTO> findTorrentsByTopicUrl(@Param("topicUrl") String topicUrl);
+    @SelectProvider(type = T66ySqlProvider.class, method = "findTorrent")
+    List<TorrentDTO> findTorrent(@Param("topicUrl") String topicUrl, @Param("fileId") String fileId);
 
+    @Select("select file_path from IMAGE_INFO where file_id=#{fileId} union " +
+            "select file_path from TORRENT_INFO where file_id=#{fileId}")
+    String findFilePath(@Param("fileId") String fileId);
 
     class T66ySqlProvider {
         public String findTopics(Map<String, String> paraMap) {
@@ -103,5 +106,30 @@ public interface T66yMapper {
             }}.toString();
         }
 
+        public String findTorrent(Map<String, String> paraMap) {
+            return new SQL() {{
+                SELECT("TORRENT_HASH,TORRENT_STATUS,TORRENT_URL,FILE_ID,FILE_PATH");
+                FROM("TORRENT_INFO");
+                if (StringUtils.isNotEmpty(paraMap.get("topicUrl"))) {
+                    WHERE("TOPIC_URL=#{topicUrl}");
+                }
+                if (StringUtils.isNotEmpty(paraMap.get("fileId"))) {
+                    WHERE("FILE_ID=#{fileId}");
+                }
+            }}.toString();
+        }
+
+        public String findImage(Map<String, String> paraMap) {
+            return new SQL() {{
+                SELECT("IMAGE_URL,IMAGE_STATUS,FILE_ID,FILE_PATH");
+                FROM("IMAGE_INFO");
+                if (StringUtils.isNotEmpty(paraMap.get("topicUrl"))) {
+                    WHERE("TOPIC_URL=#{topicUrl}");
+                }
+                if (StringUtils.isNotEmpty(paraMap.get("fileId"))) {
+                    WHERE("FILE_ID=#{fileId}");
+                }
+            }}.toString();
+        }
     }
 }

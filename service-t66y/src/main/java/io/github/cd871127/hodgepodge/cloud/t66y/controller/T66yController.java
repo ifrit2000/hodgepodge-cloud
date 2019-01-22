@@ -4,12 +4,20 @@ import com.github.pagehelper.PageInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import io.github.cd871127.hodgepodge.cloud.t66y.dto.TopicDTO;
 import io.github.cd871127.hodgepodge.cloud.t66y.service.T66yService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,4 +86,36 @@ public class T66yController {
         return serverResponse;
     }
 
+    @GetMapping("image/{fileId}")
+    public ServerResponse<String> getImageById(@PathVariable String fileId) throws IOException {
+        ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        String filePath = t66yService.getFileById(fileId);
+        Path paths = Paths.get(filePath);
+        byte[] bytes = Files.readAllBytes(paths);
+//        byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+
+//        System.out.println(bytes.length);
+        serverResponse.setData(Base64.getEncoder().encodeToString(bytes));
+        return serverResponse;
+    }
+
+    @GetMapping("torrent/{fileId}")
+    public ResponseEntity<FileSystemResource> getTorrentById(@PathVariable String fileId) {
+        File file = new File("/home/anthony/nohup.out");//t66yService.getFileById(fileId);
+        return download(new File("/home/anthony/nohup.out"), fileId + ".torrent");
+    }
+
+    private ResponseEntity<FileSystemResource> download(File file, String fileName) {
+        if (file == null) {
+            return null;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Content-Disposition", "attachment; filename=" + fileName);
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+        return ResponseEntity.ok().headers(headers).contentLength(file.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(new FileSystemResource(file));
+    }
 }
