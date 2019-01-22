@@ -24,9 +24,4 @@ public class T66yService {
         return t66yMapper.findTopic(topicId);
     }
 
-    public List<TopicDTO> findTopicTitle() {
-        return t66yMapper.findTopicTitle();
-    }
-
-
 }

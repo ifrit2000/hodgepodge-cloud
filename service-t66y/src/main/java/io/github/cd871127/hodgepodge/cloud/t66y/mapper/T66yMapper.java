@@ -17,6 +17,32 @@ import static org.apache.ibatis.type.JdbcType.VARCHAR;
 @Mapper
 public interface T66yMapper {
 
+    /**
+     * 主题列表
+     *
+     * @param topicId
+     * @param topicStatus
+     * @param topicFid
+     * @param keyWord
+     * @return
+     */
+    @Results(id = "topicDTOListMap", value = {
+            @Result(column = "ID", property = "topicId", jdbcType = INTEGER),
+            @Result(column = "TOPIC_URL", property = "topicUrl", jdbcType = VARCHAR),
+            @Result(column = "TOPIC_FID", property = "topicFid", jdbcType = VARCHAR),
+            @Result(column = "TOPIC_TITLE", property = "topicTitle", jdbcType = VARCHAR),
+            @Result(column = "TOPIC_STATUS", property = "topicStatus", jdbcType = VARCHAR),
+    })
+    @SelectProvider(type = T66ySqlProvider.class, method = "findTopics")
+    List<TopicDTO> findTopics(@Param("topicId") Integer topicId, @Param("topicStatus") String topicStatus,
+                              @Param("topicFid") String topicFid, @Param("keyWord") String keyWord);
+
+    /**
+     * 单个主题详细信息
+     *
+     * @param topicId
+     * @return
+     */
     @Results(id = "topicDTOMap", value = {
             @Result(column = "ID", property = "topicId", jdbcType = INTEGER),
             @Result(column = "TOPIC_URL", property = "topicUrl", jdbcType = VARCHAR),
@@ -26,22 +52,26 @@ public interface T66yMapper {
             @Result(column = "TOPIC_URL", property = "torrentDTOList", many = @Many(select = "findTorrentsByTopicUrl")),
             @Result(column = "TOPIC_URL", property = "imageDTOList", many = @Many(select = "findImagesByTopicUrl"))
     })
-    @SelectProvider(type = T66ySqlProvider.class, method = "findTopics")
-    List<TopicDTO> findTopics(@Param("topicId") Integer topicId, @Param("topicStatus") String topicStatus,
-                              @Param("topicFid") String topicFid, @Param("keyWord") String keyWord);
+    @SelectProvider(type = T66ySqlProvider.class, method = "findTopic")
+    TopicDTO findTopic(@Param("topicId") Integer topicId);
 
+    /**
+     * 主题关联的图片信息
+     *
+     * @param topicUrl
+     * @return
+     */
     @Select("select IMAGE_URL,IMAGE_STATUS,FILE_ID,FILE_PATH from IMAGE_INFO where TOPIC_URL=#{topicUrl}")
     List<ImageDTO> findImagesByTopicUrl(@Param("topicUrl") String topicUrl);
 
+    /**
+     * 主题关联的种子信息
+     *
+     * @param topicUrl
+     * @return
+     */
     @Select("select TORRENT_HASH,TORRENT_STATUS,TORRENT_URL,FILE_ID,FILE_PATH from TORRENT_INFO where TOPIC_URL=#{topicUrl}")
     List<TorrentDTO> findTorrentsByTopicUrl(@Param("topicUrl") String topicUrl);
-
-    @Select("select TOPIC_URL,TOPIC_TITLE from TOPIC_INFO")
-    List<TopicDTO> findTopicTitle();
-
-    @ResultMap("topicDTOMap")
-    @SelectProvider(type = T66ySqlProvider.class, method = "findTopic")
-    TopicDTO findTopic(@Param("topicId") Integer topicId);
 
 
     class T66ySqlProvider {

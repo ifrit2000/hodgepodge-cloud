@@ -11,11 +11,43 @@ public class TopicDTO {
     private String topicFid;
     private String topicTitle;
     private String topicStatus;
+    private String imageStatus;
+    private String torrentStatus;
 
     private List<TorrentDTO> torrentDTOList;
     private List<ImageDTO> imageDTOList;
 
     public String getKey() {
         return this.topicUrl;
+    }
+
+    public void setTorrentDTOList(List<TorrentDTO> torrentDTOList) {
+        this.torrentDTOList = torrentDTOList;
+        torrentStatus = status(torrentDTOList);
+    }
+
+    public void setImageDTOList(List<ImageDTO> imageDTOList) {
+        this.imageDTOList = imageDTOList;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String status(List fileDTOS) {
+        int noStart = 0;
+        int ok = 0;
+        int failed = 0;
+        for (FileDTO fileDTO : (List<FileDTO>) fileDTOS) {
+            if ("0".equals(fileDTO.getFileStatus())) {
+                ++noStart;
+            }
+            if ("1".equals(fileDTO.getFileStatus())) {
+                ++ok;
+            }
+            if ("2".equals(fileDTO.getFileStatus())) {
+                ++failed;
+            }
+        }
+
+        return "";
     }
 }

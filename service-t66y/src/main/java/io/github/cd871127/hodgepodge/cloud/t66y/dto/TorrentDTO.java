@@ -9,4 +9,9 @@ public class TorrentDTO extends FileDTO {
     private String torrentUrl;
     private String torrentHash;
     private String torrentStatus;
+
+    @Override
+    public String getFileStatus() {
+        return this.torrentStatus;
+    }
 }

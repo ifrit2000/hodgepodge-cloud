@@ -9,4 +9,9 @@ public class ImageDTO extends FileDTO {
 
     private String imageUrl;
     private String imageStatus;
+
+    @Override
+    public String getFileStatus() {
+        return this.imageStatus;
+    }
 }

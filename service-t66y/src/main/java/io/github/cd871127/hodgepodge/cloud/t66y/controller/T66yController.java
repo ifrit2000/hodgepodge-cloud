@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.SUCCESSFUL;
@@ -29,13 +28,6 @@ public class T66yController {
                                                          @RequestParam(required = false) String topicFid, @RequestParam(required = false) String keyWord) {
         ServerResponse<PageInfo<TopicDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(t66yService.findTopics(pageNum, pageSize, topicId, topicStatus, topicFid, keyWord));
-        return serverResponse;
-    }
-
-    @GetMapping("topic/title")
-    public ServerResponse<List<TopicDTO>> findTopicTitle() {
-        ServerResponse<List<TopicDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        serverResponse.setData(t66yService.findTopicTitle());
         return serverResponse;
     }
 
