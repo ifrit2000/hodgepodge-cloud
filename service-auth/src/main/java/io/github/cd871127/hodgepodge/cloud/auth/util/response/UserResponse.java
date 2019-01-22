@@ -7,7 +7,8 @@ public enum UserResponse implements HodgepodgeResponse {
     USER_ERROR("000201","nonono"),
     USER_EXIST("000202", "USER_EXIST"),
     USER_NOT_EXIST("000203", "USER_NOT_EXIST"),
-    INVALID_PASSWORD("000204", "INVALID_PASSWORD");
+    INVALID_PASSWORD("000204", "INVALID_PASSWORD"),
+    NO_LOGIN("000205", "NO_LOGIN");
 
 
     private String code;

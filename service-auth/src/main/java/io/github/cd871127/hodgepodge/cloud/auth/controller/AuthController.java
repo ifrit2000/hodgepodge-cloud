@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.INVALID_PASSWORD;
-import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.USER_NOT_EXIST;
+import static io.github.cd871127.hodgepodge.cloud.auth.util.response.UserResponse.*;
 import static io.github.cd871127.hodgepodge.cloud.lib.web.server.response.GeneralHodgepodgeResponse.*;
 
 @RestController
@@ -24,6 +23,17 @@ public class AuthController {
     @Resource
     private AuthService authService;
 
+    @GetMapping("{token}")
+    public ServerResponse<UserInfo> getUserInfoByToken(@PathVariable String token) {
+        ServerResponse<UserInfo> serverResponse = new ServerResponse<>(SUCCESSFUL);
+        UserInfo userInfo = authService.getUserInfoByToken(token);
+        if (userInfo == null) {
+            serverResponse.setHodgepodgeResponse(NO_LOGIN);
+        } else {
+            serverResponse.setData(userInfo);
+        }
+        return serverResponse;
+    }
 
     @PostMapping("{userId}/{keyId}")
     public ServerResponse<UserInfo> login(@PathVariable String userId, @PathVariable String keyId, @RequestBody String password) throws ResponseException, UserNotExistException, LoginFailedException {
@@ -47,4 +57,6 @@ public class AuthController {
         }
         return serverResponse;
     }
+
+
 }

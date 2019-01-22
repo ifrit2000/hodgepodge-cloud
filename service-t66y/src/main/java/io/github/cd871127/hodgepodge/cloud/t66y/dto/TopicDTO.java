@@ -47,7 +47,6 @@ public class TopicDTO {
                 ++failed;
             }
         }
-
         return "";
     }
 }

@@ -55,4 +55,12 @@ public class AuthService {
         redisTemplate.opsForValue().set(USER_INFO_PREFIX + userInfo.getUserId(), userInfo, 30, TimeUnit.MINUTES);
         return userInfo;
     }
+
+    public UserInfo getUserInfoByToken(String token) {
+        UserInfo userInfo = redisTemplate.opsForValue().get(TOKEN_PREFIX + token);
+        if (userInfo != null) {
+            redisTemplate.opsForValue().set(TOKEN_PREFIX + token, userInfo, 30, TimeUnit.MINUTES);
+        }
+        return userInfo;
+    }
 }
