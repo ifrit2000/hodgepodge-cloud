@@ -49,9 +49,10 @@ public interface T66yMapper {
             @Result(column = "TOPIC_FID", property = "topicFid", jdbcType = VARCHAR),
             @Result(column = "TOPIC_TITLE", property = "topicTitle", jdbcType = VARCHAR),
             @Result(column = "TOPIC_STATUS", property = "topicStatus", jdbcType = VARCHAR),
-            @Result(column = "TOPIC_URL", property = "torrentDTOList", many = @Many(select = "findTorrentsByTopicUrl")),
-            @Result(column = "TOPIC_URL", property = "imageDTOList", many = @Many(select = "findImagesByTopicUrl"))
+            @Result(column = "{topicUrl=TOPIC_URL,fileId=NULL_COL}", property = "torrentDTOList", many = @Many(select = "findTorrent")),
+            @Result(column = "{topicUrl=TOPIC_URL,fileId=NULL_COL}", property = "imageDTOList", many = @Many(select = "findImage"))
     })
+
     @SelectProvider(type = T66ySqlProvider.class, method = "findTopic")
     TopicDTO findTopic(@Param("topicId") Integer topicId);
 
@@ -100,7 +101,7 @@ public interface T66yMapper {
 
         public String findTopic(Map<String, String> paraMap) {
             return new SQL() {{
-                SELECT("ID,TOPIC_URL", "TOPIC_FID", "TOPIC_TITLE", "TOPIC_STATUS");
+                SELECT("ID,TOPIC_URL", "TOPIC_FID", "TOPIC_TITLE", "TOPIC_STATUS,null as NULL_COL");
                 FROM("TOPIC_INFO");
                 WHERE("ID=#{topicId}");
             }}.toString();

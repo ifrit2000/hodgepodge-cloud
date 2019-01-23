@@ -27,18 +27,17 @@ public class T66yController {
     @Resource
     private T66yService t66yService;
 
-    @GetMapping("topic/list")
+    @GetMapping("topic")
     public ServerResponse<PageInfo<TopicDTO>> findTopics(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "0") Integer pageSize,
                                                          @RequestParam(required = false) Integer topicId, @RequestParam(required = false) String topicStatus,
                                                          @RequestParam(required = false) String topicFid, @RequestParam(required = false) String keyWord) {
         ServerResponse<PageInfo<TopicDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(t66yService.findTopics(pageNum, pageSize, topicId, topicStatus, topicFid, keyWord));
-        HashMap
         return serverResponse;
     }
 
-    @GetMapping("topic")
-    public ServerResponse<TopicDTO> findTopic(@RequestParam Integer topicId) {
+    @GetMapping("topic/{topicId}")
+    public ServerResponse<TopicDTO> findTopic(@PathVariable Integer topicId) {
         ServerResponse<TopicDTO> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(t66yService.findTopic(topicId));
         return serverResponse;
@@ -94,8 +93,14 @@ public class T66yController {
     public ServerResponse<String> getImageById(@PathVariable String fileId) throws IOException {
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
         byte[] bytes = getFileBytes(fileId);
-        serverResponse.setData("data:image;base64" + Base64.getEncoder().encodeToString(bytes));
+        serverResponse.setData("data:image;base64," + Base64.getEncoder().encodeToString(bytes));
         return serverResponse;
+    }
+
+    @GetMapping("imageEntity/{fileId}")
+    public String getImageById2(@PathVariable String fileId) throws IOException {
+        byte[] bytes = getFileBytes(fileId);
+        return "data:image;base64," + Base64.getEncoder().encodeToString(bytes);
     }
 
     @GetMapping("torrent/{fileId}")
