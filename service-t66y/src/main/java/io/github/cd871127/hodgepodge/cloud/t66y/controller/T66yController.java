@@ -4,20 +4,17 @@ import com.github.pagehelper.PageInfo;
 import io.github.cd871127.hodgepodge.cloud.lib.web.server.response.ServerResponse;
 import io.github.cd871127.hodgepodge.cloud.t66y.dto.TopicDTO;
 import io.github.cd871127.hodgepodge.cloud.t66y.service.T66yService;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +33,7 @@ public class T66yController {
                                                          @RequestParam(required = false) String topicFid, @RequestParam(required = false) String keyWord) {
         ServerResponse<PageInfo<TopicDTO>> serverResponse = new ServerResponse<>(SUCCESSFUL);
         serverResponse.setData(t66yService.findTopics(pageNum, pageSize, topicId, topicStatus, topicFid, keyWord));
+        HashMap
         return serverResponse;
     }
 
@@ -86,33 +84,26 @@ public class T66yController {
         return serverResponse;
     }
 
+    private byte[] getFileBytes(String fileId) throws IOException {
+        String filePath = t66yService.getFileById(fileId);
+        Path paths = Paths.get(filePath);
+        return Files.readAllBytes(paths);
+    }
+
     @GetMapping("image/{fileId}")
     public ServerResponse<String> getImageById(@PathVariable String fileId) throws IOException {
         ServerResponse<String> serverResponse = new ServerResponse<>(SUCCESSFUL);
-        String filePath = t66yService.getFileById(fileId);
-        Path paths = Paths.get(filePath);
-        byte[] bytes = Files.readAllBytes(paths);
+        byte[] bytes = getFileBytes(fileId);
         serverResponse.setData("data:image;base64" + Base64.getEncoder().encodeToString(bytes));
         return serverResponse;
     }
 
     @GetMapping("torrent/{fileId}")
-    public ResponseEntity<FileSystemResource> getTorrentById(@PathVariable String fileId) {
-        File file = new File("/home/anthony/nohup.out");//t66yService.getFileById(fileId);
-        return download(new File("/home/anthony/nohup.out"), fileId + ".torrent");
+    public ResponseEntity<byte[]> getTorrentById(@PathVariable String fileId) throws IOException {
+        byte[] bytes = getFileBytes(fileId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=" + fileId + ".torrent");
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/octet-stream")).body(bytes);
     }
 
-    private ResponseEntity<FileSystemResource> download(File file, String fileName) {
-        if (file == null) {
-            return null;
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Content-Disposition", "attachment; filename=" + fileName);
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-        headers.add("Last-Modified", new Date().toString());
-        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity.ok().headers(headers).contentLength(file.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(new FileSystemResource(file));
-    }
 }

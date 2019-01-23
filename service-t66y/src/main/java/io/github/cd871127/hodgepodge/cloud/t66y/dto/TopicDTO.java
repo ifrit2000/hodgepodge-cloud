@@ -17,9 +17,6 @@ public class TopicDTO {
     private List<TorrentDTO> torrentDTOList;
     private List<ImageDTO> imageDTOList;
 
-    public String getKey() {
-        return this.topicUrl;
-    }
 
     public void setTorrentDTOList(List<TorrentDTO> torrentDTOList) {
         this.torrentDTOList = torrentDTOList;

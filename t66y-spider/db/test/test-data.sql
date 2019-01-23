@@ -1,3 +1,13 @@
+delete from  IMAGE_INFO where 1=1;
+delete from  HTML_INFO where 1=1;
+delete from  TORRENT_INFO where 1=1;
+delete from TOPIC_INFO where 1=1;
+
+alter table IMAGE_INFO auto_increment= 1;
+alter table HTML_INFO auto_increment= 1;
+alter table TORRENT_INFO auto_increment= 1;
+alter table TOPIC_INFO auto_increment= 1;
+
 insert into TOPIC_INFO (TOPIC_URL, TOPIC_FID, TOPIC_TITLE, TOPIC_STATUS) VALUE
   ('001','2','没解析URL','0'),
   ('101','2','已经解析URL,文件没下载','1'),
