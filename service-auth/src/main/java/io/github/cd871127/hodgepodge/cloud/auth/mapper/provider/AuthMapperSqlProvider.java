@@ -5,7 +5,6 @@ import org.apache.ibatis.jdbc.SQL;
 
 public class AuthMapperSqlProvider {
 
-    private int a = 0;
 
     public String updateUserInfo(UserInfo userInfo) {
         return new SQL() {{

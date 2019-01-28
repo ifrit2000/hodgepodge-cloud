@@ -16,4 +16,5 @@ public class AssetDTO {
     private Date createdDate;
     private Date updatedDate;
     private Integer status;
+
 }
