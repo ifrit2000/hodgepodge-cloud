@@ -46,3 +46,9 @@ compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.1.0
 
 mybatis annotation
 https://blog.csdn.net/wfq784967698/article/details/78786001
+
+插件 
+GsonFormat
+findBugs-idea
+String Manipulation
+aceJump
