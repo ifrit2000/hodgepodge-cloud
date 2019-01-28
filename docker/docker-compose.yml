@@ -115,6 +115,23 @@ services:
       - /home/anthony/dockerVolume/dev/app/service-auth/config:/app/config
       - /home/anthony/dockerVolume/dev/app/service-auth/logs:/app/logs
 
+#  service-t66y:
+#    depends_on:
+#      - redis
+#      - consul
+#      - mysql
+#      - service-gateway
+#    container_name: service-t66y
+#    image: 'cd871127/service-t66y:0.0.1'
+#    networks:
+#      dev-network:
+#        ipv4_address: 172.28.0.103
+#    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+#    command: ['-Xms128m','-Xmx128m','-Xmn32m']
+#    volumes:
+#      - /home/anthony/dockerVolume/dev/app/service-t66y/config:/app/config
+#      - /home/anthony/dockerVolume/dev/app/service-t66y/logs:/app/logs
+
 #  -Xms设置堆的最小空间大小。
 #
 #  -Xmx设置堆的最大空间大小。

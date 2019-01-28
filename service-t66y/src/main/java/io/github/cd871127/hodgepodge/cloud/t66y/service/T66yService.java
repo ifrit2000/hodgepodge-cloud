@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.File;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -24,7 +24,12 @@ public class T66yService {
     public PageInfo<TopicDTO> findTopics(Integer pageNum, Integer pageSize, Integer topicId, String topicStatus,
                                          String topicFid, String keyWord) {
         PageHelper.startPage(pageNum, pageSize, true, true, true);
-        return new PageInfo<>(t66yMapper.findTopics(topicId, topicStatus, topicFid, keyWord));
+        PageInfo<TopicDTO> pageInfo = new PageInfo<>(t66yMapper.findTopics(topicId, topicStatus, topicFid, keyWord));
+        pageInfo.getList().forEach((topicDTO -> {
+            Map<Integer, String> statusMap = t66yMapper.findImageStatusByUrl(topicDTO.getTopicUrl());
+            System.out.println(1);
+        }));
+        return pageInfo;
     }
 
     public TopicDTO findTopic(Integer topicId) {

@@ -157,7 +157,7 @@ class Spider(LoggerObject):
                 task_list = list()
                 count = 0
                 for file_url in file_urls:
-                    time.sleep(random.randint(8, 10) / 10.0)
+                    time.sleep(random.randint(3, 8) / 10.0)
                     task = executor.submit(self.__start_process_file, file_url.get("topicUrl"), file_url.get("fileUrl"),
                                            file_url.get("fileFlag"))
                     task_list.append(task)

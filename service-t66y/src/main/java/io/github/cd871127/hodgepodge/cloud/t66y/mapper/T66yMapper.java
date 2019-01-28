@@ -56,6 +56,36 @@ public interface T66yMapper {
     @SelectProvider(type = T66ySqlProvider.class, method = "findTopic")
     TopicDTO findTopic(@Param("topicId") Integer topicId);
 
+    @Select("select (\n" +
+            "         case\n" +
+            "           when total_status = 0 then 0\n" +
+            "           when total_status = 1 then 1\n" +
+            "           when total_status = 2 then 2\n" +
+            "           when total_status = 3 then 3\n" +
+            "           end\n" +
+            "         )\n" +
+            "from (select sum(group_status) total_status\n" +
+            "      from (\n" +
+            "             select (\n" +
+            "                      case\n" +
+            "                        when status_count = 0 and image_status = '0' then 0\n" +
+            "                        when status_count = 1 and image_status = '0' then 1\n" +
+            "                        when status_count = 0 and image_status = '1' then 0\n" +
+            "                        when status_count = 1 and image_status = '1' then 2\n" +
+            "                        when status_count = 0 and image_status = '2' then 0\n" +
+            "                        when status_count = 1 and image_status = '2' then 0\n" +
+            "                        end\n" +
+            "                      ) group_status\n" +
+            "             from (select '0' image_status,1 status_count\n" +
+            "                   union\n" +
+            "                   select '1' image_status,1 status_count\n" +
+            "                   union\n" +
+            "                   select '2' image_status,1 status_count) t1) t2) t3")
+    Map<Integer, String> findImageStatusByUrl(@Param("topicUrl") String topicUrl);
+
+    @Select("SELECT TORRENT_STATUS,COUNT(1) FROM TORRENT_INFO WHERE TOPIC_URL=#{topicUrl}")
+    String findTorrentStatusByUrl(@Param("topicUrl") String topicUrl);
+
     /**
      * 主题关联的图片信息
      *
@@ -74,7 +104,7 @@ public interface T66yMapper {
     @SelectProvider(type = T66ySqlProvider.class, method = "findTorrent")
     List<TorrentDTO> findTorrent(@Param("topicUrl") String topicUrl, @Param("fileId") String fileId);
 
-    @Select("select file_path from IMAGE_INFO where file_id=#{fileId} union " +
+    @Select("(select file_path from IMAGE_INFO where file_id=#{fileId} limit 1) union " +
             "select file_path from TORRENT_INFO where file_id=#{fileId}")
     String findFilePath(@Param("fileId") String fileId);
 
@@ -96,6 +126,7 @@ public interface T66yMapper {
                     String keyWord = "'%" + paraMap.get("keyWord") + "%'";
                     WHERE("TOPIC_TITLE like " + keyWord);
                 }
+                ORDER_BY("TOPIC_URL DESC");
             }}.toString();
         }
 
@@ -134,3 +165,29 @@ public interface T66yMapper {
         }
     }
 }
+
+//    select (
+//         case
+//         when total_status = 0 then 0
+//                 when total_status = 1 then 1
+//                 when total_status = 2 then 2
+//                 when total_status = 3 then 3
+//                 end
+//    )
+//    from (select sum(group_status) total_status
+//    from (
+//            select (
+//            case
+//            when status_count = 0 and image_status = '0' then 0
+//            when status_count = 1 and image_status = '0' then 1
+//            when status_count = 0 and image_status = '1' then 0
+//            when status_count = 1 and image_status = '1' then 2
+//            when status_count = 0 and image_status = '2' then 0
+//            when status_count = 1 and image_status = '2' then 0
+//            end
+//    ) group_status
+//    from (select '0' image_status,1 status_count
+//            union
+//                   select '1' image_status,1 status_count
+//                  union
+//                   select '2' image_status,1 status_count) t1) t2) t3
