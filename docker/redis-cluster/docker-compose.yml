@@ -1,0 +1,44 @@
+#docker-compose版本
+version: '3.7'
+
+#创建一个网络
+networks:
+  dev-network:
+    name: dev-network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+#定义各种服务
+services:
+  redis-master:
+    container_name: dev-redis-master
+    image: 'redis:5.0.2'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.130
+    command: ["redis-server","/data/redis.conf"]
+    volumes:
+      - /home/anthony/dockerVolume/dev/redis-cluster/master:/data
+
+  redis-slave1:
+    container_name: dev-redis-slave1
+    image: 'redis:5.0.2'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.131
+    command: ["redis-server","/data/redis.conf"]
+    volumes:
+      - /home/anthony/dockerVolume/dev/redis-cluster/slave1:/data
+
+  redis-slave2:
+    container_name: dev-redis-slave2
+    image: 'redis:5.0.2'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.132
+    command: ["redis-server","/data/redis.conf"]
+    volumes:
+      - /home/anthony/dockerVolume/dev/redis-cluster/slave2:/data
+      
