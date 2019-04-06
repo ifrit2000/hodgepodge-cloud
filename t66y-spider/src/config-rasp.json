@@ -1,0 +1,28 @@
+{
+  "threadNum": 3,
+  "fidList": [
+    "2",
+    "4",
+    "5",
+    "15",
+    "25",
+    "26",
+    "27"
+  ],
+  "filePath": "/mnt/t66y/t66y",
+  "baseUrl": "www.t66y.com",
+  "batchCount": 30,
+  "mysqlConfig": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "cdistc",
+    "password": "cd123321",
+    "db": "t66y",
+    "charset": "utf8"
+  },
+  "redisConfig": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "db": 10
+  }
+}
