@@ -1,0 +1,27 @@
+#docker-compose版本
+version: '3.7'
+
+#创建一个网络
+networks:
+  dev-network:
+    name: rasp-network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+#定义各种服务
+services:
+  redis:
+    container_name: redis-master
+    image: 'redis:5.0.4'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.2
+    command: ["redis-server","/data/config/master.conf"]
+    volumes:
+      - /home/docker/volume/redis/data/master:/data/data
+      - /home/docker/volume/redis/config:/data/config
+      - /home/docker/volume/redis/log:/data/log
+    ports:
+      - "6379:6379"
