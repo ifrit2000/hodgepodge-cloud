@@ -13,15 +13,15 @@
   "baseUrl": "www.t66y.com",
   "batchCount": 30,
   "mysqlConfig": {
-    "host": "127.0.0.1",
+    "host": "192.168.2.68",
     "port": 3306,
-    "user": "cdistc",
-    "password": "cd123321",
+    "user": "t66y",
+    "password": "t66y",
     "db": "t66y",
     "charset": "utf8"
   },
   "redisConfig": {
-    "host": "127.0.0.1",
+    "host": "192.168.2.68",
     "port": 6379,
     "db": 10
   }
