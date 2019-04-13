@@ -1,7 +1,6 @@
 package io.github.cd871127.hodgepodge.redis;
 
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
