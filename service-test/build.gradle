@@ -1,6 +1,7 @@
 
 dependencies {
 //    spring-boot-starter-amqp
-    
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

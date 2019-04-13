@@ -1,9 +1,9 @@
 spring:
-  rabbitmq:
-    username: guest
-    password: guest
-    host: 127.0.0.1
-    addresses: 172.28.0.6
-    port: 5672
   application:
-    name: ra
+    name: test
+
+  redis:
+    host: 192.168.2.68
+    port: 6379
+    database: 2
+

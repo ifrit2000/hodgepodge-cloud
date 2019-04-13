@@ -152,8 +152,8 @@ configure(subprojects.findAll { consulProjects.contains(it.name) }) {
 
 configure(subprojects.findAll { testProjects.contains(it.name) }) {
     dependencies {
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+        compile project(":hodgepodge-spring-boot-starter")
     }
 }
 
@@ -166,7 +166,7 @@ configure(subprojects.findAll { webProjects.contains(it.name) }) {
 configure(subprojects.findAll { feignProjects.contains(it.name) }) {
     dependencies {
         compile('org.springframework.cloud:spring-cloud-starter-openfeign')
-        compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.1.0'
+        compile group: 'io.github.openfeign', name: 'feign-httpclient', version: openFeignVersion
     }
 }
 

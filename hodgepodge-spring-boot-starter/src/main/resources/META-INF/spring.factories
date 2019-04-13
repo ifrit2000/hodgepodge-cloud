@@ -3,4 +3,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   io.github.cd871127.hodgepodge.log.autoconfigure.ControllerLogAutoConfiguration,\
   io.github.cd871127.hodgepodge.charset.CharsetAutoConfiguration,\
   io.github.cd871127.hodgepodge.web.autoconfigure.ControllerAdviseAutoConfiguration,\
-  io.github.cd871127.hodgepodge.mybatis.autoconfigure.MybatisInterceptorAutoConfiguration
+  io.github.cd871127.hodgepodge.mybatis.autoconfigure.MybatisInterceptorAutoConfiguration,\
+  io.github.cd871127.hodgepodge.schedule.ScheduleAutoConfiguration

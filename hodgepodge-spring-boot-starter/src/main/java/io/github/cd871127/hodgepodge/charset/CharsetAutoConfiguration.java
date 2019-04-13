@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.nio.charset.Charset;
 
+/**
+ * @author anthony
+ */
 @Configuration
 public class CharsetAutoConfiguration {
     @Bean

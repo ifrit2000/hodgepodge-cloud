@@ -8,16 +8,17 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import java.net.UnknownHostException;
-
+/**
+ * @author anthony
+ */
 @Slf4j
 @Configuration
-@ConditionalOnClass({GenericJackson2JsonRedisSerializer.class, RedisSerializer.class, RedisOperations.class})
+@ConditionalOnClass({RedisTemplate.class})
 @EnableConfigurationProperties(RedisProperties.class)
 public class RedisAutoConfiguration {
     /**
@@ -26,6 +27,7 @@ public class RedisAutoConfiguration {
      * @return
      */
     @Bean
+    @ConditionalOnClass({GenericJackson2JsonRedisSerializer.class, RedisSerializer.class})
     public RedisSerializer springSessionDefaultRedisSerializer() {
         log.info("Init jsonSerializer for session");
         return new GenericJackson2JsonRedisSerializer();
@@ -33,11 +35,16 @@ public class RedisAutoConfiguration {
 
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(
-            RedisConnectionFactory redisConnectionFactory)  {
+            RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setDefaultSerializer(new GenericFastJsonRedisSerializer());
         template.setConnectionFactory(redisConnectionFactory);
         return template;
+    }
+
+    @Bean
+    public RedisLock redisLock(RedisTemplate<String,String> redisTemplate) {
+        return new RedisLock(redisTemplate);
     }
 
 }

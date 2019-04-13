@@ -79,8 +79,9 @@ public class CipherKeyService {
 
     public int insertCipherKeyPair(CipherKeyPair cipherKeyPair) {
         cacheKeyId(cipherKeyPair.getKeyId(), cipherKeyPair.getCipherAlgorithm());
-        if (cipherKeyMapper.isKeyPairInDb(cipherKeyPair.getKeyId()) == 0)
+        if (cipherKeyMapper.isKeyPairInDb(cipherKeyPair.getKeyId()) == 0) {
             return cipherKeyMapper.insertCipherKeyPair(cipherKeyPair);
+        }
         return 0;
     }
 

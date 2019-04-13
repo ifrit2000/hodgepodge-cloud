@@ -1,52 +1,24 @@
 package io.github.cd871127.hodgepodge.cloud.test;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 @SpringBootApplication
-@RestController
-@RequestMapping("/test")
+@EnableScheduling
 public class TestApplication {
 
-    @Bean
-    public Queue queue() {
-        return new Queue("hello");
+    public static void main(String[] args) {
+        SpringApplication.run(TestApplication.class, args);
     }
 
-    @Bean
-    public DirectExchange directExchange() {
-        return new DirectExchange("ex");
+    @Scheduled(cron = "0/5 * * * * ?")
+    //或直接指定时间间隔，例如：5秒
+    //@Scheduled(fixedRate=5000)
+    public void configureTasks() {
+        System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
     }
-
-    @Bean
-    public Binding binding() {
-        //链式写法: 用指定的路由键将队列绑定到交换机
-        return BindingBuilder.bind(queue()).to(directExchange()).with("key");
-    }
-
-
-    @Resource
-    private Sender sender;
-
-    @GetMapping("push/{message}")
-    public String push(@PathVariable("message") String message) {
-        sender.send(message);
-        return null;
-    }
-
-    @GetMapping("pull/{message}")
-    public String pull(@PathVariable("message") String message) {
-        return null;
-    }
-
 }
