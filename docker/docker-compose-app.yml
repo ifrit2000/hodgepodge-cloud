@@ -10,15 +10,82 @@ networks:
       config:
         - subnet: 172.28.0.0/16
 
-#定义各种服务
-services:
+  service-gateway:
+    depends_on:
+      - consul
+    container_name: service-gateway
+    image: 'cd871127/service-gateway:0.0.1'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.51
+    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+    command: ['-Xms128m','-Xmx128m','-Xmn32m']
+    volumes:
+      - /home/anthony/dockerVolume/dev/app/service-gateway/config:/app/config
+      - /home/anthony/dockerVolume/dev/app/service-gateway/logs:/app/logs
+
   service-cipher:
+    depends_on:
+      - redis
+      - consul
+      - mysql
+      - service-gateway
     container_name: service-cipher
     image: 'cd871127/service-cipher:0.0.1'
     networks:
       dev-network:
-        ipv4_address: 172.28.0.7
-    command: ['/bin/sh']
+        ipv4_address: 172.28.0.101
+    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+    command: ['-Xms128m','-Xmx128m','-Xmn32m']
     volumes:
       - /home/anthony/dockerVolume/dev/app/service-cipher/config:/app/config
       - /home/anthony/dockerVolume/dev/app/service-cipher/logs:/app/logs
+
+  service-auth:
+    depends_on:
+      - redis
+      - consul
+      - mysql
+      - service-cipher
+      - service-gateway
+    container_name: service-auth
+    image: 'cd871127/service-auth:0.0.1'
+    networks:
+      dev-network:
+        ipv4_address: 172.28.0.102
+    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+    command: ['-Xms128m','-Xmx128m','-Xmn32m']
+    volumes:
+      - /home/anthony/dockerVolume/dev/app/service-auth/config:/app/config
+      - /home/anthony/dockerVolume/dev/app/service-auth/logs:/app/logs
+
+#  service-t66y:
+#    depends_on:
+#      - redis
+#      - consul
+#      - mysql
+#      - service-gateway
+#    container_name: service-t66y
+#    image: 'cd871127/service-t66y:0.0.1'
+#    networks:
+#      dev-network:
+#        ipv4_address: 172.28.0.103
+#    #        java -Xms1180m -Xmx1180m -Xmn295m -XX:PermSize=48m -XX:MaxPermSize=48m
+#    command: ['-Xms128m','-Xmx128m','-Xmn32m']
+#    volumes:
+#      - /home/anthony/dockerVolume/dev/app/service-t66y/config:/app/config
+#      - /home/anthony/dockerVolume/dev/app/service-t66y/logs:/app/logs
+
+#  -Xms设置堆的最小空间大小。
+#
+#  -Xmx设置堆的最大空间大小。
+#
+#  -XX:NewSize设置新生代最小空间大小。
+#
+#  -XX:MaxNewSize设置新生代最大空间大小。
+#
+#  -XX:PermSize设置永久代最小空间大小。
+#
+#  -XX:MaxPermSize设置永久代最大空间大小。
+#
+#  -Xss设置每个线程的堆栈大小。
