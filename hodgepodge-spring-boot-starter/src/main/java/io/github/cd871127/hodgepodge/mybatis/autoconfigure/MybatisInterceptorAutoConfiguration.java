@@ -20,4 +20,6 @@ public class MybatisInterceptorAutoConfiguration {
     SqlLogInterceptor sqlLogInterceptor() {
         return new SqlLogInterceptor();
     }
+
+
 }
