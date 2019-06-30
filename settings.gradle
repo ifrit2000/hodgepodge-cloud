@@ -8,4 +8,5 @@ include 'service-gateway'
 include 'service-im'
 include 'service-auth'
 include 'service-t66y'
+include 'service-zookeeper'
 
