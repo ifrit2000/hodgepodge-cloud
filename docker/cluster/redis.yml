@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+  redis_1:
+    &redis
+    container_name: redis_1
+    image: 'redis:5.0.5'
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.31
+    command: ["redis-server","/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${DOCKER_VOLUME}/redis/redis_1/data:/data
+  redis_2:
+    <<: *redis
+    container_name: redis_2
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.32
+    volumes:
+      - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${DOCKER_VOLUME}/redis/redis_2/data:/data
+  redis_3:
+    <<: *redis
+    container_name: redis_3
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.33
+    volumes:
+      - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${DOCKER_VOLUME}/redis/redis_3/data:/data
+  redis_4:
+    <<: *redis
+    container_name: redis_4
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.34
+    volumes:
+      - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${DOCKER_VOLUME}/redis/redis_4/data:/data
+  redis_5:
+    <<: *redis
+    container_name: redis_5
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.35
+    volumes:
+      - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${DOCKER_VOLUME}/redis/redis_5/data:/data
+  redis_6:
+    <<: *redis
+    container_name: redis_6
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.36
+    volumes:
+      - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${DOCKER_VOLUME}/redis/redis_6/data:/data
+
+#  redis-cli --cluster create 172.28.0.2:6379 172.28.0.3:6379 172.28.0.4:6379 172.28.0.5:6379 172.28.0.6:6379 172.28.0.7:6379 --cluster-replicas 1
