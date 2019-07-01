@@ -1,5 +1,5 @@
 {
-  "threadNum": 3,
+  "threadNum": 2,
   "fidList": [
     "2",
     "4",
@@ -10,7 +10,7 @@
     "27"
   ],
   "filePath": "/mnt/t66y/t66y",
-  "baseUrl": "www.t66y.com",
+  "baseUrl": "cl.vttg.pw",
   "batchCount": 30,
   "mysqlConfig": {
     "host": "192.168.2.68",

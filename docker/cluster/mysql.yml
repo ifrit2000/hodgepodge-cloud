@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  mysql_master:
+    &mysql
+    container_name: mysql_master
+    image: 'mysql:8.0.16'
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.11
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - ${DOCKER_VOLUME}/mysql/mysql_master/conf:/etc/mysql/conf.d
+      - ${DOCKER_VOLUME}/mysql/mysql_master/data:/var/lib/mysql
+  mysql_slave:
+    <<: *mysql
+    container_name: mysql_slave
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.12
+    volumes:
+      - ${DOCKER_VOLUME}/mysql/mysql_slave/conf:/etc/mysql/conf.d
+      - ${DOCKER_VOLUME}/mysql/mysql_slave/data:/var/lib/mysql

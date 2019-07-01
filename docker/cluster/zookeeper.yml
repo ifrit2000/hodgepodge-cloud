@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  zookeeper_1:
+    &zookeeper
+    image: 'zookeeper:3.5.5'
+    container_name: zookeeper_1
+    restart: always
+    hostname: zookeeper_1
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.21
+    environment:
+      &zoo_env
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper_1:2888:3888;2181 server.2=zookeeper_2:2888:3888;2181 server.3=zookeeper_3:2888:3888;2181
+
+  zookeeper_2:
+    <<: *zookeeper
+    container_name: zookeeper_2
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.22
+    hostname: zookeeper_2
+    environment:
+      <<: *zoo_env
+      ZOO_MY_ID: 2
+
+  zookeeper_3:
+    <<: *zookeeper
+    container_name: zookeeper_3
+    restart: always
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.23
+    hostname: zookeeper_3
+    environment:
+      <<: *zoo_env
+      ZOO_MY_ID: 3
