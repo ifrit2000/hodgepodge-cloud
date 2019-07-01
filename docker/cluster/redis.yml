@@ -58,4 +58,4 @@ services:
       - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ${DOCKER_VOLUME}/redis/redis_6/data:/data
 
-#  redis-cli --cluster create 172.28.0.2:6379 172.28.0.3:6379 172.28.0.4:6379 172.28.0.5:6379 172.28.0.6:6379 172.28.0.7:6379 --cluster-replicas 1
+#  redis-cli --cluster create 172.28.0.31:6379 172.28.0.32:6379 172.28.0.33:6379 172.28.0.34:6379 172.28.0.35:6379 172.28.0.36:6379 --cluster-replicas 1
