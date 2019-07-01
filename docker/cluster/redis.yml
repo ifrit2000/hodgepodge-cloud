@@ -5,6 +5,7 @@ services:
     &redis
     container_name: redis_1
     image: 'redis:5.0.5'
+    hostname: redis_1
     networks:
       cluster-network:
         ipv4_address: 172.28.0.31
@@ -15,6 +16,7 @@ services:
   redis_2:
     <<: *redis
     container_name: redis_2
+    hostname: redis_2
     networks:
       cluster-network:
         ipv4_address: 172.28.0.32
@@ -24,6 +26,7 @@ services:
   redis_3:
     <<: *redis
     container_name: redis_3
+    hostname: redis_3
     networks:
       cluster-network:
         ipv4_address: 172.28.0.33
@@ -33,6 +36,7 @@ services:
   redis_4:
     <<: *redis
     container_name: redis_4
+    hostname: redis_4
     networks:
       cluster-network:
         ipv4_address: 172.28.0.34
@@ -42,6 +46,7 @@ services:
   redis_5:
     <<: *redis
     container_name: redis_5
+    hostname: redis_5
     networks:
       cluster-network:
         ipv4_address: 172.28.0.35
@@ -51,6 +56,7 @@ services:
   redis_6:
     <<: *redis
     container_name: redis_6
+    hostname: redis_6
     networks:
       cluster-network:
         ipv4_address: 172.28.0.36
@@ -58,4 +64,4 @@ services:
       - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ${DOCKER_VOLUME}/redis/redis_6/data:/data
 
-#  redis-cli --cluster create 172.28.0.2:6379 172.28.0.3:6379 172.28.0.4:6379 172.28.0.5:6379 172.28.0.6:6379 172.28.0.7:6379 --cluster-replicas 1
+#  redis-cli --cluster create 172.28.0.31:6379 172.28.0.32:6379 172.28.0.33:6379 172.28.0.34:6379 172.28.0.35:6379 172.28.0.36:6379 --cluster-replicas 1
