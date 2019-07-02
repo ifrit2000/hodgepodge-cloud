@@ -1,0 +1,3 @@
+[mysqld]
+#Mysql服务的唯一编号 每个mysql服务Id需唯一
+server-id = 1
