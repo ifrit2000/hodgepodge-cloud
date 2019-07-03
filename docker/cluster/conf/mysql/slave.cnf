@@ -4,3 +4,6 @@ server-id = 2
 
 #作为从库时生效,从库复制中如何有慢sql也将被记录
 log_slow_slave_statements = 1
+
+#CHANGE MASTER TO MASTER_HOST='172.28.0.11',MASTER_USER='slave',MASTER_PASSWORD='cd123321',MASTER_LOG_FILE='master_binlog.000001',MASTER_LOG_POS=1332;
+

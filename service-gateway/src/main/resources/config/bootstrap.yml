@@ -1,19 +1,23 @@
 spring:
   application:
     name: service-gateway
-  profiles:
-    include: consul
-    active: dev
+#  profiles:
+#    include: consul
+#    active: dev
   main:
     allow-bean-definition-overriding: true
   cloud:
-    consul:
-      config:
-        format: FILES
-        prefix: config/${spring.profiles.active}
-        watch:
-          enabled: true
-          delay: 1000
+
+#    consul:
+#      config:
+#        format: FILES
+#        prefix: config/${spring.profiles.active}
+#        watch:
+#          enabled: true
+#          delay: 1000
+
+    zookeeper:
+      connect-string: 172.28.0.21:2181,172.28.0.22:2181,172.28.0.23:2181
     gateway:
       discovery:
         locator:

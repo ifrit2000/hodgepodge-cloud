@@ -18,5 +18,5 @@ log-bin=master_binlog
 #https://www.jb51.net/article/158227.htm
 
 
-#CREATE USER 'repl'@'192.168.199.198' IDENTIFIED WITH mysql_native_password BY 'Ron_master_1';
-#GRANT REPLICATION SLAVE ON *.* TO 'repl'@'192.168.199.198';
+#CREATE USER 'slave'@'172.28.0.12' IDENTIFIED WITH mysql_native_password BY 'cd123321';
+#GRANT REPLICATION SLAVE ON *.* TO 'slave'@'172.28.0.12';
