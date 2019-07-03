@@ -25,6 +25,6 @@ services:
       - ./conf/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./conf/mysql/slave.cnf:/etc/mysql/conf.d/slave.cnf
       - ${DOCKER_VOLUME}/mysql/slave:/var/lib/mysql
-#  Wuacheingahohvohzailai9xohlahdei
-#  aequaifohca2EigaeFoogo6eeri2aiKe
+#  eithi9ram2Saeji5Nai7miShohzop2Uc
+#  nav9ahdong5NohNgoopooSh4eideijoo
 #  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YourPassword';
