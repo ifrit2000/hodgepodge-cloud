@@ -9,10 +9,12 @@ services:
       cluster-network:
         ipv4_address: 172.28.0.11
     environment:
-      - MYSQL_ROOT_PASSWORD=123456
+#      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
     volumes:
-      - ${DOCKER_VOLUME}/mysql/mysql_master/conf:/etc/mysql/conf.d
-      - ${DOCKER_VOLUME}/mysql/mysql_master/data:/var/lib/mysql
+      - ./conf/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./conf/mysql/master.cnf:/etc/mysql/conf.d/master.cnf
+      - ${DOCKER_VOLUME}/mysql/master:/var/lib/mysql
   mysql_slave:
     <<: *mysql
     container_name: mysql_slave
@@ -20,5 +22,9 @@ services:
       cluster-network:
         ipv4_address: 172.28.0.12
     volumes:
-      - ${DOCKER_VOLUME}/mysql/mysql_slave/conf:/etc/mysql/conf.d
-      - ${DOCKER_VOLUME}/mysql/mysql_slave/data:/var/lib/mysql
+      - ./conf/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./conf/mysql/slave.cnf:/etc/mysql/conf.d/slave.cnf
+      - ${DOCKER_VOLUME}/mysql/slave:/var/lib/mysql
+#  Wuacheingahohvohzailai9xohlahdei
+#  aequaifohca2EigaeFoogo6eeri2aiKe
+#  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YourPassword';
