@@ -1,0 +1,31 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: service-config
+  cloud:
+    zookeeper:
+      connect-string: 172.28.0.21:2181,172.28.0.22:2181,172.28.0.23:2181
+    config:
+      server:
+        git:
+          uri: https://github.com/cd871127/hodgepodge-config
+          #搜索子目录
+#          search-paths: dir,dir*,gateway,ci,dev
+          timeout: 4
+          skipSslValidation: true
+          #启动时克隆仓库
+          clone-on-start: false
+        accept-empty: false
+
+  output:
+    ansi:
+      enabled: always
+
+management:
+  endpoint:
+    refresh:
+      enabled: true
+    health:
+      show-details: always
+

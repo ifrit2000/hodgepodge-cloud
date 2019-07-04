@@ -6,7 +6,7 @@ services:
     image: 'zookeeper:3.5.5'
     container_name: zookeeper_1
     restart: always
-    hostname: zookeeper_1
+#    hostname: zookeeper_1
     networks:
       cluster-network:
         ipv4_address: 172.28.0.21
@@ -22,7 +22,7 @@ services:
     networks:
       cluster-network:
         ipv4_address: 172.28.0.22
-    hostname: zookeeper_2
+#    hostname: zookeeper_2
     environment:
       <<: *zoo_env
       ZOO_MY_ID: 2
@@ -34,7 +34,7 @@ services:
     networks:
       cluster-network:
         ipv4_address: 172.28.0.23
-    hostname: zookeeper_3
+#    hostname: zookeeper_3
     environment:
       <<: *zoo_env
       ZOO_MY_ID: 3
