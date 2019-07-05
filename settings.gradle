@@ -10,4 +10,5 @@ include 'service-auth'
 include 'service-t66y'
 include 'service-zookeeper'
 include 'service-config'
+include 'service-account'
 
