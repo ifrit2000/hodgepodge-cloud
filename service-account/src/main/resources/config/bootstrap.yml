@@ -2,7 +2,7 @@ spring:
   application:
     name: service-account
   profiles:
-    include: consul,mybatis
+    include: consul,mybatis,redis
     active: dev
   cloud:
     consul:
@@ -17,28 +17,8 @@ spring:
   output:
     ansi:
       enabled: always
-#  datasource:
-#
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    password: 123456
-#    username: accountwrite
-#    url: jdbc:mysql://172.28.0.11:3306/${mysql.database}?useUnicode=true&characterEncoding=utf8mb4&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC&allowPublicKeyRetrieval=true
 
-#  redis:
-#    cache:
-#      nodes:
-#        -172.28.0.31:7001
-#        -172.28.0.32:7002
-#        -172.28.0.33:7003
-#        -172.28.0.34:7004
-#        -172.28.0.35:7005
-#        -172.28.0.36:7006
-#      #      host: localhost:6379
-#      #      password:
-#      maxIdle:
-#      minIdle:
-#      maxTotal:
-#      maxWaitMillis: 5000
+
 
 management:
   endpoint:

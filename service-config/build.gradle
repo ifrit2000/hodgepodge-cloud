@@ -1,4 +1,0 @@
-dependencies {
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-config-server'
-
-}
