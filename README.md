@@ -2,6 +2,16 @@
 
 # hodgepodge-cloud
 
+# 环境搭建
+
+### ZOOKEEPER
+
+### REDIS
+
+### MYSQL
+
+
+
 ### service-cipher
 加密服务
 

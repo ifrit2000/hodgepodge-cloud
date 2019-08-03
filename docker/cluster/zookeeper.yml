@@ -5,7 +5,7 @@ services:
     &zookeeper
     image: 'zookeeper:3.5.5'
     container_name: zookeeper_1
-    restart: always
+#    restart: always
 #    hostname: zookeeper_1
     networks:
       cluster-network:
@@ -15,6 +15,9 @@ services:
       ZOO_MY_ID: 1
 #      ZOO_SERVERS: server.1=zookeeper_1:2888:3888;2181 server.2=zookeeper_2:2888:3888;2181 server.3=zookeeper_3:2888:3888;2181
       ZOO_SERVERS: server.1=172.28.0.21:2888:3888;2181 server.2=172.28.0.22:2888:3888;2181 server.3=172.28.0.23:2888:3888;2181
+    volumes:
+      - ${DOCKER_VOLUME}/zookeeper/zookeeper_1/data:/data
+      - ${DOCKER_VOLUME}/zookeeper/zookeeper_1/datalog:/datalog
 
   zookeeper_2:
     <<: *zookeeper
@@ -26,11 +29,13 @@ services:
     environment:
       <<: *zoo_env
       ZOO_MY_ID: 2
+    volumes:
+      - ${DOCKER_VOLUME}/zookeeper/zookeeper_2/data:/data
+      - ${DOCKER_VOLUME}/zookeeper/zookeeper_2/datalog:/datalog
 
   zookeeper_3:
     <<: *zookeeper
     container_name: zookeeper_3
-    restart: always
     networks:
       cluster-network:
         ipv4_address: 172.28.0.23
@@ -38,3 +43,6 @@ services:
     environment:
       <<: *zoo_env
       ZOO_MY_ID: 3
+    volumes:
+      - ${DOCKER_VOLUME}/zookeeper/zookeeper_3/data:/data
+      - ${DOCKER_VOLUME}/zookeeper/zookeeper_3/datalog:/datalog

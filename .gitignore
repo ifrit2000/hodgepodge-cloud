@@ -10,5 +10,6 @@ build/
 config/git*.log
 */__pycache__/
 **/node_modules/
+*.tgz
 
 

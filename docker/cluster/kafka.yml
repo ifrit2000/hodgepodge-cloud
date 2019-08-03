@@ -1,0 +1,38 @@
+version: '3.7'
+
+
+services:
+  kafka_0:
+    &kafka
+    depends_on:
+      - zookeeper_1
+      - zookeeper_2
+      - zookeeper_3
+    image: 'cd871127/kafka:2.3.0'
+    container_name: kafka_0
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.51
+    volumes:
+      - ./conf/kafka/server0.properties:/kafka_2.12-2.3.0/config/server.properties
+      - ${DOCKER_VOLUME}/kafka/kafka_0/kafka-logs:/tmp/kafka-logs
+
+  kafka_1:
+    <<: *kafka
+    container_name: kafka_1
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.52
+    volumes:
+      - ./conf/kafka/server1.properties:/kafka_2.12-2.3.0/config/server.properties
+      - ${DOCKER_VOLUME}/kafka/kafka_1/kafka-logs:/tmp/kafka-logs
+
+  kafka_2:
+    <<: *kafka
+    container_name: kafka_2
+    networks:
+      cluster-network:
+        ipv4_address: 172.28.0.53
+    volumes:
+      - ./conf/kafka/server2.properties:/kafka_2.12-2.3.0/config/server.properties
+      - ${DOCKER_VOLUME}/kafka/kafka_2/kafka-logs:/tmp/kafka-logs
