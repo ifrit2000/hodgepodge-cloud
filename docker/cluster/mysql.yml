@@ -28,3 +28,4 @@ services:
 #  eithi9ram2Saeji5Nai7miShohzop2Uc
 #  nav9ahdong5NohNgoopooSh4eideijoo
 #  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YourPassword';
+#  CREATE USER 'username'@'host' IDENTIFIED WITH mysql_native_password BY 'password';

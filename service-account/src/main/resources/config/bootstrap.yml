@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: service-account
+  profiles:
+    include: consul,mybatis,redis
+    active: dev
+  cloud:
+    consul:
+      host: 172.28.0.42
+      port: 8500
+      config:
+        format: FILES
+        prefix: config/${spring.profiles.active}
+        watch:
+          enabled: true
+          delay: 1
+  output:
+    ansi:
+      enabled: always
+
+
+
+management:
+  endpoint:
+    refresh:
+      enabled: true
+    health:
+      show-details: always
+
+mysql:
+  database: account
