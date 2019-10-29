@@ -13,6 +13,9 @@ import org.apache.ibatis.session.RowBounds;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+/**
+ * @author anthonychen
+ */
 @Slf4j
 @Intercepts(value = {
         @Signature(type = Executor.class,
