@@ -2,21 +2,25 @@ spring:
   application:
     name: service-gateway
   profiles:
-    include: consul,redis
+#    include: consul,redis
     active: dev
-  cloud:
-    consul:
-      config:
-        format: FILES
-        prefix: config/${spring.profiles.active}
-        watch:
-          enabled: true
-          delay: 1
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
+  boot:
+    admin:
+      client:
+        url: http://localhost:9999
+  #  cloud:
+#    consul:
+#      config:
+#        format: FILES
+#        prefix: config/${spring.profiles.active}
+#        watch:
+#          enabled: true
+#          delay: 1
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
   output:
     ansi:
       enabled: always
@@ -27,4 +31,7 @@ management:
       enabled: true
     health:
       show-details: always
-
+  endpoints:
+    web:
+      exposure:
+        include: "*"

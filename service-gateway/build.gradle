@@ -1,5 +1,7 @@
 dependencies {
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-gateway'
-    
+    // https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-client
+    compile group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.1.6'
+
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
 }
