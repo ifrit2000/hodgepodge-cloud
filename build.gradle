@@ -23,12 +23,12 @@ String[] redisProjects = ['service-safe-box', 'service-auth', 'service-cipher', 
                           'service-account']
 String[] consulProjects = ['service-safe-box', 'service-auth',
                            'service-cipher', 'service-gateway',
-                           'service-t66y', 'service-account']
+                           'service-t66y', 'service-account','service-admin']
 String[] feignProjects = ['service-cipher', 'service-auth', 'service-safe-box']
 //需要mysql服务名
 String[] mysqlProjects = ['service-safe-box', 'service-auth', 'service-cipher', 'service-t66y', 'service-account']
 String[] webProjects = ['service-cipher', 'service-auth', 'service-safe-box', 'service-t66y', 'service-account',
-                        'service-shiro']
+                        'service-shiro','service-admin']
 String[] testProjects = ['service-test']
 
 String[] zooKeeperProjects = ['service-config']

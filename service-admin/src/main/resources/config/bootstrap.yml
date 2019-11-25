@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: service-admin
+  profiles:
+    include: consul
+    active: dev
+  cloud:
+    consul:
+      config:
+        format: FILES
+        prefix: config/${spring.profiles.active}
+        watch:
+          enabled: true
+          delay: 1000
+  output:
+    ansi:
+      enabled: always
+
+  boot:
+    admin:
+      discovery:
+        ignored-services: [consul,service-admin]
+#        services: ["service*"]
+
+
+#  Spring Cloud Consul Config，需要配置以下信息在 bootstrap.yml 文件
+#
+#  spring.cloud.consul.host：配置consul地址
+#  spring.cloud.consul.port：配置consul端口
+#  spring.cloud.consul.config.prefix：配置基本文件，默认值config
+#  spring.cloud.consul.config.enabled：启动consul配置中心
+#  spring.cloud.consul.config.format：consul上面文件的格式 YAML、FILES、PROPERTIES、默认 KEY-VALUE
+#  spring.cloud.consul.config.data-key：表示 consul 上面的 KEY 值(或者说文件的名字)，默认是 data
+#  application
+#  spring.cloud.consul.host：配置consul地址
+#  spring.cloud.consul.port：配置consul端口
+#  spring.cloud.consul.discovery.enabled：启用服务发现
+#  spring.cloud.consul.discovery.register：启用服务注册
+#  spring.cloud.consul.discovery.deregister：服务停止时取消注册
+#  spring.cloud.consul.discovery.prefer-ip-address：表示注册时使用IP而不是hostname
+#  spring.cloud.consul.discovery.health-check-interval：健康检查频率
+#  spring.cloud.consul.discovery.health-check-path：健康检查路径
+#  spring.cloud.consul.discovery.health-check-critical-timeout：健康检查失败多长时间后，取消注册
+#  spring.cloud.consul.discovery.instance-id：服务注册标识
+
+

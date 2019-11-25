@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-git2consul --config-file git2consul.json -e 172.28.0.41 -p 8500
+git2consul --config-file git2consul.json -e consul.hodgepodge.com -p 8500
