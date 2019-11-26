@@ -1,13 +1,11 @@
 spring:
   application:
     name: service-gateway
+  main:
+    allow-bean-definition-overriding: true
   profiles:
-    include: consul
+    include: consul,redis
     active: dev
-#  boot:
-#    admin:
-#      client:
-#        url: http://localhost:9999
   cloud:
     consul:
       config:
@@ -24,4 +22,3 @@ spring:
   output:
     ansi:
       enabled: always
-
